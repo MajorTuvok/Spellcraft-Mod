@@ -13,7 +13,7 @@ public class EventHandler {
         MinecraftForge.EVENT_BUS.register(new PlayerEventHandler());
     }
 
-    public static void onServerStarting(){
+    public static void onServerStarting() {
         SpellPowerEventHandler.clear();
     }
 }

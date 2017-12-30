@@ -5,7 +5,6 @@ import com.mt.mcmods.spellcraft.Server.net.Messages.SyncEntitySpellpower;
 import com.mt.mcmods.spellcraft.common.util.MessageUtils;
 import com.mt.mcmods.spellcraft.common.util.NetworkUtils;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -22,11 +21,11 @@ public class EntitySpellPowerProvider implements ISpellPowerProvider {
     private Entity entity;
 
     public EntitySpellPowerProvider(float maxPower) {
-        this(maxPower,0);
+        this(maxPower, 0);
     }
 
     public EntitySpellPowerProvider(float maxPower, float power) {
-        this(maxPower,power,null);
+        this(maxPower, power, null);
     }
 
     public EntitySpellPowerProvider(float maxPower, float power, @Nullable Entity entity) {
@@ -35,7 +34,8 @@ public class EntitySpellPowerProvider implements ISpellPowerProvider {
         this.entity = entity;
     }
 
-    public @Nullable Entity getEntity() {
+    public @Nullable
+    Entity getEntity() {
         return entity;
     }
 
@@ -62,7 +62,7 @@ public class EntitySpellPowerProvider implements ISpellPowerProvider {
      */
     @Override
     public void setPower(float newPower) {
-        if (newPower!=this.power) {
+        if (newPower != this.power) {
             this.power = Math.max(0, newPower);
             sendSync();
         }
@@ -86,7 +86,7 @@ public class EntitySpellPowerProvider implements ISpellPowerProvider {
      */
     @Override
     public void setMaxPower(float newMaxPower) {
-        if (this.maxPower!=newMaxPower) {
+        if (this.maxPower != newMaxPower) {
             this.maxPower = Math.max(newMaxPower, 0);
             sendSync();
         }
@@ -101,9 +101,9 @@ public class EntitySpellPowerProvider implements ISpellPowerProvider {
      */
     @Override
     public float extractPower(float amount, boolean simulate) {
-        float extracted = Math.min(amount,getPower());
-        if (!simulate && extracted>0)
-            setPower(getPower()-extracted);
+        float extracted = Math.min(amount, getPower());
+        if (!simulate && extracted > 0)
+            setPower(getPower() - extracted);
         return extracted;
     }
 
@@ -116,17 +116,18 @@ public class EntitySpellPowerProvider implements ISpellPowerProvider {
      */
     @Override
     public float receivePower(float amount, boolean simulate) {
-        float received = Math.min(amount,getMaxPower()-getPower());
-        if (!simulate && received>0)
-            setPower(getPower()+received);
+        float received = Math.min(amount, getMaxPower() - getPower());
+        if (!simulate && received > 0)
+            setPower(getPower() + received);
         return received;
     }
 
     @Override
-    public @Nonnull NBTTagCompound serializeNBT() {
+    public @Nonnull
+    NBTTagCompound serializeNBT() {
         NBTTagCompound compound = new NBTTagCompound();
-        compound.setFloat(KEY_POWER,power);
-        compound.setFloat(KEY_MAX_POWER,maxPower);
+        compound.setFloat(KEY_POWER, power);
+        compound.setFloat(KEY_MAX_POWER, maxPower);
         return compound;
     }
 
@@ -155,8 +156,8 @@ public class EntitySpellPowerProvider implements ISpellPowerProvider {
 
         if (getPower() != that.getPower()) return false;
         if (getMaxPower() != that.getMaxPower()) return false;
-        return (getEntity()!=null && that.getEntity()!=null && getEntity().equals(that.getEntity()))
-                || (getEntity()==null && that.getEntity()==null);
+        return (getEntity() != null && that.getEntity() != null && getEntity().equals(that.getEntity()))
+                || (getEntity() == null && that.getEntity() == null);
     }
 
     @Override
@@ -168,11 +169,10 @@ public class EntitySpellPowerProvider implements ISpellPowerProvider {
     }
 
     private void sendSync() {
-        if (getEntity()!=null && NetworkUtils.mightBeServer()) {
-            if ((entity instanceof EntityPlayerMP) &&((EntityPlayerMP) entity).connection != null) {
-                CHANNEL_HOLDER.sendTo(new SyncEntitySpellpower(getEntity()),(EntityPlayerMP) entity);
-            }
-            else {
+        if (getEntity() != null && NetworkUtils.mightBeServer()) {
+            if ((entity instanceof EntityPlayerMP) && ((EntityPlayerMP) entity).connection != null) {
+                CHANNEL_HOLDER.sendTo(new SyncEntitySpellpower(getEntity()), (EntityPlayerMP) entity);
+            } else {
                 CHANNEL_HOLDER.sendToAllAround(new SyncEntitySpellpower(getEntity()), MessageUtils.getTargetPoint(getEntity(), 16));
             }
         }

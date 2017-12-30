@@ -1,7 +1,6 @@
 package com.mt.mcmods.spellcraft.common.Capabilities.spellpower;
 
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
-import com.mt.mcmods.spellcraft.common.util.NBTHelper;
 import com.mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,7 +12,8 @@ import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 
 public class SpellPowerProviderCapability implements Capability.IStorage<ISpellPowerProvider>, Callable<ISpellPowerProvider> {
-    public static final ResourceLocation ID = new ResourceLocation(StringHelper.createResourceLocation(ILoggable.MODID,"Capabilities","SpellPowerProviderCapability"));
+    public static final ResourceLocation ID = new ResourceLocation(StringHelper.createResourceLocation(ILoggable.MODID, "Capabilities", "SpellPowerProviderCapability"));
+
     /**
      * Computes a result, or throws an exception if unable to do so.
      *
@@ -70,7 +70,7 @@ public class SpellPowerProviderCapability implements Capability.IStorage<ISpellP
      */
     @Override
     public void readNBT(Capability<ISpellPowerProvider> capability, ISpellPowerProvider instance, EnumFacing side, NBTBase nbt) {
-        if (nbt!=null && nbt instanceof NBTTagCompound)
+        if (nbt != null && nbt instanceof NBTTagCompound)
             instance.deserializeNBT((NBTTagCompound) nbt);
         else
             ILoggable.Log.error("Cannot read ISpellPowerProvider NBT-Data from non NBTTagCompound!");

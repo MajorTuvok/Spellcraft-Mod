@@ -67,9 +67,9 @@ public abstract class AbsSpellComponent extends IForgeRegistryEntry.Impl<ISpellC
      */
     @Override
     public boolean equals(Object obj) {
-        return obj !=null && obj instanceof ISpellComponent
-                && (   (((ISpellComponent) obj).getRegistryName()!=null && this.getRegistryName()!=null && this.getRegistryName().equals(((ISpellComponent) obj).getRegistryName()))
-                    || (this.getRegistryName()==null && ((ISpellComponent) obj).getRegistryName()==null) );
+        return obj != null && obj instanceof ISpellComponent
+                && ((((ISpellComponent) obj).getRegistryName() != null && this.getRegistryName() != null && this.getRegistryName().equals(((ISpellComponent) obj).getRegistryName()))
+                || (this.getRegistryName() == null && ((ISpellComponent) obj).getRegistryName() == null));
     }
 
     /**

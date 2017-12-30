@@ -29,15 +29,16 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-public class ItemWand extends ItemBase implements LeftClickEventHandler.IClickListener{
-    public static final ResourceLocation DEFAULT_WAND_TEXTURE = new ResourceLocation(StringHelper.createResourceLocation(SpellcraftMod.MODID,"items","wands","wand"));
+public class ItemWand extends ItemBase implements LeftClickEventHandler.IClickListener {
+    public static final ResourceLocation DEFAULT_WAND_TEXTURE = new ResourceLocation(StringHelper.createResourceLocation(SpellcraftMod.MODID, "items", "wands", "wand"));
     private WandPropertyDefinition definition;
     private ResourceLocation customLocation;
+
     public ItemWand(@Nonnull String itemName, WandPropertyDefinition definition) {
         super(itemName);
         this.setCreativeTab(CTabs.TAB_MAIN);
         this.definition = definition;
-        if (this.definition==null) {
+        if (this.definition == null) {
             this.definition = new WandPropertyDefinition();
         }
         //this.addPropertyOverride(new ResourceLocation("type"), new ActivePropertyGetter());
@@ -54,7 +55,8 @@ public class ItemWand extends ItemBase implements LeftClickEventHandler.IClickLi
         return super.getPropertyGetter(key);
     }
 
-    public @Nonnull WandPropertyDefinition getDefinition() {
+    public @Nonnull
+    WandPropertyDefinition getDefinition() {
         return definition;
     }
 
@@ -73,23 +75,24 @@ public class ItemWand extends ItemBase implements LeftClickEventHandler.IClickLi
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
-        addWandPropertiesInformation(stack,worldIn,tooltip,flagIn);
+        addWandPropertiesInformation(stack, worldIn, tooltip, flagIn);
     }
 
     protected Optional<Boolean> addWandPropertiesInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        return getProperties(stack).addPropertyTooltip(tooltip,true);
+        return getProperties(stack).addPropertyTooltip(tooltip, true);
     }
 
     /**
      * Retrieves the WandProperty Object from the given ItemStack. Subclasses should override this if they provide their own Property Object.
+     *
      * @param stack The ItemStack from which the Properties should be retrieved
      * @return The retrieved or created WandProperty Object
      */
     protected @Nonnull
     IWandProperties getProperties(ItemStack stack) {
         IWandProperties properties = null;
-        if (stack.hasCapability(SpellcraftCapabilities.WAND_PROPERTIES_CAPABILITY,null)) {
-            properties = stack.getCapability(SpellcraftCapabilities.WAND_PROPERTIES_CAPABILITY,null);
+        if (stack.hasCapability(SpellcraftCapabilities.WAND_PROPERTIES_CAPABILITY, null)) {
+            properties = stack.getCapability(SpellcraftCapabilities.WAND_PROPERTIES_CAPABILITY, null);
         }
         if (properties == null) {
             properties = new WandProperties(getDefinition());
@@ -104,18 +107,19 @@ public class ItemWand extends ItemBase implements LeftClickEventHandler.IClickLi
     }
 
     @Override
-    public @Nonnull ItemStack getDefaultInstance() {
+    public @Nonnull
+    ItemStack getDefaultInstance() {
         ItemStack stack = super.getDefaultInstance();
         getProperties(stack);
         return stack;
     }
 
     @Override
-    public @Nonnull ResourceLocation getLocation() {
-        if (customLocation!=null) {
+    public @Nonnull
+    ResourceLocation getLocation() {
+        if (customLocation != null) {
             return customLocation;
-        }
-        else {
+        } else {
             return new ResourceLocation(StringHelper.createResourceLocation(MODID, "wands", getName()));
         }
     }
@@ -133,26 +137,30 @@ public class ItemWand extends ItemBase implements LeftClickEventHandler.IClickLi
      * @param handIn
      */
     @Override
-    public @Nonnull ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
+    public @Nonnull
+    ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
         return super.onItemRightClick(worldIn, playerIn, handIn);
     }
 
     @Override
-    public @Nonnull Tuple<Boolean,EnumActionResult> onAnyLeftClick(EntityPlayer player, ItemStack stack, EnumHand hand, BlockPos pos) {
+    public @Nonnull
+    Tuple<Boolean, EnumActionResult> onAnyLeftClick(EntityPlayer player, ItemStack stack, EnumHand hand, BlockPos pos) {
         int slot = player.inventory.getSlotFor(stack);
         IWandProperties properties = getProperties(stack);
         SpellcraftMod.CHANNEL_HOLDER.sendToServer(new RequestNewPlayerSpell(slot, properties.getEfficiency(), properties.getMaxPower()));
-        return new Tuple<>(true,EnumActionResult.PASS);
+        return new Tuple<>(true, EnumActionResult.PASS);
     }
 
     @Override
-    public @Nonnull Tuple<Boolean,EnumActionResult> onEmptyLeftClick(EntityPlayer player, ItemStack stack, EnumHand hand, BlockPos pos) {
-        return new Tuple<>(false,EnumActionResult.PASS);
+    public @Nonnull
+    Tuple<Boolean, EnumActionResult> onEmptyLeftClick(EntityPlayer player, ItemStack stack, EnumHand hand, BlockPos pos) {
+        return new Tuple<>(false, EnumActionResult.PASS);
     }
 
     @Override
-    public @Nonnull Tuple<Boolean,EnumActionResult> onBlockLeftClick(EntityPlayer player, ItemStack stack, EnumHand hand, BlockPos pos) {
-        return new Tuple<>(false,EnumActionResult.PASS);
+    public @Nonnull
+    Tuple<Boolean, EnumActionResult> onBlockLeftClick(EntityPlayer player, ItemStack stack, EnumHand hand, BlockPos pos) {
+        return new Tuple<>(false, EnumActionResult.PASS);
     }
 
     /**
@@ -224,7 +232,7 @@ public class ItemWand extends ItemBase implements LeftClickEventHandler.IClickLi
         @Nullable
         @Override
         public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-            return hasCapability(capability,facing)? SpellcraftCapabilities.WAND_PROPERTIES_CAPABILITY.cast(properties):null;
+            return hasCapability(capability, facing) ? SpellcraftCapabilities.WAND_PROPERTIES_CAPABILITY.cast(properties) : null;
         }
 
         @Override
@@ -234,7 +242,7 @@ public class ItemWand extends ItemBase implements LeftClickEventHandler.IClickLi
 
         @Override
         public void deserializeNBT(NBTBase nbt) {
-            properties.deserializeNBT((NBTTagCompound)nbt);
+            properties.deserializeNBT((NBTTagCompound) nbt);
         }
     }
 }

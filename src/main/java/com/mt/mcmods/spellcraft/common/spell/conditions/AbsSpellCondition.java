@@ -2,7 +2,6 @@ package com.mt.mcmods.spellcraft.common.spell.conditions;
 
 import com.mt.mcmods.spellcraft.Server.spell.SpellType;
 import com.mt.mcmods.spellcraft.Server.spell.SpellTypes;
-import com.mt.mcmods.spellcraft.common.spell.components.ISpellComponent;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.Validate;
@@ -23,7 +22,6 @@ public abstract class AbsSpellCondition extends IForgeRegistryEntry.Impl<ISpellC
     }
 
     /**
-     *
      * @return This implementation simply returns a new NBTTagCompound.
      */
     @Override
@@ -33,12 +31,13 @@ public abstract class AbsSpellCondition extends IForgeRegistryEntry.Impl<ISpellC
 
     /**
      * Deserialize NBT-Data for this Spell Condition. This Implementation simply checks whether nbt is null or not. If it is it throws an NullPointerExc
+     *
      * @param nbt The NBT-Data to deserialize.
      * @throws NullPointerException if given nbt Data is null.
      */
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
-        if (nbt==null) throw new NullPointerException("Cannot read null NBT Data");
+        if (nbt == null) throw new NullPointerException("Cannot read null NBT Data");
     }
 
     /**
@@ -89,9 +88,9 @@ public abstract class AbsSpellCondition extends IForgeRegistryEntry.Impl<ISpellC
      */
     @Override
     public boolean equals(Object obj) {
-        return obj!=null && obj instanceof ISpellCondition
-                && (   (this.getRegistryName()!=null && ((ISpellCondition) obj).getRegistryName()!=null && ((ISpellCondition) obj).getRegistryName().equals(this.getRegistryName()))
-                    || (this.getRegistryName()==null && ((ISpellCondition) obj).getRegistryName()==null));
+        return obj != null && obj instanceof ISpellCondition
+                && ((this.getRegistryName() != null && ((ISpellCondition) obj).getRegistryName() != null && ((ISpellCondition) obj).getRegistryName().equals(this.getRegistryName()))
+                || (this.getRegistryName() == null && ((ISpellCondition) obj).getRegistryName() == null));
     }
 
     /**

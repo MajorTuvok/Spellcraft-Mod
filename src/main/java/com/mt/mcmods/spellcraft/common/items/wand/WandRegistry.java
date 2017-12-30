@@ -11,12 +11,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static com.mt.mcmods.spellcraft.common.util.item.ItemHelper.*;
+import static com.mt.mcmods.spellcraft.common.util.item.ItemHelper.areItemStacksEqual;
+import static com.mt.mcmods.spellcraft.common.util.item.ItemHelper.getStackHash;
 
 public class WandRegistry {
     public static final WandRegistry INSTANCE = new WandRegistry();
-    private RegistryAdvanced<WandRecipe,ItemWand> recipeWandMap;
-    private RegistryAdvanced<ItemWand,WandRecipe> wandRecipeMap;
+    private RegistryAdvanced<WandRecipe, ItemWand> recipeWandMap;
+    private RegistryAdvanced<ItemWand, WandRecipe> wandRecipeMap;
 
     public WandRegistry() {
         recipeWandMap = new RegistryAdvanced<>();
@@ -24,23 +25,23 @@ public class WandRegistry {
     }
 
     public void onRegister(RegistryUtils<Item> utils) {
-        for (ItemWand wand:
-             wandRecipeMap.getKeySet()) {
+        for (ItemWand wand :
+                wandRecipeMap.getKeySet()) {
             utils.register(wand);
         }
     }
 
     public void addWand(@Nonnull ItemStack first, @Nonnull ItemStack second, @Nonnull ItemWand wand) {
-        WandRecipe recipe = new WandRecipe(first,second);
-        recipeWandMap.putObject(recipe,wand);
-        wandRecipeMap.putObject(wand,recipe);
+        WandRecipe recipe = new WandRecipe(first, second);
+        recipeWandMap.putObject(recipe, wand);
+        wandRecipeMap.putObject(wand, recipe);
     }
 
     public boolean hasWand(@Nonnull ItemStack first, @Nonnull ItemStack second) {
         if (first.isEmpty() || second.isEmpty()) {
             return false;
         } else {
-            WandRecipe recipe = new WandRecipe(first,second);
+            WandRecipe recipe = new WandRecipe(first, second);
             return recipeWandMap.containsKey(recipe);
         }
     }
@@ -49,24 +50,26 @@ public class WandRegistry {
         return wandRecipeMap.containsKey(wand);
     }
 
-    public @Nullable ItemWand getWand(@Nonnull ItemStack first, @Nonnull ItemStack second) {
+    public @Nullable
+    ItemWand getWand(@Nonnull ItemStack first, @Nonnull ItemStack second) {
         if (first.isEmpty() || second.isEmpty()) {
             return null;
         } else {
-            WandRecipe recipe = new WandRecipe(first,second);
+            WandRecipe recipe = new WandRecipe(first, second);
             return recipeWandMap.getObject(recipe);
         }
     }
 
-    public @Nullable WandRecipe getRecipe(@Nonnull ItemWand wand) {
+    public @Nullable
+    WandRecipe getRecipe(@Nonnull ItemWand wand) {
         return wandRecipeMap.getObject(wand);
     }
 
-    public Set<Map.Entry<WandRecipe,ItemWand>> getRecipeWandEntries() {
+    public Set<Map.Entry<WandRecipe, ItemWand>> getRecipeWandEntries() {
         return recipeWandMap.getEntrySet();
     }
 
-    public Set<Map.Entry<ItemWand,WandRecipe>> getWandRecipeEntries() {
+    public Set<Map.Entry<ItemWand, WandRecipe>> getWandRecipeEntries() {
         return wandRecipeMap.getEntrySet();
     }
 
@@ -129,6 +132,7 @@ public class WandRegistry {
         public ItemStack getCore() {
             return core;
         }
+
         /**
          * Indicates whether some other object is "equal to" this one.
          * <p>
@@ -179,7 +183,7 @@ public class WandRegistry {
         public boolean equals(Object obj) {
             if (obj instanceof WandRecipe) {
                 WandRecipe recipe = (WandRecipe) obj;
-                return areItemStacksEqual(recipe.getCore(),this.getCore()) && areItemStacksEqual(recipe.getHead(),this.getHead());
+                return areItemStacksEqual(recipe.getCore(), this.getCore()) && areItemStacksEqual(recipe.getHead(), this.getHead());
             } else {
                 return false;
             }

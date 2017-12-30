@@ -23,7 +23,7 @@ public class SpellcraftCapabilities {
     public static void registerCapabilities() {
         SpellPowerProviderCapability spellPowerProviderCapability = new SpellPowerProviderCapability();
         WandPropertiesCapability wandPropertiesCapability = new WandPropertiesCapability();
-        CapabilityManager.INSTANCE.register(ISpellPowerProvider.class,spellPowerProviderCapability,spellPowerProviderCapability);
-        CapabilityManager.INSTANCE.register(IWandProperties.class,wandPropertiesCapability,wandPropertiesCapability);
+        CapabilityManager.INSTANCE.register(ISpellPowerProvider.class, spellPowerProviderCapability, spellPowerProviderCapability);
+        CapabilityManager.INSTANCE.register(IWandProperties.class, wandPropertiesCapability, wandPropertiesCapability);
     }
 }

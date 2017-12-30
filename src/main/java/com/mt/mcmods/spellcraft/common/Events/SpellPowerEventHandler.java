@@ -1,33 +1,25 @@
 package com.mt.mcmods.spellcraft.common.Events;
 
 import com.google.common.collect.Lists;
-import com.mt.mcmods.spellcraft.Client.net.Messages.RequestSyncEntitySpellpower;
 import com.mt.mcmods.spellcraft.Server.net.Messages.SyncEntitySpellpower;
 import com.mt.mcmods.spellcraft.SpellcraftMod;
 import com.mt.mcmods.spellcraft.common.Capabilities.SpellcraftCapabilities;
 import com.mt.mcmods.spellcraft.common.Capabilities.spellpower.EntitySpellPowerProvider;
 import com.mt.mcmods.spellcraft.common.Capabilities.spellpower.ISpellPowerProvider;
 import com.mt.mcmods.spellcraft.common.Capabilities.spellpower.SpellPowerProviderCapability;
-import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
-import com.mt.mcmods.spellcraft.common.util.NetworkUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -36,7 +28,7 @@ import java.util.ArrayList;
 import static com.mt.mcmods.spellcraft.common.interfaces.ILoggable.Log;
 
 public class SpellPowerEventHandler {
-    private static ArrayList<Tuple<Entity,ISpellPowerProvider>> serverProviders = Lists.newArrayList();
+    private static ArrayList<Tuple<Entity, ISpellPowerProvider>> serverProviders = Lists.newArrayList();
     //private static ArrayList<Tuple<Entity,ISpellPowerProvider>> clientProviders = Lists.newArrayList();
     private static final int MAX_POWER = 1000; //TODO add to config
     private static final float RECEIVE_POWER = 0.001f; //TODO add to config
@@ -44,9 +36,9 @@ public class SpellPowerEventHandler {
     @SubscribeEvent
     public void onAttachEntityCapabilities(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof EntityPlayer) {
-            ISpellPowerProvider provider = new EntitySpellPowerProvider(MAX_POWER,0,event.getObject());
-            event.addCapability(SpellPowerProviderCapability.ID,new SpellPowerProviderCapabilityProvider(provider));
-            if(!event.getObject().world.isRemote) {
+            ISpellPowerProvider provider = new EntitySpellPowerProvider(MAX_POWER, 0, event.getObject());
+            event.addCapability(SpellPowerProviderCapability.ID, new SpellPowerProviderCapabilityProvider(provider));
+            if (!event.getObject().world.isRemote) {
                 serverProviders.add(new Tuple<>(event.getObject(), provider));
             }
         }
@@ -58,7 +50,7 @@ public class SpellPowerEventHandler {
             for (Tuple<Entity, ISpellPowerProvider> tuple :
                     serverProviders) {
                 ISpellPowerProvider provider = tuple.getSecond();
-                provider.receivePower(RECEIVE_POWER*provider.getMaxPower(), false);
+                provider.receivePower(RECEIVE_POWER * provider.getMaxPower(), false);
             }
         }
     }
@@ -67,7 +59,7 @@ public class SpellPowerEventHandler {
     public void onPlayerConnected(PlayerEvent.PlayerLoggedInEvent event) {
         if (!event.player.world.isRemote && event.player instanceof EntityPlayerMP) {
             Log.trace("Sending Spellpower Sync to freshly logged in player");
-            SpellcraftMod.CHANNEL_HOLDER.sendTo(new SyncEntitySpellpower(event.player),(EntityPlayerMP) event.player);
+            SpellcraftMod.CHANNEL_HOLDER.sendTo(new SyncEntitySpellpower(event.player), (EntityPlayerMP) event.player);
         }
     }
 
@@ -116,7 +108,7 @@ public class SpellPowerEventHandler {
         @Override
         @SuppressWarnings("unchecked")
         public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-            return hasCapability(capability,facing) ?(T) entitySpellPowerProvider:null;
+            return hasCapability(capability, facing) ? (T) entitySpellPowerProvider : null;
         }
 
         @Override
@@ -126,7 +118,7 @@ public class SpellPowerEventHandler {
 
         @Override
         public void deserializeNBT(NBTBase nbt) {
-            entitySpellPowerProvider.deserializeNBT((NBTTagCompound)nbt);
+            entitySpellPowerProvider.deserializeNBT((NBTTagCompound) nbt);
         }
     }
 }

@@ -3,22 +3,22 @@ package com.mt.mcmods.spellcraft.common.spell;
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import com.mt.mcmods.spellcraft.common.spell.components.ISpellComponent;
 import com.mt.mcmods.spellcraft.common.spell.components.ISpellComponentCallback;
-import com.mt.mcmods.spellcraft.common.spell.conditions.ISpellConditionCallback;
-import com.mt.mcmods.spellcraft.common.spell.components.AbsSpellComponent;
 import com.mt.mcmods.spellcraft.common.spell.conditions.ISpellCondition;
+import com.mt.mcmods.spellcraft.common.spell.conditions.ISpellConditionCallback;
 import com.mt.mcmods.spellcraft.common.util.NBTHelper;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public final class SpellState implements INBTSerializable<NBTTagCompound>, ILoggable{
+public final class SpellState implements INBTSerializable<NBTTagCompound>, ILoggable {
     private static final String KEY_CONDITIONS = "SpellState_set_conditions";
     private static final String KEY_COMPONENTS = "SpellState_set_components";
     private static final String KEY_STATES = "SpellState_set_next_states";
@@ -34,20 +34,20 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
     }
 
     public SpellState(String name) {
-        if (name==null) throw new NullPointerException("Cannot construct a Spellstate with Null name");
+        if (name == null) throw new NullPointerException("Cannot construct a Spellstate with Null name");
         this.name = name;
         this.commands = new ArrayList<>();
     }
 
-    public SpellState(String name, List<Map<? extends ISpellCondition,Boolean>> conditions, List<List<? extends ISpellComponent>> components, List<String> states) {
+    public SpellState(String name, List<Map<? extends ISpellCondition, Boolean>> conditions, List<List<? extends ISpellComponent>> components, List<String> states) {
         this.name = name;
-        this.commands = new ArrayList<>(Math.min(conditions.size(),Math.min(components.size(),states.size())));
-        for (int i=0; i<conditions.size() && i<components.size() && i<states.size(); ++i) {
-            Map<? extends ISpellCondition,Boolean> condition = conditions.get(i);
+        this.commands = new ArrayList<>(Math.min(conditions.size(), Math.min(components.size(), states.size())));
+        for (int i = 0; i < conditions.size() && i < components.size() && i < states.size(); ++i) {
+            Map<? extends ISpellCondition, Boolean> condition = conditions.get(i);
             List<? extends ISpellComponent> component = components.get(i);
             String state = states.get(i);
-            if (condition!=null && !condition.isEmpty() && component!=null && !component.isEmpty()&& state!=null) {
-                commands.add(new StateList(condition,component,state));
+            if (condition != null && !condition.isEmpty() && component != null && !component.isEmpty() && state != null) {
+                commands.add(new StateList(condition, component, state));
             } else {
                 Log.warn("Skipping bad SpellStateSet! This might result in unexpected behaviour!");
             }
@@ -68,7 +68,8 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
         commands.get(index).execute(componentCallback);
     }
 
-    private  @Nonnull String nextState(int index) {
+    private @Nonnull
+    String nextState(int index) {
         checkCommandIndex(index);
         return commands.get(index).nextState();
     }
@@ -82,19 +83,19 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
     }
 
     private void serializeSets(NBTTagCompound compound) {
-        List<ResourceLocation> conditionList = new ArrayList<>();
-        List<ResourceLocation> componentList = new ArrayList<>();
-        List<String> stateList = new ArrayList<>(commands.size()+1);
-        for (StateList set:
+        List<List<ResourceLocation>> conditionList = new ArrayList<>();
+        List<List<ResourceLocation>> componentList = new ArrayList<>();
+        List<String> stateList = new ArrayList<>(commands.size() + 1);
+        for (StateList set :
                 commands) {
-            conditionList.addAll(set.getConditionResources());
-            componentList.addAll(set.getComponentResources());
+            conditionList.add(set.getConditionResources());
+            componentList.add(set.getComponentResources());
             stateList.add(set.nextState);
         }
         compound.setTag(KEY_CONDITIONS, NBTHelper.resourcesToNbtList(conditionList));
-        compound.setTag(KEY_COMPONENTS,NBTHelper.resourcesToNbtList(componentList));
-        compound.setTag(KEY_STATES,NBTHelper.stringToNbtList(stateList));
-        compound.setString(KEY_NAME,name);
+        compound.setTag(KEY_COMPONENTS, NBTHelper.resourcesToNbtList(componentList));
+        compound.setTag(KEY_STATES, NBTHelper.stringToNbtList(stateList));
+        compound.setString(KEY_NAME, name);
         componentList.clear();
         conditionList.clear();
         stateList.clear();
@@ -105,20 +106,21 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
 
     }
 
-    public static @Nullable SpellState readFromNBT(@Nullable NBTTagCompound compound) {
-        if (compound!=null) {
+    public static @Nullable
+    SpellState readFromNBT(@Nullable NBTTagCompound compound) {
+        if (compound != null) {
 
         }
         return null;
     }
 
     private void checkCommandIndex(int index) {
-        if (index>=commands.size() || index<0)
-            throw new IndexOutOfBoundsException("Attempted to access SpellState commands with Illegal Index of "+index+" (size is "+commands.size()+")!");
+        if (index >= commands.size() || index < 0)
+            throw new IndexOutOfBoundsException("Attempted to access SpellState commands with Illegal Index of " + index + " (size is " + commands.size() + ")!");
     }
 
     private static final class StateList {
-        private final Map<ISpellCondition,Boolean> conditions;
+        private final Map<ISpellCondition, Boolean> conditions;
         private final List<ISpellComponent> components;
         private final String nextState;
 
@@ -136,9 +138,9 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
         }
 
         private boolean holdConditionsTrue(ISpellConditionCallback callback) {
-            for (Map.Entry<ISpellCondition,Boolean> entry:
-                 conditions.entrySet()) {
-                if (entry.getKey().holdsTrue(callback)!=entry.getValue()) {
+            for (Map.Entry<ISpellCondition, Boolean> entry :
+                    conditions.entrySet()) {
+                if (entry.getKey().holdsTrue(callback) != entry.getValue()) {
                     return false;
                 }
             }
@@ -146,7 +148,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
         }
 
         private void execute(ISpellComponentCallback callback) {
-            for (ISpellComponent component:
+            for (ISpellComponent component :
                     components) {
                 if (!component.execute(callback)) {
                     Log.trace("Component exited. Execution failed!");
@@ -161,9 +163,9 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
 
         private ArrayList<ResourceLocation> getConditionResources() {
             ArrayList<ResourceLocation> locations = new ArrayList<>(conditions.size());
-            for (ISpellCondition condition:
-                 conditions.keySet()) {
-                if (condition.getRegistryName()!=null) {
+            for (ISpellCondition condition :
+                    conditions.keySet()) {
+                if (condition.getRegistryName() != null) {
                     locations.add(condition.getRegistryName());
                 } else {
                     Log.error("SpellState noticed unregistered Condition! This is illegal!");
@@ -174,9 +176,9 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
 
         private ArrayList<ResourceLocation> getComponentResources() {
             ArrayList<ResourceLocation> locations = new ArrayList<>(components.size());
-            for (ISpellComponent component:
+            for (ISpellComponent component :
                     components) {
-                if (component.getRegistryName()!=null) {
+                if (component.getRegistryName() != null) {
                     locations.add(component.getRegistryName());
                 } else {
                     Log.error("SpellState noticed unregistered Component! This is illegal!");

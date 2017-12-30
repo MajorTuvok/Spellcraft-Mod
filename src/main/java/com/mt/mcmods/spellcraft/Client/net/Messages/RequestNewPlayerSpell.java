@@ -10,7 +10,7 @@ public class RequestNewPlayerSpell implements IMessage {
     private float maxPower;
 
     public RequestNewPlayerSpell() {
-        this(-1,100,Float.MAX_VALUE);
+        this(-1, 100, Float.MAX_VALUE);
     }
 
     public RequestNewPlayerSpell(int slot, float efficiency, float maxPower) {

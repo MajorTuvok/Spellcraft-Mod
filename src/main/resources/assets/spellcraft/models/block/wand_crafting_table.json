@@ -1,6 +1,5 @@
-
 {
-  "parent":"block/cube",
+  "parent": "block/cube",
   "textures": {
     "particle": "spellcraft:blocks/wand_crafting_table_top",
     "down": "spellcraft:blocks/wand_crafting_table_side",

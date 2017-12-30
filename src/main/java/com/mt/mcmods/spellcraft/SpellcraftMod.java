@@ -1,7 +1,7 @@
 package com.mt.mcmods.spellcraft;
 
-import com.mt.mcmods.spellcraft.common.util.ChannelHolder;
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
+import com.mt.mcmods.spellcraft.common.util.ChannelHolder;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;

@@ -1,16 +1,8 @@
 package com.mt.mcmods.spellcraft.Server.spell.entity;
 
-import com.mt.mcmods.spellcraft.Server.spell.SpellRegistry;
 import com.mt.mcmods.spellcraft.Server.spell.SpellType;
 import com.mt.mcmods.spellcraft.common.util.NBTHelper;
-import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
-
-import static com.mt.mcmods.spellcraft.Server.spell.entity.EntitySpell.KEY_ENTITY;
-import static com.mt.mcmods.spellcraft.Server.spell.entity.EntitySpell.KEY_WORLD;
 
 public class PlayerSpellType implements SpellType {
     @Override
@@ -31,7 +23,7 @@ public class PlayerSpellType implements SpellType {
 
     @Override
     public void apply(NBTTagCompound compound) {
-        compound.setBoolean("PLAYER_SPELL_TYPE",true);
+        compound.setBoolean("PLAYER_SPELL_TYPE", true);
     }
 
     public boolean isPlayerOnServer(NBTTagCompound compound) {

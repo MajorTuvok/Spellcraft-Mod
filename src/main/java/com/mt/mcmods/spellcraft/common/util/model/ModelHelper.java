@@ -1,7 +1,6 @@
 package com.mt.mcmods.spellcraft.common.util.model;
 
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
-import jline.internal.Log;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -15,13 +14,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Triple;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ModelHelper implements ILoggable{
+public class ModelHelper implements ILoggable {
     @SideOnly(Side.CLIENT)
-    public static Triple<TextureAtlasSprite,AnimationMetadataSection,Integer> getSpriteInformation(ItemStack stack) {
+    public static Triple<TextureAtlasSprite, AnimationMetadataSection, Integer> getSpriteInformation(ItemStack stack) {
 
         TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
         AnimationMetadataSection animation = null;
@@ -38,7 +36,7 @@ public class ModelHelper implements ILoggable{
                 for (EnumFacing facing : EnumFacing.VALUES)
                     list.addAll(mesher.getItemModel(stack).getQuads(null, facing, 0));
             } catch (NullPointerException e) {
-                Log.error("Someone doesn't obey the @Nullable Annotation! He should be grateful that I catched this exception!",e);
+                Log.error("Someone doesn't obey the @Nullable Annotation! He should be grateful that I catched this exception!", e);
             }
 
             for (BakedQuad quad : list) {
@@ -46,21 +44,20 @@ public class ModelHelper implements ILoggable{
 
                 TextureAtlasSprite sprite1 = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(loc1.toString());
                 AnimationMetadataSection animation1 = (AnimationMetadataSection) (sprite.getFrameCount() > 1 ? ReflectionHelper.getPrivateValue(TextureAtlasSprite.class, sprite, 3) : null); //animationMetadata
-                int color1 = quad.hasTintIndex() ? Minecraft.getMinecraft().getItemColors().colorMultiplier(stack,quad.getTintIndex()) : -1;
+                int color1 = quad.hasTintIndex() ? Minecraft.getMinecraft().getItemColors().colorMultiplier(stack, quad.getTintIndex()) : -1;
                 if (!sprite1.equals(sprite)) {
                     sprite = sprite1;
                 }
-                if (animation1!=null && (animation==null || !animation1.equals(animation))) {
+                if (animation1 != null && (animation == null || !animation1.equals(animation))) {
                     animation = animation1;
                 }
-                if (color1>=0) {
+                if (color1 >= 0) {
                     color = color1;
                 }
             }
+        } catch (Exception e) {
+            Log.error("Failed to getSpriteInformation!", e);
         }
-        catch (Exception e) {
-            Log.error("Failed to getSpriteInformation!",e);
-        }
-        return Triple.of(sprite,animation,color);
+        return Triple.of(sprite, animation, color);
     }
 }

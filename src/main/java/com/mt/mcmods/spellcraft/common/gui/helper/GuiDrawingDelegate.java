@@ -310,11 +310,12 @@ public class GuiDrawingDelegate implements ILoggable, IGuiRenderProvider {
     /**
      * Draws a string scaled with the given Scale Factor.
      * Coordinates are relative to the bottom right end of the String.
-     * @param text The String to draw
-     * @param x The x-Coordinate
-     * @param y The y-Coordinate
-     * @param color The color to draw with
-     * @param scale The scale to scale the String by
+     *
+     * @param text           The String to draw
+     * @param x              The x-Coordinate
+     * @param y              The y-Coordinate
+     * @param color          The color to draw with
+     * @param scale          The scale to scale the String by
      * @param resScaleFactor The ScaleFactor of the current Resolution
      */
     public void drawScaledString(String text, float x, float y, int color, float scale, float resScaleFactor) {

@@ -1,7 +1,7 @@
 package com.mt.mcmods.spellcraft.common;
 
-import com.mt.mcmods.spellcraft.common.items.smeltable.SmeltingConstants;
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
+import com.mt.mcmods.spellcraft.common.items.smeltable.SmeltingConstants;
 
 public class RecipeManager implements ILoggable, SmeltingConstants {
 

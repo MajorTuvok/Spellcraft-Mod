@@ -13,7 +13,8 @@ import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 
 public class WandPropertiesCapability implements Capability.IStorage<IWandProperties>, Callable<IWandProperties> {
-    public static final ResourceLocation ID = new ResourceLocation(StringHelper.createResourceLocation(ILoggable.MODID,"Capabilities","WandPropertiesCapability"));
+    public static final ResourceLocation ID = new ResourceLocation(StringHelper.createResourceLocation(ILoggable.MODID, "Capabilities", "WandPropertiesCapability"));
+
     /**
      * Computes a result, or throws an exception if unable to do so.
      *
@@ -70,7 +71,7 @@ public class WandPropertiesCapability implements Capability.IStorage<IWandProper
      */
     @Override
     public void readNBT(Capability<IWandProperties> capability, IWandProperties instance, EnumFacing side, NBTBase nbt) {
-        if (nbt!=null && nbt instanceof NBTTagCompound)
+        if (nbt != null && nbt instanceof NBTTagCompound)
             instance.deserializeNBT((NBTTagCompound) nbt);
         else
             ILoggable.Log.error("Cannot read IWandProperties NBT-Data from non NBTTagCompound!");

@@ -50,7 +50,7 @@ public class BaseContainer<T extends IForgeRegistryEntry<T>> implements ILoggabl
         getUtils().clientInit();
     }
 
-    protected void register (T thing) {
+    protected void register(T thing) {
         getUtils().register(thing);
     }
 

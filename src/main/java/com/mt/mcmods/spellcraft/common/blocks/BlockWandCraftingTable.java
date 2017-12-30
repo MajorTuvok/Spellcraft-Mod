@@ -16,12 +16,13 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 
 public class BlockWandCraftingTable extends BaseTileEntityBlock<TileEntityWandCraftingTable> {
-    private static final String NAME = StringHelper.createUnlocalizedName("wand","crafting","table");
+    private static final String NAME = StringHelper.createUnlocalizedName("wand", "crafting", "table");
+
     public BlockWandCraftingTable() {
         super(Material.WOOD, NAME);
         setHardness(2.5f);
         setResistance(2.5f);
-        setHarvestLevel("axe",0);
+        setHarvestLevel("axe", 0);
     }
 
     @Override
@@ -50,7 +51,7 @@ public class BlockWandCraftingTable extends BaseTileEntityBlock<TileEntityWandCr
      */
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        playerIn.openGui(SpellcraftMod.instance, GuiID.GUIWandCraftingTable.ordinal(),worldIn,pos.getX(),pos.getY(),pos.getZ());
+        playerIn.openGui(SpellcraftMod.instance, GuiID.GUIWandCraftingTable.ordinal(), worldIn, pos.getX(), pos.getY(), pos.getZ());
         return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
     }
 }

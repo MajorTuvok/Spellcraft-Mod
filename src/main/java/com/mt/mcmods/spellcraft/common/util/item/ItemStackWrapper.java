@@ -4,11 +4,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 
-import static com.mt.mcmods.spellcraft.common.util.item.ItemHelper.*;
-
 import java.util.HashMap;
 
-public class ItemStackWrapper implements Cloneable,INBTSerializable<NBTTagCompound>{
+import static com.mt.mcmods.spellcraft.common.util.item.ItemHelper.areItemStacksEqual;
+import static com.mt.mcmods.spellcraft.common.util.item.ItemHelper.getStackHash;
+
+public class ItemStackWrapper implements Cloneable, INBTSerializable<NBTTagCompound> {
     private ItemStack stack;
 
     public ItemStackWrapper(ItemStack stack) {
@@ -112,7 +113,7 @@ public class ItemStackWrapper implements Cloneable,INBTSerializable<NBTTagCompou
     @Override
     public boolean equals(Object obj) {
         return obj instanceof ItemStackWrapper ?
-                areItemStacksEqual(stack,((ItemStackWrapper) obj).get()):
+                areItemStacksEqual(stack, ((ItemStackWrapper) obj).get()) :
                 obj instanceof ItemStack && areItemStacksEqual(get(), (ItemStack) obj);
     }
 

@@ -8,15 +8,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.List;
 
-public interface ICompatStackHandler  extends IItemHandler, IItemHandlerModifiable, INBTSerializable<NBTTagCompound>, IInventory {
+public interface ICompatStackHandler extends IItemHandler, IItemHandlerModifiable, INBTSerializable<NBTTagCompound>, IInventory {
 
     public void setDirtyMarkListener(IMarkDirtyCallback dirtyMarkListener);
 
-    public void setPlayerRestrictionProvider(PlayerRestrictionProvider playerRestrictionProvider) ;
+    public void setPlayerRestrictionProvider(PlayerRestrictionProvider playerRestrictionProvider);
 
     public void setPlayerInteractionListener(PlayerInteractionListener playerInteractionListener);
 

@@ -10,7 +10,6 @@ import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -42,25 +41,26 @@ public class WandProperties implements IWandProperties {
     }
 
     public WandProperties(IWandPropertyDefinition definition) {
-        this(-1,-1,definition);
+        this(-1, -1, definition);
     }
 
     public WandProperties(float maxPower, float efficiency, IWandPropertyDefinition definition) {
-        this(maxPower,efficiency,definition,true);
+        this(maxPower, efficiency, definition, true);
     }
 
     /**
      * Creates a new Object...
-     * @param maxPower The maxPower to use
+     *
+     * @param maxPower   The maxPower to use
      * @param efficiency The efficiency to use
      * @param definition A WandPropertyDefinition or null to Use Default values. Using null will result in an warning,
      *                   because it is probably not what you want
-     * @param create Whether or not to create unbounded maxPower/efficiency values.
-     *               Setting this to false will result in values being clamped to the given (or default) definition.
+     * @param create     Whether or not to create unbounded maxPower/efficiency values.
+     *                   Setting this to false will result in values being clamped to the given (or default) definition.
      */
     public WandProperties(float maxPower, float efficiency, IWandPropertyDefinition definition, boolean create) {
         this.definition = definition;
-        if (this.definition==null) {
+        if (this.definition == null) {
             this.definition = new WandPropertyDefinition();
         }
         this.maxPower = maxPower;
@@ -69,15 +69,15 @@ public class WandProperties implements IWandProperties {
         this.activeSpells = new ArrayList<>();
         if (create) {
             create();
-        }
-        else {
+        } else {
             setMaxPower(maxPower);
             setEfficiency(efficiency);
         }
     }
 
     @Override
-    public @Nonnull IWandPropertyDefinition getDefinition() {
+    public @Nonnull
+    IWandPropertyDefinition getDefinition() {
         return definition;
     }
 
@@ -93,7 +93,7 @@ public class WandProperties implements IWandProperties {
 
     @Override
     public boolean hasMaxPower() {
-        return maxPower >=definition.getMinMaxPower() && maxPower<=definition.getMaxMaxPower();
+        return maxPower >= definition.getMinMaxPower() && maxPower <= definition.getMaxMaxPower();
     }
 
     @Override
@@ -108,13 +108,13 @@ public class WandProperties implements IWandProperties {
 
     @Override
     public WandProperties setMaxPower(float maxPower) {
-        this.maxPower = MathHelper.clamp(maxPower,definition.getMinMaxPower(),definition.getMaxMaxPower());
+        this.maxPower = MathHelper.clamp(maxPower, definition.getMinMaxPower(), definition.getMaxMaxPower());
         return this;
     }
 
     @Override
     public WandProperties setEfficiency(float efficiency) {
-        this.efficiency = MathHelper.clamp(efficiency,definition.getMinEfficiency(),definition.getMaxEfficiency());
+        this.efficiency = MathHelper.clamp(efficiency, definition.getMinEfficiency(), definition.getMaxEfficiency());
         return this;
     }
 
@@ -140,11 +140,11 @@ public class WandProperties implements IWandProperties {
         compound.setFloat(KEY_EFFICIENCY, efficiency);
         compound.setFloat(KEY_MAX_POWER, maxPower);
         NBTTagList list = new NBTTagList();
-        for (Integer i:
-             activeSpells) {
+        for (Integer i :
+                activeSpells) {
             list.appendTag(new NBTTagInt(i));
         }
-        compound.setTag(KEY_ACTIVE_SPELLS,list);
+        compound.setTag(KEY_ACTIVE_SPELLS, list);
         return compound;
     }
 
@@ -168,7 +168,7 @@ public class WandProperties implements IWandProperties {
 
     @Override
     public void getOrCreate(ItemStack stack) {
-        getOrCreate(stack,false);
+        getOrCreate(stack, false);
     }
 
     @Override
@@ -177,12 +177,12 @@ public class WandProperties implements IWandProperties {
         if (compound.hasKey(KEY_WAND)) {
             deserializeNBT(compound.getCompoundTag(KEY_WAND));
         }
-        applyOrCreate(stack,force);
+        applyOrCreate(stack, force);
     }
 
     @Override
     public void applyOrCreate(ItemStack stack) {
-        applyOrCreate(stack,false);
+        applyOrCreate(stack, false);
     }
 
     @Override

@@ -4,7 +4,6 @@ package com.mt.mcmods.spellcraft;
 import com.mt.mcmods.spellcraft.Client.model.ModelDynWand;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class ClientProxy extends CommonProxy {
@@ -35,7 +34,7 @@ public class ClientProxy extends CommonProxy {
     private void mapTextures() {
         //create inventory icons
         int numIcons = ModelDynWand.BakedDynWandOverrideHandler.createInventoryIcons();
-        Log.info("Created "+numIcons+" inventory icons for Wands!");
+        Log.info("Created " + numIcons + " inventory icons for Wands!");
     }
 
 

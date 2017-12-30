@@ -1,6 +1,5 @@
 package com.mt.mcmods.spellcraft.Server.spell;
 
-import com.mt.mcmods.spellcraft.Server.spell.entity.PlayerSpell;
 import com.mt.mcmods.spellcraft.Server.spell.entity.PlayerSpellType;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -18,9 +17,10 @@ public class SpellTypes {
         types.add(type);
     }
 
-    public static @Nullable Spell instantiate(NBTTagCompound compound) {
-        for (SpellType type:
-             types) {
+    public static @Nullable
+    Spell instantiate(NBTTagCompound compound) {
+        for (SpellType type :
+                types) {
             if (type.matches(compound)) {
                 return type.instantiate(compound);
             }
@@ -28,8 +28,9 @@ public class SpellTypes {
         return null;
     }
 
-    public static @Nullable SpellType getType(NBTTagCompound compound) {
-        for (SpellType type:
+    public static @Nullable
+    SpellType getType(NBTTagCompound compound) {
+        for (SpellType type :
                 types) {
             if (type.matches(compound)) {
                 return type;
@@ -41,6 +42,7 @@ public class SpellTypes {
     public static List<SpellType> getAll() {
         return Collections.unmodifiableList(types);
     }
+
     static {
         addType(PLAYER_SPELL_TYPE);
     }

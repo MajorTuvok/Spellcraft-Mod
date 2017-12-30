@@ -14,8 +14,6 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 
 import javax.annotation.Nullable;
 
-import static com.mt.mcmods.spellcraft.common.gui.helper.GuiID.*;
-
 public class SpellcraftGuiHandler implements IGuiHandler {
 
     /**
@@ -33,12 +31,12 @@ public class SpellcraftGuiHandler implements IGuiHandler {
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         GuiID id = GuiID.getFromId(ID);
-        if (id!=null) {
+        if (id != null) {
             switch (id) {
                 case GUIWandCraftingTable: {
-                    TileEntity entity = world.getTileEntity(new BlockPos(x,y,z));
-                    if (entity!=null && entity instanceof TileEntityWandCraftingTable) {
-                        player.openContainer =  new GuiContainerWandCraftingTable(player.inventory,(TileEntityWandCraftingTable) entity,null);
+                    TileEntity entity = world.getTileEntity(new BlockPos(x, y, z));
+                    if (entity != null && entity instanceof TileEntityWandCraftingTable) {
+                        player.openContainer = new GuiContainerWandCraftingTable(player.inventory, (TileEntityWandCraftingTable) entity, null);
                         return player.openContainer;
                     }
                     break;
@@ -65,17 +63,17 @@ public class SpellcraftGuiHandler implements IGuiHandler {
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         GuiID id = GuiID.getFromId(ID);
-        if (id!=null) {
+        if (id != null) {
             switch (id) {
                 case GUIWandCraftingTable: {
-                    TileEntity entity = world.getTileEntity(new BlockPos(x,y,z));
-                    if (entity!=null && entity instanceof TileEntityWandCraftingTable) {
-                        GuiContainerWandCraftingTable container = player.openContainer!=null && player.openContainer instanceof GuiContainerWandCraftingTable ? (GuiContainerWandCraftingTable) player.openContainer:new GuiContainerWandCraftingTable(player.inventory,(TileEntityWandCraftingTable) entity,null);
+                    TileEntity entity = world.getTileEntity(new BlockPos(x, y, z));
+                    if (entity != null && entity instanceof TileEntityWandCraftingTable) {
+                        GuiContainerWandCraftingTable container = player.openContainer != null && player.openContainer instanceof GuiContainerWandCraftingTable ? (GuiContainerWandCraftingTable) player.openContainer : new GuiContainerWandCraftingTable(player.inventory, (TileEntityWandCraftingTable) entity, null);
                         player.openContainer = container;
                         if (NetworkUtils.isServer(world))
                             return container;
                         else
-                            return new GuiWandCraftingTable(player.inventory,container);
+                            return new GuiWandCraftingTable(player.inventory, container);
                     }
                     break;
                 }

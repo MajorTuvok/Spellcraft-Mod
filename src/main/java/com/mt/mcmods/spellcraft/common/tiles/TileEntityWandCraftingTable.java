@@ -5,35 +5,35 @@ import com.mt.mcmods.spellcraft.common.items.wand.ItemWand;
 import com.mt.mcmods.spellcraft.common.items.wand.WandRegistry;
 import com.mt.mcmods.spellcraft.common.util.item.ItemHelper;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nonnull;
 
-public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory{
+public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
     private static final int INVENTORY_STACK_TIP = 0;
     private static final int INVENTORY_STACK_CORE = 1;
     private static final int INVENTORY_STACK_CRYSTAL = 2;
     private static final int INVENTORY_STACK_WOOD = 3;
     private static final int INVENTORY_STACK_WAND = 4;
     private static final int INVENTORY_SLOTS = 5;
+
     public TileEntityWandCraftingTable() {
         super(INVENTORY_SLOTS);
     }
 
     public boolean hasCraftableWand() {
-        return WandRegistry.INSTANCE.hasWand(getTipCraftingStack(),getCoreCraftingStack()) && hasCompatibleWood();
+        return WandRegistry.INSTANCE.hasWand(getTipCraftingStack(), getCoreCraftingStack()) && hasCompatibleWood();
     }
 
     public void showCraftableWand() { //TODO remove Bug: cannot find Wand if stacks have different sizes than the recipe
         if (hasCraftableWand()) {
-            ItemWand itemWand = WandRegistry.INSTANCE.getWand(getTipCraftingStack(),getCoreCraftingStack());
-            if (itemWand!=null && !ItemHelper.areItemsAssignable(getWandCraftingStack(),itemWand)) {
+            ItemWand itemWand = WandRegistry.INSTANCE.getWand(getTipCraftingStack(), getCoreCraftingStack());
+            if (itemWand != null && !ItemHelper.areItemsAssignable(getWandCraftingStack(), itemWand)) {
                 ItemStack stack = new ItemStack(itemWand);
                 setWandCraftingStack(stack);
-            } else if (itemWand==null){
+            } else if (itemWand == null) {
                 setWandCraftingStack(ItemStack.EMPTY);
             }
         } else {
@@ -43,9 +43,9 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory{
 
     public void craftWand() {
         if (hasCraftableWand()) {
-            setTipCraftingStack(ItemHelper.decreaseStackSize(getTipCraftingStack(),1));
-            setCoreCraftingStack(ItemHelper.decreaseStackSize(getCoreCraftingStack(),1));
-            setWoodCraftingStack(ItemHelper.decreaseStackSize(getWoodCraftingStack(),1));
+            setTipCraftingStack(ItemHelper.decreaseStackSize(getTipCraftingStack(), 1));
+            setCoreCraftingStack(ItemHelper.decreaseStackSize(getCoreCraftingStack(), 1));
+            setWoodCraftingStack(ItemHelper.decreaseStackSize(getWoodCraftingStack(), 1));
         }
     }
 
@@ -70,27 +70,27 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory{
     }
 
     public void setTipCraftingStack(ItemStack stack) {
-        getInventory().setStackInSlot(INVENTORY_STACK_TIP,stack,false);
+        getInventory().setStackInSlot(INVENTORY_STACK_TIP, stack, false);
     }
 
     public void setCoreCraftingStack(ItemStack stack) {
-        getInventory().setStackInSlot(INVENTORY_STACK_CORE,stack,false);
+        getInventory().setStackInSlot(INVENTORY_STACK_CORE, stack, false);
     }
 
     public void setCrystalCraftingStack(ItemStack stack) {
-        getInventory().setStackInSlot(INVENTORY_STACK_CRYSTAL,stack,false);
+        getInventory().setStackInSlot(INVENTORY_STACK_CRYSTAL, stack, false);
     }
 
     public void setWoodCraftingStack(ItemStack stack) {
-        getInventory().setStackInSlot(INVENTORY_STACK_WOOD,stack,false);
+        getInventory().setStackInSlot(INVENTORY_STACK_WOOD, stack, false);
     }
 
     public void setWandCraftingStack(ItemStack stack) {
-        getInventory().setStackInSlot(INVENTORY_STACK_WAND,stack,false);
+        getInventory().setStackInSlot(INVENTORY_STACK_WAND, stack, false);
     }
 
     private boolean hasCompatibleWood() {
-        return  !ItemHelper.isEmptyOrNull(getWoodCraftingStack())
+        return !ItemHelper.isEmptyOrNull(getWoodCraftingStack())
                 && getWoodCraftingStack().getItem() instanceof ItemBlock
                 && ((ItemBlock) getWoodCraftingStack().getItem()).getBlock() == Blocks.LOG;
     }
@@ -121,7 +121,7 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory{
         @Nonnull
         @Override
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            return insertItem(slot,stack,simulate,true);
+            return insertItem(slot, stack, simulate, true);
         }
 
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate, boolean showWand) {
@@ -134,7 +134,7 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory{
         @Nonnull
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return extractItem(slot,amount,simulate,true);
+            return extractItem(slot, amount, simulate, true);
         }
 
         public ItemStack extractItem(int slot, int amount, boolean simulate, boolean showWand) {
@@ -150,7 +150,7 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory{
 
         @Override
         public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
-            setStackInSlot(slot,stack,true);
+            setStackInSlot(slot, stack, true);
         }
 
         public void setStackInSlot(int slot, @Nonnull ItemStack stack, boolean showWand) {
@@ -173,13 +173,13 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory{
         @Nonnull
         @Override
         public ItemStack decrStackSize(int index, int count) {
-            return decrStackSize(index, count,true);
+            return decrStackSize(index, count, true);
         }
 
         public ItemStack decrStackSize(int index, int count, boolean showWand) {
-            if (showWand && index<INVENTORY_STACK_WAND && !getStackInSlot(index).isEmpty() && getStackInSlot(index).getCount()>count)
+            if (showWand && index < INVENTORY_STACK_WAND && !getStackInSlot(index).isEmpty() && getStackInSlot(index).getCount() > count)
                 showCraftableWand();
-            else if (index==INVENTORY_STACK_WAND
+            else if (index == INVENTORY_STACK_WAND
                     && !getStackInSlot(index).isEmpty())
                 craftWand();
             return super.decrStackSize(index, count);

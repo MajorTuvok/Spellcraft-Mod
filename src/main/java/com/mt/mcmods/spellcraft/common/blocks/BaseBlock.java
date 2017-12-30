@@ -1,7 +1,6 @@
 package com.mt.mcmods.spellcraft.common.blocks;
 
 
-
 import com.mt.mcmods.spellcraft.Client.Particles.ParticleHandler;
 import com.mt.mcmods.spellcraft.Client.net.Messages.ParticleActivated;
 import com.mt.mcmods.spellcraft.Server.net.Messages.ShowParticle;
@@ -14,7 +13,6 @@ import com.mt.mcmods.spellcraft.common.interfaces.IRenderable;
 import com.mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.item.Item;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;

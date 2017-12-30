@@ -1,10 +1,7 @@
 package com.mt.mcmods.spellcraft.common.Capabilities.wandproperties;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -14,13 +11,14 @@ import java.util.List;
 import java.util.Optional;
 
 
-public interface IWandProperties extends INBTSerializable<NBTTagCompound>{
+public interface IWandProperties extends INBTSerializable<NBTTagCompound> {
 
     public float getMaxPower();
 
     public float getEfficiency();
 
-    public @Nonnull IWandPropertyDefinition getDefinition();
+    public @Nonnull
+    IWandPropertyDefinition getDefinition();
 
     public IWandProperties setMaxPower(float maxPower);
 

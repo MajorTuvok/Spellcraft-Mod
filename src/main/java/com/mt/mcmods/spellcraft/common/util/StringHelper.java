@@ -73,10 +73,10 @@ public class StringHelper {
     }
 
     public static String getName(@Nullable Object obj) {
-        return (obj !=null?
+        return (obj != null ?
                 (obj instanceof INamed ?
-                        ((INamed) obj).getName():
-                        (obj instanceof ResourceLocation ? ((ResourceLocation) obj).getResourcePath():obj.toString() ))
-                :"unnamed");
+                        ((INamed) obj).getName() :
+                        (obj instanceof ResourceLocation ? ((ResourceLocation) obj).getResourcePath() : obj.toString()))
+                : "unnamed");
     }
 }

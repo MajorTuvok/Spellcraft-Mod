@@ -14,7 +14,7 @@ public class SyncEntitySpellpower extends RequestSyncEntitySpellpower {
     private float maxPower;
 
     public SyncEntitySpellpower() {
-        this(-1,-1,-1);
+        this(-1, -1, -1);
     }
 
     public SyncEntitySpellpower(int power, int maxPower, int id) {
@@ -25,8 +25,8 @@ public class SyncEntitySpellpower extends RequestSyncEntitySpellpower {
 
     public SyncEntitySpellpower(Entity entity) {
         super(entity);
-        ISpellPowerProvider provider = entity.getCapability(SpellcraftCapabilities.SPELL_POWER_PROVIDER_CAPABILITY,null);
-        if (provider!=null) {
+        ISpellPowerProvider provider = entity.getCapability(SpellcraftCapabilities.SPELL_POWER_PROVIDER_CAPABILITY, null);
+        if (provider != null) {
             this.power = provider.getPower();
             this.maxPower = provider.getMaxPower();
         } else {
@@ -61,9 +61,9 @@ public class SyncEntitySpellpower extends RequestSyncEntitySpellpower {
 
     public void apply(World world) {
         Entity entity = getEntity(world);
-        if (entity!=null && getPower()>=0 && getMaxPower()>=0 ) {
-            ISpellPowerProvider provider = entity.getCapability(SpellcraftCapabilities.SPELL_POWER_PROVIDER_CAPABILITY,null);
-            if (provider!=null) {
+        if (entity != null && getPower() >= 0 && getMaxPower() >= 0) {
+            ISpellPowerProvider provider = entity.getCapability(SpellcraftCapabilities.SPELL_POWER_PROVIDER_CAPABILITY, null);
+            if (provider != null) {
                 provider.setPower(getPower());
                 provider.setMaxPower(maxPower);
             } else {

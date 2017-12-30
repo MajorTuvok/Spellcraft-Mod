@@ -34,21 +34,22 @@ public class CountingSpellCondition extends AbsSpellCondition {
     public boolean holdsTrue(ISpellConditionCallback conditionCallback) {
         boolean res = false;
         if (upwards) {
-            res = count<border;
+            res = count < border;
             ++count;
         } else {
-            res = count>border;
+            res = count > border;
             --count;
         }
         return res;
     }
 
     @Override
-    public @Nonnull NBTTagCompound serializeNBT() {
+    public @Nonnull
+    NBTTagCompound serializeNBT() {
         NBTTagCompound compound = super.serializeNBT();
-        compound.setInteger(KEY_COUNT,count);
-        compound.setInteger(KEY_BORDER,border);
-        compound.setBoolean(KEY_UPWARDS,upwards);
+        compound.setInteger(KEY_COUNT, count);
+        compound.setInteger(KEY_BORDER, border);
+        compound.setBoolean(KEY_UPWARDS, upwards);
         return compound;
     }
 
@@ -65,6 +66,6 @@ public class CountingSpellCondition extends AbsSpellCondition {
     }
 
     private void setUpwards() {
-        this.upwards = this.count<this.border;
+        this.upwards = this.count < this.border;
     }
 }

@@ -1,7 +1,7 @@
 package com.mt.mcmods.spellcraft.common.Events;
 
-import com.mt.mcmods.spellcraft.common.gui.helper.GUIMeasurements;
 import com.mt.mcmods.spellcraft.common.gui.GameOverlayGui;
+import com.mt.mcmods.spellcraft.common.gui.helper.GUIMeasurements;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -48,7 +48,7 @@ public class GameOverlayEventHandler {
     }
 
     public GameOverlayEventHandler() {
-        this(new GUIMeasurements(Minecraft.getMinecraft().displayWidth,Minecraft.getMinecraft().displayHeight,0,0));
+        this(new GUIMeasurements(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, 0, 0));
     }
 
     private GameOverlayEventHandler(GUIMeasurements measurements) {
@@ -63,9 +63,9 @@ public class GameOverlayEventHandler {
         ScaledResolution resolution = event.getResolution();
         checkMeasurements();
         float partialTicks = event.getPartialTicks();
-        for (IRenderPostGameOverlayListener listener: postGameOverlayListeners) {
+        for (IRenderPostGameOverlayListener listener : postGameOverlayListeners) {
             if (listener.isDrawingAs(type)) {
-                listener.drawGameOverlay(type,resolution,measurements,partialTicks);
+                listener.drawGameOverlay(type, resolution, measurements, partialTicks);
             }
         }
     }
@@ -76,15 +76,15 @@ public class GameOverlayEventHandler {
         ScaledResolution resolution = event.getResolution();
         float partialTicks = event.getPartialTicks();
         checkMeasurements();
-        for (IRenderTextGameOverlayListener listener: textGameOverlayListeners) {
-            listener.drawTextOverlay(resolution,measurements,partialTicks);
+        for (IRenderTextGameOverlayListener listener : textGameOverlayListeners) {
+            listener.drawTextOverlay(resolution, measurements, partialTicks);
         }
     }
 
-    private void  checkMeasurements() {
-        if (!measurements.equals(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight,0,0)) {
+    private void checkMeasurements() {
+        if (!measurements.equals(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, 0, 0)) {
             measurements = new GUIMeasurements(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, 0, 0);
-            for (ISizeChangedListener listener: sizeChangedListeners) {
+            for (ISizeChangedListener listener : sizeChangedListeners) {
                 listener.onSizeChanged(measurements);
             }
         }
@@ -93,13 +93,14 @@ public class GameOverlayEventHandler {
     public interface IRenderPostGameOverlayListener {
         @SideOnly(Side.CLIENT)
         public boolean isDrawingAs(RenderGameOverlayEvent.ElementType elementType);
+
         @SideOnly(Side.CLIENT)
         public void drawGameOverlay(RenderGameOverlayEvent.ElementType elementType, ScaledResolution resolution, GUIMeasurements measurements, float partialTicks);
     }
 
     public interface IRenderTextGameOverlayListener {
         @SideOnly(Side.CLIENT)
-        public void drawTextOverlay(ScaledResolution resolution, GUIMeasurements measurements,float partialTicks);
+        public void drawTextOverlay(ScaledResolution resolution, GUIMeasurements measurements, float partialTicks);
     }
 
     public interface ISizeChangedListener {

@@ -5,7 +5,8 @@ import javax.annotation.Nullable;
 public enum GuiID {
     GUIWandCraftingTable;
 
-    public static @Nullable GuiID getFromId(int id) {
+    public static @Nullable
+    GuiID getFromId(int id) {
         if (hasGuiIDForId(id)) {
             return values()[id];
         }
@@ -13,7 +14,7 @@ public enum GuiID {
     }
 
     public static boolean hasGuiIDForId(int id) {
-        return id>=0 && id<values().length;
+        return id >= 0 && id < values().length;
     }
 }
 

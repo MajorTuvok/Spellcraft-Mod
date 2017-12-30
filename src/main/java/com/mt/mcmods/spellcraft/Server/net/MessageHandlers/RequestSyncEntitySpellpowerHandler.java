@@ -12,7 +12,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import static com.mt.mcmods.spellcraft.SpellcraftMod.CHANNEL_HOLDER;
 
-public class RequestSyncEntitySpellpowerHandler implements IMessageHandler<RequestSyncEntitySpellpower,IMessage> {
+public class RequestSyncEntitySpellpowerHandler implements IMessageHandler<RequestSyncEntitySpellpower, IMessage> {
     /**
      * Called when a message is received of the appropriate type. You can optionally return a reply message, or null if no reply
      * is needed.
@@ -27,12 +27,11 @@ public class RequestSyncEntitySpellpowerHandler implements IMessageHandler<Reque
             final EntityPlayerMP player = ctx.getServerHandler().player;
             player.getServerWorld().addScheduledTask(() -> {
                 Entity entity = message.getEntity(player.world);
-                if (entity!=null) {
-                    CHANNEL_HOLDER.sendTo(new SyncEntitySpellpower(entity),player);
+                if (entity != null) {
+                    CHANNEL_HOLDER.sendTo(new SyncEntitySpellpower(entity), player);
                 }
             });
-        }
-        else {
+        } else {
             ILoggable.Log.error("Impossible Message (RequestSyncEntitySpellpower) on Client Side! Did you do the registration wrong again?");
         }
         return null;

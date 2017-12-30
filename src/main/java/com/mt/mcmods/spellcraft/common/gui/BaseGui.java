@@ -1,7 +1,6 @@
 package com.mt.mcmods.spellcraft.common.gui;
 
 import com.mt.mcmods.spellcraft.common.gui.helper.GUIMeasurements;
-import com.mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate;
 import com.mt.mcmods.spellcraft.common.gui.helper.SlotDrawingDelegate;
 import com.mt.mcmods.spellcraft.common.interfaces.IGuiRenderProvider;
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
@@ -56,7 +55,7 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         translateForeground();
-        this.renderHoveredToolTip(mouseX,mouseY);
+        this.renderHoveredToolTip(mouseX, mouseY);
         revertTranslateForeground();
     }
 
@@ -111,11 +110,11 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
     }
 
     protected void translateForeground() {
-        GlStateManager.translate(-guiLeft,-guiTop,0);//drawScreen somehow translates the Forground by guiLeft and GuiTop...
+        GlStateManager.translate(-guiLeft, -guiTop, 0);//drawScreen somehow translates the Forground by guiLeft and GuiTop...
     }
 
     protected void revertTranslateForeground() {
-        GlStateManager.translate(guiLeft,guiTop,0);//drawScreen somehow translates the Forground by guiLeft and GuiTop...
+        GlStateManager.translate(guiLeft, guiTop, 0);//drawScreen somehow translates the Forground by guiLeft and GuiTop...
     }
 
 }

@@ -4,13 +4,14 @@ import com.mt.mcmods.spellcraft.common.gui.BaseGui;
 import com.mt.mcmods.spellcraft.common.tiles.TileEntityWandCraftingTable;
 import net.minecraft.entity.player.InventoryPlayer;
 
-import static com.mt.mcmods.spellcraft.common.gui.helper.GuiResources.*;
+import static com.mt.mcmods.spellcraft.common.gui.helper.GuiResources.GUI_BLANK;
+import static com.mt.mcmods.spellcraft.common.gui.helper.GuiResources.SLOT;
 
 public class GuiWandCraftingTable extends BaseGui {
     private TileEntityWandCraftingTable entityWandCraftingTable;
 
     public GuiWandCraftingTable(InventoryPlayer inventoryPlayer, GuiContainerWandCraftingTable inventorySlotsIn) {
-        this(inventoryPlayer,inventorySlotsIn,inventorySlotsIn.getEntity());
+        this(inventoryPlayer, inventorySlotsIn, inventorySlotsIn.getEntity());
     }
 
     public GuiWandCraftingTable(InventoryPlayer inventoryPlayer, GuiContainerWandCraftingTable inventorySlotsIn, TileEntityWandCraftingTable entity) {

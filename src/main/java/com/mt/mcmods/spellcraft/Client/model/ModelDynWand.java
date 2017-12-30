@@ -41,9 +41,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.mt.mcmods.spellcraft.common.items.wand.WandRegistry.WandRecipe;
+import static com.mt.mcmods.spellcraft.common.util.model.ModelHelper.getSpriteInformation;
 import static java.util.Map.Entry;
 import static net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import static com.mt.mcmods.spellcraft.common.util.model.ModelHelper.*;
 
 @SideOnly(Side.CLIENT)
 public class ModelDynWand implements IModel, ILoggable {
@@ -142,11 +142,11 @@ public class ModelDynWand implements IModel, ILoggable {
                 ItemWand item = entry.getKey();
                 WandRecipe recipe = entry.getValue();
                 ItemStack stack = recipe.getHead();
-                Triple<TextureAtlasSprite,AnimationMetadataSection,Integer> triple = getSpriteInformation(stack);
+                Triple<TextureAtlasSprite, AnimationMetadataSection, Integer> triple = getSpriteInformation(stack);
                 TextureAtlasSprite sprite = triple.getLeft();
 
 
-                if (sprite!=null) {
+                if (sprite != null) {
                     int color = triple.getRight();
                     ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
                     IModelState state = new SimpleModelState(transformMap);
@@ -154,7 +154,7 @@ public class ModelDynWand implements IModel, ILoggable {
                     state = new ModelStateComposition(state, transform);
                     VertexFormat format = DefaultVertexFormats.ITEM;
 
-                    if (color >=0) {
+                    if (color >= 0) {
                         float r = ((color >> 16) & 0xFF) / 255f;
                         float g = ((color >> 8) & 0xFF) / 255f;
                         float b = ((color) & 0xFF) / 255f;
@@ -189,7 +189,8 @@ public class ModelDynWand implements IModel, ILoggable {
          * Called every tick - sets inventory icon (via quads) from map
          */
         @Override
-        public @Nonnull IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) {
+        public @Nonnull
+        IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) {
             ((BakedDynBlockArmor) originalModel).quads = itemQuadsMap.get(stack.getItem());
 
             return originalModel;
@@ -213,7 +214,8 @@ public class ModelDynWand implements IModel, ILoggable {
         }
 
         @Override
-        public @Nonnull ItemOverrideList getOverrides() {
+        public @Nonnull
+        ItemOverrideList getOverrides() {
             return BakedDynWandOverrideHandler.INSTANCE;
         }
 
@@ -224,7 +226,8 @@ public class ModelDynWand implements IModel, ILoggable {
 
 
         @Override
-        public @Nonnull List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
+        public @Nonnull
+        List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
             if (side == null) return quads;
             return ImmutableList.of();
         }

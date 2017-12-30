@@ -8,7 +8,6 @@ import com.mt.mcmods.spellcraft.common.interfaces.IRenderable;
 import com.mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
@@ -65,9 +64,10 @@ public class ItemBase extends Item implements IOreDictNamed, INamed, ILoggable, 
      * @param hitZ
      */
     @Override
-    public @Nonnull EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public @Nonnull
+    EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         EnumActionResult supRes = super.onItemUse(player, worldIn, pos, hand, facing, hitX, hitY, hitZ);
-        return supRes == EnumActionResult.PASS? onLeftClick(player,player.getHeldItemMainhand()) :supRes;
+        return supRes == EnumActionResult.PASS ? onLeftClick(player, player.getHeldItemMainhand()) : supRes;
     }
 
     /**
@@ -82,10 +82,11 @@ public class ItemBase extends Item implements IOreDictNamed, INamed, ILoggable, 
      */
     @Override
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
-        return super.onLeftClickEntity(stack, player, entity) && onLeftClick(player,stack)!=EnumActionResult.FAIL;
+        return super.onLeftClickEntity(stack, player, entity) && onLeftClick(player, stack) != EnumActionResult.FAIL;
     }
 
-    protected @Nonnull EnumActionResult onLeftClick(EntityPlayer player, ItemStack stack) {
+    protected @Nonnull
+    EnumActionResult onLeftClick(EntityPlayer player, ItemStack stack) {
         return EnumActionResult.PASS;
     }
 }

@@ -3,10 +3,6 @@ package com.mt.mcmods.spellcraft.Client.net.Messages;
 import com.mt.mcmods.spellcraft.common.messages.EntityMessage;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-
-import javax.annotation.Nullable;
 
 public class RequestSyncEntitySpellpower extends EntityMessage {
 

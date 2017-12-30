@@ -29,6 +29,7 @@ public class ItemBaseAxe extends ItemAxe implements ILoggable, INamed, IRenderab
     public ResourceLocation getLocation() {
         return null;
     }
+
     @Override
     public boolean registerRenderer() {
         return true;

@@ -13,8 +13,8 @@ public enum GuiResources implements GuiDrawingDelegate.ResourceProvider, GuiDraw
     GUI_BLANK_WPI(StringHelper.createResourceLocation(MODID, "textures", "gui", "gui_blank_with_player_inv.png"), 0, 0, 176, 166),
     GUI_BLANK_BIG(StringHelper.createResourceLocation(MODID, "textures", "gui", "gui_blank_big.png"), 0, 0, 176, 222),
     GUI_BLANK_BIG_WPI(StringHelper.createResourceLocation(MODID, "textures", "gui", "gui_blank_big_with_player_inv.png"), 0, 0, 176, 222),
-    OVERLAY_SPELLPOWER_BACKGROUND(StringHelper.createResourceLocation(MODID, "textures", "gui", "overlay","spellpower_background.png"), 0, 0, 19, 60),
-    OVERLAY_SPELLPOWER_FOREGROUND(StringHelper.createResourceLocation(MODID, "textures", "gui", "overlay","spellpower_foreground.png"), 0, 0, 19, 60);
+    OVERLAY_SPELLPOWER_BACKGROUND(StringHelper.createResourceLocation(MODID, "textures", "gui", "overlay", "spellpower_background.png"), 0, 0, 19, 60),
+    OVERLAY_SPELLPOWER_FOREGROUND(StringHelper.createResourceLocation(MODID, "textures", "gui", "overlay", "spellpower_foreground.png"), 0, 0, 19, 60);
     ResourceLocation location;
     private int imgXStart;
     private int imgYStart;

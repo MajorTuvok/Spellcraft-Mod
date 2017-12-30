@@ -44,7 +44,7 @@ public class EntityMessage implements IMessage {
 
     public @Nullable
     Entity getEntity(World world) {
-        if (id<0) {
+        if (id < 0) {
             return null;
         } else {
             return world.getEntityByID(id);

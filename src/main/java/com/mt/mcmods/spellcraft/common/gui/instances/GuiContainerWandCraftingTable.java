@@ -12,15 +12,16 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class GuiContainerWandCraftingTable extends BaseGuiContainer {
-    private static final PlayerInventoryOffsets OFFSETS = new PlayerInventoryOffsets(10,84,10,142);  //TODO align properly
-    public GuiContainerWandCraftingTable(@Nonnull InventoryPlayer playerInv, @Nonnull TileEntityWandCraftingTable entity,@Nullable EnumFacing facing) {
+    private static final PlayerInventoryOffsets OFFSETS = new PlayerInventoryOffsets(10, 84, 10, 142);  //TODO align properly
+
+    public GuiContainerWandCraftingTable(@Nonnull InventoryPlayer playerInv, @Nonnull TileEntityWandCraftingTable entity, @Nullable EnumFacing facing) {
         super(playerInv, entity, OFFSETS, facing);
     }
 
     @Override
     protected void createInventoryFromCapability(IItemHandler handler) {  //TODO set Slots to better Positions
-        for (int i=0; i<handler.getSlots(); i++) {
-            addSlotToContainer(new SlotItemHandler(handler, i, OFFSETS.getInnerXInvOffset()+i*OFFSETS.getSlotXSize(), 10));
+        for (int i = 0; i < handler.getSlots(); i++) {
+            addSlotToContainer(new SlotItemHandler(handler, i, OFFSETS.getInnerXInvOffset() + i * OFFSETS.getSlotXSize(), 10));
         }
     }
 

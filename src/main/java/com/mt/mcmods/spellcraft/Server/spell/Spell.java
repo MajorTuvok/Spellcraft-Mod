@@ -33,13 +33,13 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
 
     }
 
-    public Spell(ISpellPowerProvider provider) throws IllegalArgumentException{
+    public Spell(ISpellPowerProvider provider) throws IllegalArgumentException {
         this.displayName = "";
         this.id = Integer.MIN_VALUE;
         this.efficiency = 100.0f;
         this.maxPower = Float.MAX_VALUE;
-        Validate.notNull(provider,"Cannot construct Spell without PowerProvider");
-        this.powerProvider =  provider;
+        Validate.notNull(provider, "Cannot construct Spell without PowerProvider");
+        this.powerProvider = provider;
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -64,7 +64,7 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
         if (event.phase == TickEvent.Phase.START) {
             setActive(false);
             onCheckActive();
-        } else if (isActive()){
+        } else if (isActive()) {
             onPerform();
         } else {
             onAbort();
@@ -88,16 +88,16 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
     }
 
     /**
-     *
      * @return The DisplayName of this this Spell. Will not be null, but might be empty.
      */
-    public @Nonnull String getDisplayName() {
-        return displayName!=null?displayName:"";
+    public @Nonnull
+    String getDisplayName() {
+        return displayName != null ? displayName : "";
     }
 
     public void setDisplayName(@Nullable String displayName) {
         this.displayName = displayName;
-        if (this.displayName==null) {
+        if (this.displayName == null) {
             this.displayName = "";
         }
     }
@@ -105,11 +105,11 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound compound = new NBTTagCompound();
-        compound.setInteger(KEY_ID,id);
-        compound.setBoolean(KEY_ACTIVE,active);
-        compound.setFloat(KEY_EFFICIENCY,efficiency);
-        compound.setFloat(KEY_MAX_POWER,maxPower);
-        compound.setString(KEY_DISPLAY_NAME,getDisplayName());
+        compound.setInteger(KEY_ID, id);
+        compound.setBoolean(KEY_ACTIVE, active);
+        compound.setFloat(KEY_EFFICIENCY, efficiency);
+        compound.setFloat(KEY_MAX_POWER, maxPower);
+        compound.setString(KEY_DISPLAY_NAME, getDisplayName());
         getType().apply(compound);
         return compound;
     }
@@ -161,7 +161,7 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
      * Called when the spell is using too much power.
      * By default this simply calls onAbort.
      */
-    protected void onOverload(){
+    protected void onOverload() {
         onAbort();
     }
 
@@ -169,13 +169,14 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
      * Will attempt to extract power from the given ISpellPowerProvider.
      * Will call onOverload and onOutOfPower when needed.
      * Providing null will result in no action being done.
+     *
      * @param provider The Provider to extract from
-     * @param amount The amount of SpellPower to consume
+     * @param amount   The amount of SpellPower to consume
      * @return The actual amount of consumed Power
      */
     protected float extractPower(@Nullable ISpellPowerProvider provider, float amount) {
         float extracted = 0;
-        if (provider!=null) {
+        if (provider != null) {
             if (amount > getMaxPower()) {
                 onOverload();
                 return 0;
@@ -190,30 +191,34 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
 
     /**
      * Convenience overload for extractPower(getPowerProvider(), amount)
+     *
      * @param amount the amount of power to extract
      * @return The actual amount of power consumed
      */
     @Override
     public float extractPower(float amount) {
-        return extractPower(getPowerProvider(),amount);
+        return extractPower(getPowerProvider(), amount);
     }
 
     /**
      * Gets the construction-provided PowerProvider for this Spell-Object, or null if none was set.
      * Might be null if constructed from NBT and subclasses didn't set the PowerProvider in serialize NBT
+     *
      * @return
      */
-    public @Nullable ISpellPowerProvider getPowerProvider() {
+    public @Nullable
+    ISpellPowerProvider getPowerProvider() {
         return powerProvider;
     }
 
     /**
      * Allows subclasses to set the spellPowerProvider (for example after serializing NBT).
      * Providing a null value will have no effect.
+     *
      * @param provider The new SpellPowerProvider to use
      */
     protected void setPowerProvider(ISpellPowerProvider provider) {
-        if (provider!=null)
+        if (provider != null)
             powerProvider = provider;
     }
 
@@ -234,20 +239,19 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
     }
 
     /**
-     *
      * @return Whether or not this Spell-Object may be resumed by the SpellRegistry.
      * Returning false from this Method will prevent this Object from being resumed although it may still be moved back to the registered Spell-List
      */
-    protected boolean shouldResume()  {
+    protected boolean shouldResume() {
         return true;
     }
 
     /**
-     *
      * @return The SpellType which can be used for constructing and initializing Spell-Objects
      */
     @Override
-    public abstract @Nonnull SpellType getType();
+    public abstract @Nonnull
+    SpellType getType();
 
     @Override
     public void onIllegalCallbackDetected() {

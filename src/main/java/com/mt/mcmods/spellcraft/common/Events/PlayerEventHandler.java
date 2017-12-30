@@ -16,9 +16,9 @@ public class PlayerEventHandler {
     @SubscribeEvent
     public void onPlayerJoined(PlayerEvent.PlayerLoggedInEvent event) {
         SpellRegistry registry = SpellRegistry.getSaveData();
-        if (registry!=null) {
-            ArrayList<Tuple<NBTTagCompound,SpellType>> list = registry.getUnregisteredSpells();
-            if (list!=null) {
+        if (registry != null) {
+            ArrayList<Tuple<NBTTagCompound, SpellType>> list = registry.getUnregisteredSpells();
+            if (list != null) {
                 for (Tuple<NBTTagCompound, SpellType> tuple :
                         list) {
                     if (tuple.getSecond() instanceof PlayerSpellType) {
@@ -32,9 +32,9 @@ public class PlayerEventHandler {
     @SubscribeEvent
     public void onPlayerLeft(PlayerEvent.PlayerLoggedOutEvent event) {
         SpellRegistry registry = SpellRegistry.getSaveData();
-        if (registry!=null) {
+        if (registry != null) {
             List<EntitySpell> spells = SpellRegistry.getEntitySpells(event.player);
-            if (spells!=null) {
+            if (spells != null) {
                 for (EntitySpell spell :
                         spells) {
                     registry.setToUnregisteredSpell(spell);

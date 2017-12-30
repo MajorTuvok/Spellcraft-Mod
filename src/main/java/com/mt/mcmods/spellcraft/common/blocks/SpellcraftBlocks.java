@@ -4,18 +4,15 @@ import com.mt.mcmods.spellcraft.common.BaseContainer;
 import com.mt.mcmods.spellcraft.common.RegistryUtils;
 import com.mt.mcmods.spellcraft.common.interfaces.INamed;
 import com.mt.mcmods.spellcraft.common.interfaces.IRenderable;
-import com.sun.crypto.provider.BlowfishKeyGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.gen.structure.template.ITemplateProcessor;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class SpellcraftBlocks extends BaseContainer<Block> {
@@ -45,8 +42,8 @@ public class SpellcraftBlocks extends BaseContainer<Block> {
     public void onItemRegistryEvent(RegistryEvent.Register<Item> e) {
         Log.info("Registering SpellcraftItemBlocks");
         itemRegistryUtils.setRegistry(e.getRegistry());
-        for (Item item:
-             getUtils().getRegisteredItems()) {
+        for (Item item :
+                getUtils().getRegisteredItems()) {
             itemRegistryUtils.register(item);
         }
     }
@@ -67,12 +64,11 @@ public class SpellcraftBlocks extends BaseContainer<Block> {
     }
 
     public void registerBlockItem(Block entry) {
-        if (entry!=null) {
+        if (entry != null) {
             RenderableBlockItem blockItem = new RenderableBlockItem(entry);
             addToItemMap(entry, blockItem);
             addToRenderable(entry);
-        }
-        else {
+        } else {
             Log.error("Cannot registerBlockItem with null Block!");
         }
     }
@@ -83,11 +79,10 @@ public class SpellcraftBlocks extends BaseContainer<Block> {
     }
 
 
-
     private static final class RenderableBlockItem extends ItemBlock implements INamed, IRenderable {
         public RenderableBlockItem(Block block) {
             super(block);
-            if (block.getRegistryName()!=null) {
+            if (block.getRegistryName() != null) {
                 setRegistryName(block.getRegistryName());
             }
         }

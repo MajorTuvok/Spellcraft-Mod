@@ -2,7 +2,7 @@ package com.mt.mcmods.spellcraft.common.Capabilities.wandproperties;
 
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
 
-public class WandPropertyDefinition implements IWandPropertyDefinition{
+public class WandPropertyDefinition implements IWandPropertyDefinition {
     public static final float DEFAULT_MIN_EFFICIENCY = 85;
     public static final float DEFAULT_MAX_EFFICIENCY = 95;
     public static final float DEFAULT_MIN_MAX_POWER = 45;
@@ -16,7 +16,7 @@ public class WandPropertyDefinition implements IWandPropertyDefinition{
     private final float perfectMaxPowerBorder;
 
     public WandPropertyDefinition() {
-        this(DEFAULT_MAX_EFFICIENCY,DEFAULT_MIN_EFFICIENCY,DEFAULT_MAX_MAX_POWER,DEFAULT_MIN_MAX_POWER);
+        this(DEFAULT_MAX_EFFICIENCY, DEFAULT_MIN_EFFICIENCY, DEFAULT_MAX_MAX_POWER, DEFAULT_MIN_MAX_POWER);
         ILoggable.Log.warn("Created WandPropertyDefinition from default values! This is probably not what you want!");
     }
 
@@ -25,8 +25,8 @@ public class WandPropertyDefinition implements IWandPropertyDefinition{
         this.minEfficiency = minEfficiency;
         this.maxMaxPower = maxMaxPower;
         this.minMaxPower = minMaxPower;
-        this.perfectEfficiencyBorder = getEfficiencyRange()*DEFAULT_PERFECT_BORDER_PERCENTAGE/100+getMinEfficiency();
-        this.perfectMaxPowerBorder = getMaxPowerRange()*DEFAULT_PERFECT_BORDER_PERCENTAGE/100+getMinMaxPower();
+        this.perfectEfficiencyBorder = getEfficiencyRange() * DEFAULT_PERFECT_BORDER_PERCENTAGE / 100 + getMinEfficiency();
+        this.perfectMaxPowerBorder = getMaxPowerRange() * DEFAULT_PERFECT_BORDER_PERCENTAGE / 100 + getMinMaxPower();
     }
 
     public WandPropertyDefinition(float maxEfficiency, float minEfficiency, float maxMaxPower, float minMaxPower, float perfectEfficiencyBorder, float perfectMaxPowerBorder) {
@@ -60,12 +60,12 @@ public class WandPropertyDefinition implements IWandPropertyDefinition{
 
     @Override
     public float getEfficiencyRange() {
-        return Math.abs(getMaxEfficiency()-getMinEfficiency());
+        return Math.abs(getMaxEfficiency() - getMinEfficiency());
     }
 
     @Override
     public float getMaxPowerRange() {
-        return Math.abs(getMaxMaxPower()-getMinMaxPower());
+        return Math.abs(getMaxMaxPower() - getMinMaxPower());
     }
 
     @Override

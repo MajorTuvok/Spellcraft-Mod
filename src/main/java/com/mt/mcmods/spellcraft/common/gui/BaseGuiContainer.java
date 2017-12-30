@@ -16,7 +16,7 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class BaseGuiContainer extends Container implements ILoggable{
+public abstract class BaseGuiContainer extends Container implements ILoggable {
     private final PlayerInventoryOffsets mOffsets;
     private TileEntity entity;
 
@@ -58,7 +58,8 @@ public abstract class BaseGuiContainer extends Container implements ILoggable{
     }
 
     @Override
-    public@Nonnull ItemStack transferStackInSlot(EntityPlayer player, int index) {
+    public @Nonnull
+    ItemStack transferStackInSlot(EntityPlayer player, int index) {
         ItemStack copyStack = ItemStack.EMPTY;
         Slot slot = inventorySlots.get(index);
 
