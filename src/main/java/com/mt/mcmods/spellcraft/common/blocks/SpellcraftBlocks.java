@@ -19,7 +19,7 @@ public class SpellcraftBlocks extends BaseContainer<Block> {
 
     private static final int GENERATOR_WEIGHT = 2;
     public static BlockWandCraftingTable WAND_CRAFTING_TABLE;
-    private RegistryUtils<Item> itemRegistryUtils;
+    private final RegistryUtils<Item> itemRegistryUtils;
 
     public SpellcraftBlocks() {
         super();

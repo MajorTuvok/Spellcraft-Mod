@@ -4,6 +4,7 @@ import com.mt.mcmods.spellcraft.Server.spell.SpellRegistry;
 import com.mt.mcmods.spellcraft.SpellcraftMod;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -204,14 +205,28 @@ public class NBTHelper {
     }
 
     public static @Nonnull
+    NBTTagList nbtToNbtList(@Nonnull Collection<? extends NBTBase> collection) {
+        NBTTagList nbtTagList = new NBTTagList();
+        if (!collection.isEmpty()) {
+            for (NBTBase serializable :
+                    collection) {
+                if (serializable != null)
+                    nbtTagList.appendTag(serializable);
+            }
+        }
+        return nbtTagList;
+    }
+
+    public static @Nonnull
     NBTTagList stringToNbtList(@Nonnull Collection<String> collection) {
         NBTTagList nbtTagList = new NBTTagList();
-        if (!collection.isEmpty())
+        if (!collection.isEmpty()) {
             for (String serializable :
                     collection) {
                 if (serializable != null)
                     nbtTagList.appendTag(new NBTTagString(serializable));
             }
+        }
         return nbtTagList;
     }
 

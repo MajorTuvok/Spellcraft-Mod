@@ -6,31 +6,24 @@ import com.mt.mcmods.spellcraft.common.spell.components.ISpellComponentCallback;
 import com.mt.mcmods.spellcraft.common.spell.conditions.ISpellCondition;
 import com.mt.mcmods.spellcraft.common.spell.conditions.ISpellConditionCallback;
 import com.mt.mcmods.spellcraft.common.util.NBTHelper;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.*;
 import net.minecraftforge.common.util.INBTSerializable;
 import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public final class SpellState implements INBTSerializable<NBTTagCompound>, ILoggable {
     private static final String KEY_CONDITIONS = "SpellState_set_conditions";
     private static final String KEY_COMPONENTS = "SpellState_set_components";
     private static final String KEY_STATES = "SpellState_set_next_states";
-    private static final String KEY_CONDITIONS_COMMANDS = "SpellState_commands_conditions";
-    private static final String KEY_COMPONENTS_COMMANDS = "SpellState_commands_components";
-    private static final String KEY_STATES_COMMANDS = "SpellState_commands_next_states";
     private static final String KEY_NAME = "SpellState_name";
     private final String name;
     private ArrayList<StateList> commands;
 
     public SpellState(@Nonnull NBTTagCompound compound) {
-        this.name = null;
+        this.name = compound.getString(KEY_NAME);
     }
 
     public SpellState(String name) {
@@ -42,15 +35,27 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
     public SpellState(String name, List<Map<? extends ISpellCondition, Boolean>> conditions, List<List<? extends ISpellComponent>> components, List<String> states) {
         this.name = name;
         this.commands = new ArrayList<>(Math.min(conditions.size(), Math.min(components.size(), states.size())));
-        for (int i = 0; i < conditions.size() && i < components.size() && i < states.size(); ++i) {
-            Map<? extends ISpellCondition, Boolean> condition = conditions.get(i);
-            List<? extends ISpellComponent> component = components.get(i);
-            String state = states.get(i);
+        Iterator<Map<? extends ISpellCondition, Boolean>> conditionsIterator = conditions.iterator();
+        Iterator<List<? extends ISpellComponent>> componentsIterator = components.iterator();
+        Iterator<String> statesIterator = states.iterator();
+        while (conditionsIterator.hasNext() && componentsIterator.hasNext() && statesIterator.hasNext()) {
+            Map<? extends ISpellCondition, Boolean> condition = conditionsIterator.next();
+            List<? extends ISpellComponent> component = componentsIterator.next();
+            String state = statesIterator.next();
             if (condition != null && !condition.isEmpty() && component != null && !component.isEmpty() && state != null) {
                 commands.add(new StateList(condition, component, state));
             } else {
                 Log.warn("Skipping bad SpellStateSet! This might result in unexpected behaviour!");
             }
+        }
+        if (conditionsIterator.hasNext()) {
+            Log.warn("Skipping conditions because of malformed Constructor call! This might result in unexpected behaviour!");
+        }
+        if (componentsIterator.hasNext()) {
+            Log.warn("Skipping components because of malformed Constructor call! This might result in unexpected behaviour!");
+        }
+        if (statesIterator.hasNext()) {
+            Log.warn("Skipping states because of malformed Constructor call! This might result in unexpected behaviour!");
         }
     }
 
@@ -78,32 +83,42 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
     public NBTTagCompound serializeNBT() {
         NBTTagCompound compound = new NBTTagCompound();
         serializeSets(compound);
-
+        compound.setString(KEY_NAME, name);
         return compound;
     }
 
     private void serializeSets(NBTTagCompound compound) {
-        List<List<ResourceLocation>> conditionList = new ArrayList<>();
-        List<List<ResourceLocation>> componentList = new ArrayList<>();
-        List<String> stateList = new ArrayList<>(commands.size() + 1);
+        NBTTagList conditionList = new NBTTagList();
+        NBTTagList conditionValueList = new NBTTagList();
+        NBTTagList componentList = new NBTTagList();
+        NBTTagList stateList = new NBTTagList();
         for (StateList set :
                 commands) {
-            conditionList.add(set.getConditionResources());
-            componentList.add(set.getComponentResources());
-            stateList.add(set.nextState);
+            NBTTagList[] conditions = set.getConditionValueResources();
+            conditionList.appendTag(conditions[0]);
+            conditionValueList.appendTag(conditions[1]);
+            componentList.appendTag(set.getComponentResources());
+            stateList.appendTag(new NBTTagString(set.nextState));
         }
-        compound.setTag(KEY_CONDITIONS, NBTHelper.resourcesToNbtList(conditionList));
-        compound.setTag(KEY_COMPONENTS, NBTHelper.resourcesToNbtList(componentList));
-        compound.setTag(KEY_STATES, NBTHelper.stringToNbtList(stateList));
-        compound.setString(KEY_NAME, name);
-        componentList.clear();
-        conditionList.clear();
-        stateList.clear();
+        compound.setTag(KEY_CONDITIONS, conditionList);
+        compound.setTag(KEY_COMPONENTS, componentList);
+        compound.setTag(KEY_STATES, stateList);
     }
 
+    /**
+     * Deserialize NBT Data of this SpellState. May not deserialize the Name, because the Name should be final.
+     *
+     * @param nbt
+     */
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
+        Iterator<NBTBase> conditionList = ((NBTTagList) nbt.getTag(KEY_CONDITIONS)).iterator();
+        Iterator<NBTBase> componentList = ((NBTTagList) nbt.getTag(KEY_COMPONENTS)).iterator();
+        Iterator<NBTBase> stateList = ((NBTTagList) nbt.getTag(KEY_STATES)).iterator();
+        while (conditionList.hasNext() && componentList.hasNext() && stateList.hasNext()) {
+            NBTTagList conditions = (NBTTagList) conditionList.next();
 
+        }
     }
 
     public static @Nullable
@@ -120,6 +135,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
     }
 
     private static final class StateList {
+        private static final String KEY_BOOLEAN_VALUE = "bool_value";
         private final Map<ISpellCondition, Boolean> conditions;
         private final List<ISpellComponent> components;
         private final String nextState;
@@ -128,6 +144,10 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
             this.conditions = new HashMap<>(Validate.notNull(conditions));
             this.components = new ArrayList<>(Validate.notNull(components));
             this.nextState = Validate.notNull(nextState);
+        }
+
+        private static StateList readFromNBT(NBTTagList conditions, NBTTagList conditionValues, NBTTagList components, NBTTagString nextState) {
+            return null;
         }
 
         private boolean getConditionValue(ISpellCondition key) {
@@ -161,25 +181,22 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
             return nextState;
         }
 
-        private ArrayList<ResourceLocation> getConditionResources() {
-            ArrayList<ResourceLocation> locations = new ArrayList<>(conditions.size());
-            for (ISpellCondition condition :
-                    conditions.keySet()) {
-                if (condition.getRegistryName() != null) {
-                    locations.add(condition.getRegistryName());
-                } else {
-                    Log.error("SpellState noticed unregistered Condition! This is illegal!");
-                }
+        private NBTTagList[] getConditionValueResources() {
+            NBTTagList[] locations = {new NBTTagList(), new NBTTagList()};
+            for (Map.Entry<ISpellCondition, Boolean> condition :
+                    conditions.entrySet()) {
+                locations[0].appendTag(condition.getKey().serializeNBT());
+                locations[1].appendTag(new NBTTagByte((byte) (condition.getValue() ?0:1)));
             }
             return locations;
         }
 
-        private ArrayList<ResourceLocation> getComponentResources() {
-            ArrayList<ResourceLocation> locations = new ArrayList<>(components.size());
+        private NBTTagList getComponentResources() {
+            NBTTagList locations = new NBTTagList();
             for (ISpellComponent component :
                     components) {
                 if (component.getRegistryName() != null) {
-                    locations.add(component.getRegistryName());
+                    locations.appendTag(NBTHelper.serializeResourceLocation(component.getRegistryName()));
                 } else {
                     Log.error("SpellState noticed unregistered Component! This is illegal!");
                 }
