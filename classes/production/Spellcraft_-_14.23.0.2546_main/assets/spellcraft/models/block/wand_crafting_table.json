@@ -1,0 +1,13 @@
+
+{
+  "parent":"block/cube",
+  "textures": {
+    "particle": "spellcraft:blocks/wand_crafting_table_top",
+    "down": "spellcraft:blocks/wand_crafting_table_side",
+    "up": "spellcraft:blocks/wand_crafting_table_top",
+    "north": "spellcraft:blocks/wand_crafting_table_side",
+    "east": "spellcraft:blocks/wand_crafting_table_side",
+    "south": "spellcraft:blocks/wand_crafting_table_side",
+    "west": "spellcraft:blocks/wand_crafting_table_side"
+  }
+}

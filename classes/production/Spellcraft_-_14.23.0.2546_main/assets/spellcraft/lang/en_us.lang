@@ -1,0 +1,19 @@
+#Warning: There may be no spaces until the first letter of the localized Word! (not allowed: itemGroup.Spellcraft = Spellcraft)
+itemGroup.Spellcraft=Spellcraft
+
+item.cobblestone_gold_wand.name=gold-tip Cobblestone-Wand
+item.cobblestone_iron_wand.name=iron-tip Cobblestone-Wand
+item.iron_gold_wand.name=gold-tip Iron-Wand
+item.iron_iron_wand.name=iron-tip Iron-Wand
+item.gold_gold_wand.name=gold-tip Gold-Wand
+item.gold_iron_wand.name=iron-tip Gold-Wand
+item.log_gold_wand.name=gold-tip Oak-Wand
+item.log_iron_wand.name=iron-tip Oak-Wand
+item.stone_gold_wand.name=gold-tip Stone-Wand
+item.stone_iron_wand.name=iron-tip Stone-Wand
+
+wand.efficiency=Efficiency
+wand.max_power=Maximum Spellpower
+
+misc.moreInformation=<Hold SHIFT for more details>
+misc.missing.information=Cannot show Information
