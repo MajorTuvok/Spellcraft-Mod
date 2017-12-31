@@ -4,10 +4,7 @@ import com.mt.mcmods.spellcraft.Server.spell.SpellRegistry;
 import com.mt.mcmods.spellcraft.SpellcraftMod;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
@@ -264,5 +261,15 @@ public class NBTHelper {
     ResourceLocation deserializeResourceLocation(NBTTagString nbt) {
         if (nbt == null) return null;
         return new ResourceLocation(nbt.getString());
+    }
+
+    public static NBTBase booleanToNBT(boolean bool) {
+        return new NBTTagByte(bool ? (byte) 0 : (byte) 1);
+    }
+
+    public static boolean booleanFromNBT(NBTBase nbt) {
+        if (!(nbt instanceof NBTTagByte))
+            throw new IllegalArgumentException("Cannot create Boolean from instance, that wasn't previously created by NBTHelper.booleanToNBT!");
+        return ((NBTTagByte) nbt).getByte() == 0;
     }
 }
