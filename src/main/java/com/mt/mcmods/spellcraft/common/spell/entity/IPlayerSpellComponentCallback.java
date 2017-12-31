@@ -1,4 +1,4 @@
-package com.mt.mcmods.spellcraft.Server.spell.entity;
+package com.mt.mcmods.spellcraft.common.spell.entity;
 
 import com.mt.mcmods.spellcraft.common.spell.components.ISpellComponentCallback;
 import net.minecraft.entity.player.EntityPlayer;

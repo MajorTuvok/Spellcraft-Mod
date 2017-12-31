@@ -1,9 +1,10 @@
-package com.mt.mcmods.spellcraft.Server.spell;
+package com.mt.mcmods.spellcraft.common.spell;
 
-import com.mt.mcmods.spellcraft.Server.spell.entity.EntitySpell;
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import com.mt.mcmods.spellcraft.common.registry.RegistryAdvanced;
+import com.mt.mcmods.spellcraft.common.spell.entity.EntitySpell;
 import com.mt.mcmods.spellcraft.common.util.NBTHelper;
+import jline.internal.Log;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -211,7 +212,7 @@ public class SpellRegistry extends WorldSavedData {
 
     //--------------------------------non-static Methods ------------------------------------------------
 
-    private List<Tuple<NBTTagCompound, SpellType>> unregisteredSpells;
+    private List<Tuple<NBTTagCompound, ISpellType>> unregisteredSpells;
     private List<Integer> unregisteredIds;
 
     public SpellRegistry() {
@@ -232,7 +233,7 @@ public class SpellRegistry extends WorldSavedData {
                 idRegistry.getEntrySet()) {
             spells.appendTag(entry.getValue().serializeNBT());
         }
-        for (Tuple<NBTTagCompound, SpellType> tuple :
+        for (Tuple<NBTTagCompound, ISpellType> tuple :
                 unregisteredSpells) {
             spells.appendTag(tuple.getFirst());
         }
@@ -251,7 +252,7 @@ public class SpellRegistry extends WorldSavedData {
         for (NBTBase content :
                 spells) {
             if (content instanceof NBTTagCompound) {
-                SpellType type = SpellTypes.getType((NBTTagCompound) content);
+                ISpellType type = SpellTypes.getType((NBTTagCompound) content);
                 if (type != null) {
                     unregisteredSpells.add(new Tuple<>((NBTTagCompound) content, type));
                     unregisteredIds.add(NBTHelper.getSpellId((NBTTagCompound) content));
@@ -261,19 +262,23 @@ public class SpellRegistry extends WorldSavedData {
     }
 
     public @Nonnull
-    ArrayList<Tuple<NBTTagCompound, SpellType>> getUnregisteredSpells() {
+    ArrayList<Tuple<NBTTagCompound, ISpellType>> getUnregisteredSpells() {
         return new ArrayList<>(unregisteredSpells);
     }
 
-    public boolean registerInactiveSpell(Tuple<NBTTagCompound, SpellType> toRegister) {
-        Spell spell = toRegister.getSecond().instantiate(toRegister.getFirst());
-        if (spell != null) {
-            registerSpellWithId(spell, spell.getId());
-            unregisteredSpells.remove(toRegister);
-            unregisteredIds.remove(new Integer(spell.getId()));
-            if (spell.shouldResume())
-                spell.onResume();
-            markDirty();
+    public boolean registerInactiveSpell(Tuple<NBTTagCompound, ISpellType> toRegister) {
+        try {
+            Spell spell = toRegister.getSecond().instantiate(toRegister.getFirst());
+            if (spell != null) {
+                registerSpellWithId(spell, spell.getId());
+                unregisteredSpells.remove(toRegister);
+                unregisteredIds.remove(new Integer(spell.getId()));
+                if (spell.shouldResume())
+                    spell.onResume();
+                markDirty();
+            }
+        } catch (InstantiationException e) {
+            ILoggable.Log.error("Could not instantiate Spell! This will result in this Spell being discarded and deleted from the SpellRegistry!",e);
         }
         return false;
     }

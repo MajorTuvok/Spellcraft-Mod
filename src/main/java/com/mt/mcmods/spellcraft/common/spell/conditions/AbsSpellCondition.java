@@ -1,7 +1,7 @@
 package com.mt.mcmods.spellcraft.common.spell.conditions;
 
-import com.mt.mcmods.spellcraft.Server.spell.SpellType;
-import com.mt.mcmods.spellcraft.Server.spell.SpellTypes;
+import com.mt.mcmods.spellcraft.common.spell.ISpellType;
+import com.mt.mcmods.spellcraft.common.spell.SpellTypes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.Validate;
@@ -17,7 +17,7 @@ public abstract class AbsSpellCondition extends IForgeRegistryEntry.Impl<ISpellC
      * @return A list of compatible SpellTypes. It is recommended to return an ImmutableList.
      */
     @Override
-    public List<SpellType> getSupportedTypes() {
+    public List<ISpellType> getSupportedTypes() {
         return SpellTypes.getAll();
     }
 

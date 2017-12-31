@@ -1,6 +1,6 @@
 package com.mt.mcmods.spellcraft.common.util;
 
-import com.mt.mcmods.spellcraft.Server.spell.SpellRegistry;
+import com.mt.mcmods.spellcraft.common.spell.SpellRegistry;
 import com.mt.mcmods.spellcraft.SpellcraftMod;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -16,9 +16,9 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.UUID;
 
-import static com.mt.mcmods.spellcraft.Server.spell.Spell.KEY_ID;
-import static com.mt.mcmods.spellcraft.Server.spell.entity.EntitySpell.KEY_ENTITY;
-import static com.mt.mcmods.spellcraft.Server.spell.entity.EntitySpell.KEY_WORLD;
+import static com.mt.mcmods.spellcraft.common.spell.Spell.KEY_ID;
+import static com.mt.mcmods.spellcraft.common.spell.entity.EntitySpell.KEY_ENTITY;
+import static com.mt.mcmods.spellcraft.common.spell.entity.EntitySpell.KEY_WORLD;
 
 public class NBTHelper {
     public static final String UUID_MOST_SIG_BITS = "mostSigBits";

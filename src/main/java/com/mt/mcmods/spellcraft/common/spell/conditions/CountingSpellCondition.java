@@ -1,5 +1,6 @@
 package com.mt.mcmods.spellcraft.common.spell.conditions;
 
+import jline.internal.Log;
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
@@ -27,12 +28,13 @@ public class CountingSpellCondition extends AbsSpellCondition {
     /**
      * Tests whether this Condition holds True against the circumstances represented by the conditionCallback
      *
-     * @param conditionCallback The ConditionCallback representing outside circumstances. Will probably be a Spell who's SpellType is one of getSupportedTypes(), although this is not guaranteed.
+     * @param conditionCallback The ConditionCallback representing outside circumstances. Will probably be a Spell who's ISpellType is one of getSupportedTypes(), although this is not guaranteed.
      * @return Whether or not this Condition holds true against given circumstances. Return false and call IllegalCallbackDetected if the ISpellConditionCallback is not the required Type.
      */
     @Override
     public boolean holdsTrue(ISpellConditionCallback conditionCallback) {
-        boolean res = false;
+        Log.info("Checking Counting SpellCondition!");
+        boolean res;
         if (upwards) {
             res = count < border;
             ++count;

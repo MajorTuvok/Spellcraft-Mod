@@ -1,10 +1,10 @@
-package com.mt.mcmods.spellcraft.Server.spell.entity;
+package com.mt.mcmods.spellcraft.common.spell.entity;
 
-import com.mt.mcmods.spellcraft.Server.spell.Spell;
-import com.mt.mcmods.spellcraft.Server.spell.SpellRegistry;
 import com.mt.mcmods.spellcraft.common.Capabilities.SpellcraftCapabilities;
 import com.mt.mcmods.spellcraft.common.Capabilities.spellpower.ISpellPowerProvider;
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
+import com.mt.mcmods.spellcraft.common.spell.Spell;
+import com.mt.mcmods.spellcraft.common.spell.SpellRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;

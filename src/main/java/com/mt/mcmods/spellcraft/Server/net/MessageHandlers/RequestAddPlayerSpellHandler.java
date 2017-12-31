@@ -1,8 +1,8 @@
 package com.mt.mcmods.spellcraft.Server.net.MessageHandlers;
 
 import com.mt.mcmods.spellcraft.Client.net.Messages.RequestNewPlayerSpell;
-import com.mt.mcmods.spellcraft.Server.spell.SpellRegistry;
-import com.mt.mcmods.spellcraft.Server.spell.entity.PlayerSpell;
+import com.mt.mcmods.spellcraft.common.spell.SpellRegistry;
+import com.mt.mcmods.spellcraft.common.spell.entity.PlayerSpell;
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import com.mt.mcmods.spellcraft.common.items.wand.ItemWand;
 import net.minecraft.entity.player.EntityPlayerMP;

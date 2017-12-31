@@ -1,12 +1,12 @@
-package com.mt.mcmods.spellcraft.Server.spell.entity;
+package com.mt.mcmods.spellcraft.common.spell.entity;
 
-import com.mt.mcmods.spellcraft.Server.spell.SpellType;
+import com.mt.mcmods.spellcraft.common.spell.ISpellType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
 
-import static com.mt.mcmods.spellcraft.Server.spell.SpellTypes.PLAYER_SPELL_TYPE;
+import static com.mt.mcmods.spellcraft.common.spell.SpellTypes.PLAYER_SPELL_TYPE;
 
 public class PlayerSpell extends EntitySpell implements IPlayerSpellComponentCallback, IPlayerSpellConditionCallback {
     private static final String KEY_SLOT = "PlayerSpell_slot";
@@ -15,7 +15,7 @@ public class PlayerSpell extends EntitySpell implements IPlayerSpellComponentCal
     /**
      * This constructor should only be used with deserializeNBT(NBTTagCompound)
      */
-    public PlayerSpell() {
+    PlayerSpell() {
         super();
         this.slot = -1;
     }
@@ -32,7 +32,7 @@ public class PlayerSpell extends EntitySpell implements IPlayerSpellComponentCal
 
     @Override
     public @Nonnull
-    SpellType getType() {
+    ISpellType getType() {
         return PLAYER_SPELL_TYPE;
     }
 

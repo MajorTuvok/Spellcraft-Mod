@@ -1,10 +1,11 @@
-package com.mt.mcmods.spellcraft.Server.spell.entity;
+package com.mt.mcmods.spellcraft.common.spell.entity;
 
-import com.mt.mcmods.spellcraft.Server.spell.SpellType;
+import com.mt.mcmods.spellcraft.common.spell.ISpellType;
+import com.mt.mcmods.spellcraft.common.spell.Spell;
 import com.mt.mcmods.spellcraft.common.util.NBTHelper;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class PlayerSpellType implements SpellType {
+public class PlayerSpellType implements ISpellType {
     @Override
     public PlayerSpell instantiate(NBTTagCompound compound) {
         if (!matches(compound))
@@ -28,5 +29,13 @@ public class PlayerSpellType implements SpellType {
 
     public boolean isPlayerOnServer(NBTTagCompound compound) {
         return NBTHelper.isSpellEntityInstantiated(compound);
+    }
+
+    /**
+     * @return A Spell who can be used in a SpellConstructor
+     */
+    @Override
+    public Spell constructableInstance() {
+        return new PlayerSpell();
     }
 }

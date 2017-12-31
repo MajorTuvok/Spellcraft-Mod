@@ -1,6 +1,6 @@
-package com.mt.mcmods.spellcraft.Server.spell;
+package com.mt.mcmods.spellcraft.common.spell;
 
-import com.mt.mcmods.spellcraft.Server.spell.entity.PlayerSpellType;
+import com.mt.mcmods.spellcraft.common.spell.entity.PlayerSpellType;
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nullable;
@@ -9,17 +9,17 @@ import java.util.Collections;
 import java.util.List;
 
 public class SpellTypes {
-    private static final ArrayList<SpellType> types = new ArrayList<>(1);
+    private static final ArrayList<ISpellType> types = new ArrayList<>(1);
 
-    public static final SpellType PLAYER_SPELL_TYPE = new PlayerSpellType();
+    public static final ISpellType PLAYER_SPELL_TYPE = new PlayerSpellType();
 
-    public static void addType(SpellType type) {
+    public static void addType(ISpellType type) {
         types.add(type);
     }
 
     public static @Nullable
-    Spell instantiate(NBTTagCompound compound) {
-        for (SpellType type :
+    Spell instantiate(NBTTagCompound compound) throws InstantiationException{
+        for (ISpellType type :
                 types) {
             if (type.matches(compound)) {
                 return type.instantiate(compound);
@@ -29,8 +29,8 @@ public class SpellTypes {
     }
 
     public static @Nullable
-    SpellType getType(NBTTagCompound compound) {
-        for (SpellType type :
+    ISpellType getType(NBTTagCompound compound) {
+        for (ISpellType type :
                 types) {
             if (type.matches(compound)) {
                 return type;
@@ -39,7 +39,7 @@ public class SpellTypes {
         return null;
     }
 
-    public static List<SpellType> getAll() {
+    public static List<ISpellType> getAll() {
         return Collections.unmodifiableList(types);
     }
 

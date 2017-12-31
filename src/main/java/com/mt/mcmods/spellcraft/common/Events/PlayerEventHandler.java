@@ -1,9 +1,9 @@
 package com.mt.mcmods.spellcraft.common.Events;
 
-import com.mt.mcmods.spellcraft.Server.spell.SpellRegistry;
-import com.mt.mcmods.spellcraft.Server.spell.SpellType;
-import com.mt.mcmods.spellcraft.Server.spell.entity.EntitySpell;
-import com.mt.mcmods.spellcraft.Server.spell.entity.PlayerSpellType;
+import com.mt.mcmods.spellcraft.common.spell.ISpellType;
+import com.mt.mcmods.spellcraft.common.spell.SpellRegistry;
+import com.mt.mcmods.spellcraft.common.spell.entity.EntitySpell;
+import com.mt.mcmods.spellcraft.common.spell.entity.PlayerSpellType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -17,9 +17,9 @@ public class PlayerEventHandler {
     public void onPlayerJoined(PlayerEvent.PlayerLoggedInEvent event) {
         SpellRegistry registry = SpellRegistry.getSaveData();
         if (registry != null) {
-            ArrayList<Tuple<NBTTagCompound, SpellType>> list = registry.getUnregisteredSpells();
+            ArrayList<Tuple<NBTTagCompound, ISpellType>> list = registry.getUnregisteredSpells();
             if (list != null) {
-                for (Tuple<NBTTagCompound, SpellType> tuple :
+                for (Tuple<NBTTagCompound, ISpellType> tuple :
                         list) {
                     if (tuple.getSecond() instanceof PlayerSpellType) {
                         registry.registerInactiveSpell(tuple);

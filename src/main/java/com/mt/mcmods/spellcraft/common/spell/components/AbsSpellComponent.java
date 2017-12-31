@@ -1,7 +1,7 @@
 package com.mt.mcmods.spellcraft.common.spell.components;
 
-import com.mt.mcmods.spellcraft.Server.spell.SpellType;
-import com.mt.mcmods.spellcraft.Server.spell.SpellTypes;
+import com.mt.mcmods.spellcraft.common.spell.ISpellType;
+import com.mt.mcmods.spellcraft.common.spell.SpellTypes;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.Validate;
 
@@ -15,7 +15,7 @@ public abstract class AbsSpellComponent extends IForgeRegistryEntry.Impl<ISpellC
      * @return A list of compatible SpellTypes. It is recommended to return an ImmutableList.
      */
     @Override
-    public List<SpellType> getSupportedTypes() {
+    public List<ISpellType> getSupportedTypes() {
         return SpellTypes.getAll();
     }
 

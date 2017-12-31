@@ -1,6 +1,6 @@
-package com.mt.mcmods.spellcraft.common.spell;
+package com.mt.mcmods.spellcraft.common.spell.entity;
 
-import com.mt.mcmods.spellcraft.Server.spell.SpellType;
+import com.mt.mcmods.spellcraft.common.spell.ISpellType;
 
 public interface ISpellCallback {
     /**
@@ -11,7 +11,7 @@ public interface ISpellCallback {
      */
     public float extractPower(float amount);
 
-    public SpellType getType();
+    public ISpellType getType();
 
     public void onIllegalCallbackDetected();
 }

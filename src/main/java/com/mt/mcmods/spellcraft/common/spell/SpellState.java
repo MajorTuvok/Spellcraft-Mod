@@ -25,11 +25,11 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
     private static final String KEY_COMPONENTS = "SpellState_set_components";
     private static final String KEY_STATES = "SpellState_set_next_states";
     private static final String KEY_NAME = "SpellState_name";
-    private final String name;
+    private String name;
     private ArrayList<StateList> commands;
     private int curIndex;
 
-    private SpellState(String name) {
+    SpellState(String name) {
         if (name == null) throw new NullPointerException("Cannot construct a SpellState with Null name");
         this.name = name;
         this.commands = new ArrayList<>();
@@ -37,9 +37,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
     }
 
     public SpellState(String name, List<Map<? extends ISpellCondition, Boolean>> conditions, List<List<? extends ISpellComponent>> components, List<String> states) {
-        this.name = name;
-        this.commands = new ArrayList<>(Math.min(conditions.size(), Math.min(components.size(), states.size())));
-        this.curIndex = -1;
+        this(name);
         Iterator<Map<? extends ISpellCondition, Boolean>> conditionsIterator = conditions.iterator();
         Iterator<List<? extends ISpellComponent>> componentsIterator = components.iterator();
         Iterator<String> statesIterator = states.iterator();
@@ -64,10 +62,23 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
         }
     }
 
-    public String getName() {
+    public @Nonnull String getName() {
         return name;
     }
 
+    void setName(String name) {
+        this.name = Validate.notNull(name);
+    }
+
+    ArrayList<StateList> getCommands() {
+        return commands;
+    }
+
+    /**
+     * Will set the current Active StateList to the first matching Condition-Set.
+     * @param callback The callback to use
+     * @return Whether or not an condition was found
+     */
     public boolean moveToActiveCondition(ISpellConditionCallback callback) {
         this.curIndex = 0;
         for (StateList state :
@@ -187,15 +198,28 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
         return null;
     }
 
-    private void checkCommandIndex(int index) {
-        if (index >= commands.size() || index < 0)
+    void checkCommandIndex(int index) {
+        if (!hasCommandIndex(index))
             throw new IndexOutOfBoundsException("Attempted to access SpellState commands with Illegal Index of " + index + " (size is " + commands.size() + ")!");
     }
 
-    private static final class StateList {
+    boolean hasCommandIndex(int index) {
+        return index <= commands.size() && index >= 0;
+    }
+
+    /**
+     * This class represents one State set in a SpellState. It may only be modified by SpellConstructor
+     */
+    static final class StateList {
         private final Map<ISpellCondition, Boolean> conditions;
         private final List<ISpellComponent> components;
-        private final String nextState;
+        private String nextState;
+
+        StateList() {
+            this.conditions = new HashMap<>();
+            this.components = new ArrayList<>();
+            this.nextState = "";
+        }
 
         private StateList(Map<? extends ISpellCondition, Boolean> conditions, List<? extends ISpellComponent> components, String nextState) {
             this.conditions = new HashMap<>(Validate.notNull(conditions));
@@ -210,7 +234,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
             List<ISpellComponent> componentsList = new LinkedList<>();
             String nState = nextState.getString();
             while (conditionsIt.hasNext() && conditionsValuesIt.hasNext()) {
-                conditionMap.put(new CountingSpellCondition() //NBTHelper.deserializeResourceLocation(conditionsIt.next()) - TODO implement as soon as Component registry is finished
+                conditionMap.put(new CountingSpellCondition(0,10) //NBTHelper.deserializeResourceLocation(conditionsIt.next()) - TODO implement as soon as Component registry is finished
                         , NBTHelper.booleanFromNBT(conditionsValuesIt.next()));
 
             }
@@ -291,6 +315,22 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
                 }
             }
             return locations;
+        }
+
+        Map<ISpellCondition, Boolean> getConditions() {
+            return conditions;
+        }
+
+        List<ISpellComponent> getComponents() {
+            return components;
+        }
+
+        String getNextState() {
+            return nextState;
+        }
+
+        void setNextState(String state) {
+            this.nextState = Validate.notNull(state);
         }
     }
 }

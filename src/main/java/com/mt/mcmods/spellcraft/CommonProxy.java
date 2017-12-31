@@ -10,7 +10,7 @@ import com.mt.mcmods.spellcraft.Server.net.MessageHandlers.RequestAddPlayerSpell
 import com.mt.mcmods.spellcraft.Server.net.MessageHandlers.RequestSyncEntitySpellpowerHandler;
 import com.mt.mcmods.spellcraft.Server.net.Messages.ShowParticle;
 import com.mt.mcmods.spellcraft.Server.net.Messages.SyncEntitySpellpower;
-import com.mt.mcmods.spellcraft.Server.spell.SpellRegistry;
+import com.mt.mcmods.spellcraft.common.spell.SpellRegistry;
 import com.mt.mcmods.spellcraft.common.Capabilities.SpellcraftCapabilities;
 import com.mt.mcmods.spellcraft.common.ConfigurationManager;
 import com.mt.mcmods.spellcraft.common.Events.EventHandler;
