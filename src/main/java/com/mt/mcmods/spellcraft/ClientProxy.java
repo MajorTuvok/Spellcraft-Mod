@@ -23,6 +23,7 @@ public class ClientProxy extends CommonProxy {
         super.init(e);
         this.items.clientInit();
         this.blocks.clientInit();
+        this.conditions.clientInit();
         OBJLoader.INSTANCE.addDomain(MODID);
     }
 

@@ -20,7 +20,19 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @Mod.EventBusSubscriber
 public class SpellcraftItems extends BaseContainer<Item> {
     private static boolean createdItems = false;
+    private static boolean instantiated = false;
+    private static final SpellcraftItems INSTANCE = new SpellcraftItems();
     public static ItemWand WAND_IRON_IRON;
+
+    public static SpellcraftItems getInstance() {
+        return INSTANCE;
+    }
+
+    private SpellcraftItems() {
+        super();
+        if (instantiated) throw new AssertionError();
+        instantiated = true;
+    }
 
     @Override
     @SubscribeEvent

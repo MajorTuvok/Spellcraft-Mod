@@ -1,7 +1,7 @@
 package com.mt.mcmods.spellcraft.common.spell.executables;
 
-import com.mt.mcmods.spellcraft.common.spell.ISpellType;
-import com.mt.mcmods.spellcraft.common.spell.SpellTypes;
+import com.mt.mcmods.spellcraft.common.spell.types.ISpellType;
+import com.mt.mcmods.spellcraft.common.spell.types.SpellTypes;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.Validate;
 
@@ -116,4 +116,6 @@ public abstract class AbsSpellExecutable extends IForgeRegistryEntry.Impl<ISpell
     public int compareTo(ISpellExecutable o) {
         return Validate.notNull(Validate.notNull(o).getRegistryName()).compareTo(Validate.notNull(this.getRegistryName()));
     }
+
+
 }

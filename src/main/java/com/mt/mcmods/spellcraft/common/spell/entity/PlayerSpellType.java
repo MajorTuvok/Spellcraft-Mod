@@ -1,7 +1,7 @@
 package com.mt.mcmods.spellcraft.common.spell.entity;
 
 import com.mt.mcmods.spellcraft.common.exceptions.SpellInstantiationException;
-import com.mt.mcmods.spellcraft.common.spell.ISpellType;
+import com.mt.mcmods.spellcraft.common.spell.types.ISpellType;
 import com.mt.mcmods.spellcraft.common.spell.Spell;
 import com.mt.mcmods.spellcraft.common.util.NBTHelper;
 import net.minecraft.nbt.NBTTagCompound;

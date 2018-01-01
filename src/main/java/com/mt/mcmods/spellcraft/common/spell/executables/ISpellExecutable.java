@@ -1,8 +1,6 @@
 package com.mt.mcmods.spellcraft.common.spell.executables;
 
-import com.mt.mcmods.spellcraft.common.spell.ISpellType;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.INBTSerializable;
+import com.mt.mcmods.spellcraft.common.spell.types.ISpellType;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
@@ -13,7 +11,7 @@ import java.util.List;
  * This is necessary because instance of this class are heavily used in Collections. Therefore they
  * will be compared quite often with the equals Method...
  */
-public interface ISpellExecutable extends INBTSerializable<NBTTagCompound>, IForgeRegistryEntry<ISpellExecutable> {
+public interface ISpellExecutable extends IForgeRegistryEntry<ISpellExecutable> {
 
     /**
      * Called by SpellState when execution is required.

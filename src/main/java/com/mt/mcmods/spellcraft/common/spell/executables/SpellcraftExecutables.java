@@ -2,7 +2,7 @@ package com.mt.mcmods.spellcraft.common.spell.executables;
 
 import com.mt.mcmods.spellcraft.common.BaseContainer;
 import com.mt.mcmods.spellcraft.common.registry.RegistryAdvanced;
-import com.mt.mcmods.spellcraft.common.spell.ISpellType;
+import com.mt.mcmods.spellcraft.common.spell.types.ISpellType;
 import com.mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;

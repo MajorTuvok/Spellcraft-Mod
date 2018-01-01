@@ -1,5 +1,6 @@
-package com.mt.mcmods.spellcraft.common.spell;
+package com.mt.mcmods.spellcraft.common.spell.types;
 
+import com.mt.mcmods.spellcraft.common.spell.Spell;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**

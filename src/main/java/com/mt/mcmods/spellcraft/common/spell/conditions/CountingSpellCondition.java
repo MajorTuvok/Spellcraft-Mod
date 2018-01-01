@@ -11,7 +11,6 @@ public class CountingSpellCondition extends AbsSpellCondition { //TODO make sing
     private static final String KEY_COUNT = "CountingSpellCondition_count";
     private static final String KEY_BORDER = "CountingSpellCondition_count";
     private static final String KEY_UPWARDS = "CountingSpellCondition_upwards";
-    private static boolean instantiated = false;
     private static final CountingSpellCondition INSTANCE = new CountingSpellCondition(0, 10);
     private int count;
     private int border;
@@ -22,12 +21,10 @@ public class CountingSpellCondition extends AbsSpellCondition { //TODO make sing
     }
 
     private CountingSpellCondition(int startValue, int border) {
-        if (instantiated) throw new AssertionError();
         this.count = startValue;
         this.border = border;
         setUpwards();
         setRegistryName(StringHelper.createResourceLocation(SpellcraftMod.MODID, "spell_condition_counting"));
-        instantiated = false;
     }
 
     /**
@@ -48,28 +45,6 @@ public class CountingSpellCondition extends AbsSpellCondition { //TODO make sing
             --count;
         }
         return res;
-    }
-
-    @Override
-    public @Nonnull
-    NBTTagCompound serializeNBT() {
-        NBTTagCompound compound = super.serializeNBT();
-        compound.setInteger(KEY_COUNT, count);
-        compound.setInteger(KEY_BORDER, border);
-        compound.setBoolean(KEY_UPWARDS, upwards);
-        return compound;
-    }
-
-    @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
-        super.deserializeNBT(nbt);
-        if (nbt.hasKey(KEY_COUNT))
-            this.count = nbt.getInteger(KEY_COUNT);
-        if (nbt.hasKey(KEY_BORDER))
-            this.border = nbt.getInteger(KEY_BORDER);
-        if (nbt.hasKey(KEY_UPWARDS))
-            this.upwards = nbt.getBoolean(KEY_UPWARDS);
-        else setUpwards();
     }
 
     private void setUpwards() {

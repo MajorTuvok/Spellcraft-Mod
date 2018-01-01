@@ -3,6 +3,8 @@ package com.mt.mcmods.spellcraft.common.spell;
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import com.mt.mcmods.spellcraft.common.registry.RegistryAdvanced;
 import com.mt.mcmods.spellcraft.common.spell.entity.EntitySpell;
+import com.mt.mcmods.spellcraft.common.spell.types.ISpellType;
+import com.mt.mcmods.spellcraft.common.spell.types.SpellTypes;
 import com.mt.mcmods.spellcraft.common.util.NBTHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTBase;

@@ -1,6 +1,6 @@
 package com.mt.mcmods.spellcraft.common.spell.entity;
 
-import com.mt.mcmods.spellcraft.common.spell.ISpellType;
+import com.mt.mcmods.spellcraft.common.spell.types.ISpellType;
 import com.mt.mcmods.spellcraft.common.spell.conditions.ISpellConditionCallback;
 import com.mt.mcmods.spellcraft.common.spell.executables.ISpellExecutableCallback;
 import net.minecraft.entity.player.EntityPlayer;
@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
 
-import static com.mt.mcmods.spellcraft.common.spell.SpellTypes.PLAYER_SPELL_TYPE;
+import static com.mt.mcmods.spellcraft.common.spell.types.SpellTypes.PLAYER_SPELL_TYPE;
 
 public class PlayerSpell extends EntitySpell implements IPlayerSpellExecutableCallback, IPlayerSpellConditionCallback {
     private static final String KEY_SLOT = "PlayerSpell_slot";

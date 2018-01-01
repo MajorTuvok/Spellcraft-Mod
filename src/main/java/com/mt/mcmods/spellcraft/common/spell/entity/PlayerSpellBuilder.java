@@ -1,7 +1,7 @@
 package com.mt.mcmods.spellcraft.common.spell.entity;
 
 import com.mt.mcmods.spellcraft.common.spell.SpellBuilder;
-import com.mt.mcmods.spellcraft.common.spell.SpellTypes;
+import com.mt.mcmods.spellcraft.common.spell.types.SpellTypes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 

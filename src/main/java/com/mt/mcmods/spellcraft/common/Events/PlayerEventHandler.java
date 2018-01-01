@@ -1,6 +1,6 @@
 package com.mt.mcmods.spellcraft.common.Events;
 
-import com.mt.mcmods.spellcraft.common.spell.ISpellType;
+import com.mt.mcmods.spellcraft.common.spell.types.ISpellType;
 import com.mt.mcmods.spellcraft.common.spell.SpellRegistry;
 import com.mt.mcmods.spellcraft.common.spell.entity.EntitySpell;
 import com.mt.mcmods.spellcraft.common.spell.entity.PlayerSpellType;

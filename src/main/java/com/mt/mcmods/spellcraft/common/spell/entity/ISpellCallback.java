@@ -1,6 +1,6 @@
 package com.mt.mcmods.spellcraft.common.spell.entity;
 
-import com.mt.mcmods.spellcraft.common.spell.ISpellType;
+import com.mt.mcmods.spellcraft.common.spell.types.ISpellType;
 
 public interface ISpellCallback {
     /**

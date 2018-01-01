@@ -2,7 +2,7 @@ package com.mt.mcmods.spellcraft.common.spell.conditions;
 
 import com.mt.mcmods.spellcraft.common.BaseContainer;
 import com.mt.mcmods.spellcraft.common.registry.RegistryAdvanced;
-import com.mt.mcmods.spellcraft.common.spell.ISpellType;
+import com.mt.mcmods.spellcraft.common.spell.types.ISpellType;
 import com.mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
@@ -20,6 +20,8 @@ import java.util.Map;
 public class SpellcraftConditions extends BaseContainer<ISpellCondition>
         implements IForgeRegistry.AddCallback<ISpellCondition>, IForgeRegistry.ClearCallback<ISpellCondition>,
         IForgeRegistry.CreateCallback<ISpellCondition>, IForgeRegistry.DummyFactory<ISpellCondition>, IForgeRegistry.MissingFactory<ISpellCondition> {
+    private boolean instantiated = false;
+    private static final SpellcraftConditions INSTANCE = new SpellcraftConditions();
     //Registry Managing fields
     private static final ResourceLocation NAME = new ResourceLocation(StringHelper.createResourceLocation(MODID, "Spell", "Condition", "Registry"));
     private static final ResourceLocation DEFAULT_KEY = new ResourceLocation(StringHelper.createResourceLocation(MODID, "Unidentified", "Spell", "Condition"));
@@ -30,8 +32,14 @@ public class SpellcraftConditions extends BaseContainer<ISpellCondition>
     //Container fields
     public static final CountingSpellCondition COUNTING_SPELL_CONDITION = CountingSpellCondition.getInstance();
 
-    public SpellcraftConditions() {
+    public static SpellcraftConditions getInstance(){
+        return INSTANCE;
+    }
+
+    private SpellcraftConditions() {
         super();
+        if (instantiated) throw new AssertionError();
+        instantiated = true;
     }
 
     @SubscribeEvent

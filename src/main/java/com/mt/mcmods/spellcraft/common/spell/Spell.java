@@ -5,6 +5,7 @@ import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import com.mt.mcmods.spellcraft.common.spell.conditions.ISpellConditionCallback;
 import com.mt.mcmods.spellcraft.common.spell.entity.ISpellCallback;
 import com.mt.mcmods.spellcraft.common.spell.executables.ISpellExecutableCallback;
+import com.mt.mcmods.spellcraft.common.spell.types.ISpellType;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -304,7 +305,7 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
     }
 
     /**
-     * Gets the construction-provided PowerProvider for this Spell-Object, or null if none was set.
+     * Gets the types-provided PowerProvider for this Spell-Object, or null if none was set.
      * Might be null if constructed from NBT and subclasses didn't set the PowerProvider in serialize NBT
      *
      * @return The SpellPowerProvider associated with this Spell

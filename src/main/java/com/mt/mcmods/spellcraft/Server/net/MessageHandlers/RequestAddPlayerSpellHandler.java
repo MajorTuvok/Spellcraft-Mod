@@ -4,7 +4,7 @@ import com.mt.mcmods.spellcraft.Client.net.Messages.RequestNewPlayerSpell;
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import com.mt.mcmods.spellcraft.common.items.wand.ItemWand;
 import com.mt.mcmods.spellcraft.common.spell.SpellRegistry;
-import com.mt.mcmods.spellcraft.common.spell.SpellTypes;
+import com.mt.mcmods.spellcraft.common.spell.types.SpellTypes;
 import com.mt.mcmods.spellcraft.common.spell.entity.PlayerSpell;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;

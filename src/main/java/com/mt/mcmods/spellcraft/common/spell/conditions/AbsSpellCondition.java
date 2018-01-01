@@ -1,8 +1,7 @@
 package com.mt.mcmods.spellcraft.common.spell.conditions;
 
-import com.mt.mcmods.spellcraft.common.spell.ISpellType;
-import com.mt.mcmods.spellcraft.common.spell.SpellTypes;
-import net.minecraft.nbt.NBTTagCompound;
+import com.mt.mcmods.spellcraft.common.spell.types.ISpellType;
+import com.mt.mcmods.spellcraft.common.spell.types.SpellTypes;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.Validate;
 
@@ -19,25 +18,6 @@ public abstract class AbsSpellCondition extends IForgeRegistryEntry.Impl<ISpellC
     @Override
     public List<ISpellType> getSupportedTypes() {
         return SpellTypes.getAll();
-    }
-
-    /**
-     * @return This implementation simply returns a new NBTTagCompound.
-     */
-    @Override
-    public NBTTagCompound serializeNBT() {
-        return new NBTTagCompound();
-    }
-
-    /**
-     * Deserialize NBT-Data for this Spell Condition. This Implementation simply checks whether nbt is null or not. If it is it throws an NullPointerExc
-     *
-     * @param nbt The NBT-Data to deserialize.
-     * @throws NullPointerException if given nbt Data is null.
-     */
-    @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
-        if (nbt == null) throw new NullPointerException("Cannot read null NBT Data");
     }
 
     /**

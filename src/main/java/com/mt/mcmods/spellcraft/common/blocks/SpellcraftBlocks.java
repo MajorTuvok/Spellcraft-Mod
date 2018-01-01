@@ -17,13 +17,21 @@ import javax.annotation.Nullable;
 
 public class SpellcraftBlocks extends BaseContainer<Block> {
 
+    private static boolean instantiated = false;
+    private static final SpellcraftBlocks INSTANCE = new SpellcraftBlocks();
     private static final int GENERATOR_WEIGHT = 2;
     public static BlockWandCraftingTable WAND_CRAFTING_TABLE;
     private final RegistryUtils<Item> itemRegistryUtils;
 
-    public SpellcraftBlocks() {
+    public static SpellcraftBlocks getInstance() {
+        return INSTANCE;
+    }
+
+    private SpellcraftBlocks() {
         super();
         itemRegistryUtils = new RegistryUtils<>();
+        if (instantiated) throw new AssertionError();
+        instantiated = true;
     }
 
     @Override

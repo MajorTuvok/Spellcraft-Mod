@@ -20,6 +20,7 @@ import com.mt.mcmods.spellcraft.common.gui.SpellcraftGuiHandler;
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import com.mt.mcmods.spellcraft.common.items.SpellcraftItems;
 import com.mt.mcmods.spellcraft.common.materials.Materials;
+import com.mt.mcmods.spellcraft.common.spell.conditions.SpellcraftConditions;
 import com.mt.mcmods.spellcraft.common.util.ChannelHolder;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -30,12 +31,14 @@ public abstract class CommonProxy implements ILoggable {
     public static ConfigurationManager CONFIG = new ConfigurationManager();
     public final SpellcraftBlocks blocks;
     public final SpellcraftItems items;
+    public final SpellcraftConditions conditions;
     private final Materials materials;
 
     public CommonProxy() {
-        blocks = new SpellcraftBlocks();
-        items = new SpellcraftItems();
-        materials = new Materials();
+        blocks = SpellcraftBlocks.getInstance();
+        items = SpellcraftItems.getInstance();
+        materials = Materials.getINSTANCE();
+        conditions = SpellcraftConditions.getInstance();
     }
 
     public void preInit(FMLPreInitializationEvent e) {
@@ -44,6 +47,7 @@ public abstract class CommonProxy implements ILoggable {
         materials.onConfigCreated(this);
         items.commonPreInit();
         blocks.commonPreInit();
+        conditions.commonPreInit();
         NetworkRegistry.INSTANCE.registerGuiHandler(SpellcraftMod.instance, new SpellcraftGuiHandler());
         registerMessages();
         SpellcraftCapabilities.registerCapabilities();
@@ -58,6 +62,7 @@ public abstract class CommonProxy implements ILoggable {
     public void postInit(FMLPostInitializationEvent e) {
         items.postInit();
         blocks.postInit();
+        conditions.postInit();
     }
 
     public void serverStarting(FMLServerStartingEvent event) {
@@ -70,10 +75,6 @@ public abstract class CommonProxy implements ILoggable {
     }
 
     public abstract boolean isClient();
-
-    public ConfigurationManager.ToolsConfig getToolsConfig() {
-        return CONFIG.getToolsConfig();
-    }
 
 
     protected void registerMessages() {
