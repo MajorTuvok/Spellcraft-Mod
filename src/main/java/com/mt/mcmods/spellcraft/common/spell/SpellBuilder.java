@@ -2,8 +2,8 @@ package com.mt.mcmods.spellcraft.common.spell;
 
 import com.mt.mcmods.spellcraft.common.exceptions.UnknownSpellStateException;
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
-import com.mt.mcmods.spellcraft.common.spell.components.ISpellExecutable;
 import com.mt.mcmods.spellcraft.common.spell.conditions.ISpellCondition;
+import com.mt.mcmods.spellcraft.common.spell.executables.ISpellExecutable;
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;

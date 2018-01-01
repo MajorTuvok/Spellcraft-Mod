@@ -11,22 +11,23 @@ public class CountingSpellCondition extends AbsSpellCondition { //TODO make sing
     private static final String KEY_COUNT = "CountingSpellCondition_count";
     private static final String KEY_BORDER = "CountingSpellCondition_count";
     private static final String KEY_UPWARDS = "CountingSpellCondition_upwards";
+    private static boolean instantiated = false;
+    private static final CountingSpellCondition INSTANCE = new CountingSpellCondition(0, 10);
     private int count;
     private int border;
     private boolean upwards;
 
-    public CountingSpellCondition() {
-        this.count = 0;
-        this.border = 0;
-        this.upwards = true;
-        setRegistryName(StringHelper.createResourceLocation(SpellcraftMod.MODID, "spell_condition_counting"));
+    public static CountingSpellCondition getInstance() {
+        return INSTANCE;
     }
 
-    public CountingSpellCondition(int startValue, int border) {
+    private CountingSpellCondition(int startValue, int border) {
+        if (instantiated) throw new AssertionError();
         this.count = startValue;
         this.border = border;
         setUpwards();
         setRegistryName(StringHelper.createResourceLocation(SpellcraftMod.MODID, "spell_condition_counting"));
+        instantiated = false;
     }
 
     /**

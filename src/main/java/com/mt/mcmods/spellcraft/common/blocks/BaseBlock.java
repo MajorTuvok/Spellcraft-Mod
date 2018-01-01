@@ -33,7 +33,7 @@ public class BaseBlock extends Block implements INamed, IOreDictNamed, ILoggable
         super(material);
         mName = displayName;
         setCreativeTab(CTabs.TAB_MAIN);
-        setUnlocalizedName(displayName);
+        setUnlocalizedName(getName());
         setRegistryName(getName());
     }
 

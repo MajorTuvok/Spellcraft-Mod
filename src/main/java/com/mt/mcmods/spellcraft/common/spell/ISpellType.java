@@ -2,6 +2,9 @@ package com.mt.mcmods.spellcraft.common.spell;
 
 import net.minecraft.nbt.NBTTagCompound;
 
+/**
+ * SpellTypes must override the equals Method. It is suggested to use single-Element-Enums, as every SpellType should be made a singleton.
+ */
 public interface ISpellType {
     /**
      * Instantiates a Spell

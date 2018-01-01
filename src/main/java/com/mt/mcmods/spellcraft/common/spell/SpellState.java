@@ -2,12 +2,12 @@ package com.mt.mcmods.spellcraft.common.spell;
 
 import com.mt.mcmods.spellcraft.common.exceptions.SpellStateIndexOutOfBoundsException;
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
-import com.mt.mcmods.spellcraft.common.spell.components.ISpellExecutable;
-import com.mt.mcmods.spellcraft.common.spell.components.ISpellExecutableCallback;
-import com.mt.mcmods.spellcraft.common.spell.components.VoidSpellExecutable;
 import com.mt.mcmods.spellcraft.common.spell.conditions.CountingSpellCondition;
 import com.mt.mcmods.spellcraft.common.spell.conditions.ISpellCondition;
 import com.mt.mcmods.spellcraft.common.spell.conditions.ISpellConditionCallback;
+import com.mt.mcmods.spellcraft.common.spell.executables.ISpellExecutable;
+import com.mt.mcmods.spellcraft.common.spell.executables.ISpellExecutableCallback;
+import com.mt.mcmods.spellcraft.common.spell.executables.VoidSpellExecutable;
 import com.mt.mcmods.spellcraft.common.util.NBTHelper;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -56,7 +56,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
             Log.warn("Skipping conditions because of malformed Constructor call! This might result in unexpected behaviour!");
         }
         if (componentsIterator.hasNext()) {
-            Log.warn("Skipping components because of malformed Constructor call! This might result in unexpected behaviour!");
+            Log.warn("Skipping executables because of malformed Constructor call! This might result in unexpected behaviour!");
         }
         if (statesIterator.hasNext()) {
             Log.warn("Skipping states because of malformed Constructor call! This might result in unexpected behaviour!");
@@ -237,7 +237,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
             String nState = nextState.getString();
             while (conditionsIt.hasNext() && conditionsValuesIt.hasNext()) {
                 conditionsIt.next();
-                conditionMap.put(new CountingSpellCondition(0,10) //NBTHelper.deserializeResourceLocation(conditionsIt.next()) - TODO implement as soon as Component registry is finished
+                conditionMap.put(CountingSpellCondition.getInstance() //NBTHelper.deserializeResourceLocation(conditionsIt.next()) - TODO implement as soon as Component registry is finished
                         , NBTHelper.booleanFromNBT(conditionsValuesIt.next()));
 
             }
@@ -248,7 +248,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
             }
             for (NBTBase nbt :
                     components) {
-                componentsList.add(new VoidSpellExecutable() //NBTHelper.deserializeResourceLocation(nbt) TODO implement as soon as Component registry is finished
+                componentsList.add(VoidSpellExecutable.getInstance() //NBTHelper.deserializeResourceLocation(nbt) TODO implement as soon as Component registry is finished
                 );
             }
             return new StateList(conditionMap, componentsList, nState);

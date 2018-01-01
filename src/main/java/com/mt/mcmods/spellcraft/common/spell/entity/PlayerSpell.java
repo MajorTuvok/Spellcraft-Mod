@@ -1,8 +1,8 @@
 package com.mt.mcmods.spellcraft.common.spell.entity;
 
 import com.mt.mcmods.spellcraft.common.spell.ISpellType;
-import com.mt.mcmods.spellcraft.common.spell.components.ISpellExecutableCallback;
 import com.mt.mcmods.spellcraft.common.spell.conditions.ISpellConditionCallback;
+import com.mt.mcmods.spellcraft.common.spell.executables.ISpellExecutableCallback;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 

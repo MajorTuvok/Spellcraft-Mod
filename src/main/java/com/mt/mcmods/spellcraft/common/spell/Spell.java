@@ -2,9 +2,9 @@ package com.mt.mcmods.spellcraft.common.spell;
 
 import com.mt.mcmods.spellcraft.common.Capabilities.spellpower.ISpellPowerProvider;
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
-import com.mt.mcmods.spellcraft.common.spell.components.ISpellExecutableCallback;
 import com.mt.mcmods.spellcraft.common.spell.conditions.ISpellConditionCallback;
 import com.mt.mcmods.spellcraft.common.spell.entity.ISpellCallback;
+import com.mt.mcmods.spellcraft.common.spell.executables.ISpellExecutableCallback;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;

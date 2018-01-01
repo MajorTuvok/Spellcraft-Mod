@@ -1,10 +1,11 @@
-package com.mt.mcmods.spellcraft.common.spell.components;
+package com.mt.mcmods.spellcraft.common.spell.executables;
 
 import com.mt.mcmods.spellcraft.common.spell.ISpellType;
 import com.mt.mcmods.spellcraft.common.spell.SpellTypes;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.Validate;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,7 +16,8 @@ public abstract class AbsSpellExecutable extends IForgeRegistryEntry.Impl<ISpell
      * @return A list of compatible SpellTypes. It is recommended to return an ImmutableList.
      */
     @Override
-    public List<ISpellType> getSupportedTypes() {
+    public @Nonnull
+    List<ISpellType> getSupportedTypes() {
         return SpellTypes.getAll();
     }
 

@@ -10,9 +10,9 @@ import com.mt.mcmods.spellcraft.common.Capabilities.wandproperties.WandPropertyD
 import com.mt.mcmods.spellcraft.common.Events.LeftClickEventHandler;
 import com.mt.mcmods.spellcraft.common.exceptions.UnknownSpellStateException;
 import com.mt.mcmods.spellcraft.common.items.ItemBase;
-import com.mt.mcmods.spellcraft.common.spell.components.VoidSpellExecutable;
-import com.mt.mcmods.spellcraft.common.spell.conditions.CountingSpellCondition;
+import com.mt.mcmods.spellcraft.common.spell.conditions.SpellcraftConditions;
 import com.mt.mcmods.spellcraft.common.spell.entity.PlayerSpellBuilder;
+import com.mt.mcmods.spellcraft.common.spell.executables.SpellcraftExecutables;
 import com.mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
@@ -156,12 +156,12 @@ public class ItemWand extends ItemBase implements LeftClickEventHandler.IClickLi
             boolean res = constructor.addSpellState("TestState");
             res &= constructor.setStartState("TestState");
             res &= constructor.addStateList("TestState");
-            res &= constructor.addComponent("TestState", 0, new VoidSpellExecutable());
+            res &= constructor.addComponent("TestState", 0, SpellcraftExecutables.VOID_EXECUTABLE);
             res &= constructor.setEfficiency(properties.getEfficiency());
             res &= constructor.setMaxPower(properties.getMaxPower());
             res &= constructor.associateWithPlayer(player);
             res &= constructor.setNextState("TestState", 0, "TestState");
-            res &= constructor.setCondition("TestState", 0, new CountingSpellCondition(0, 10), true);
+            res &= constructor.setCondition("TestState", 0, SpellcraftConditions.COUNTING_SPELL_CONDITION, true);
             if (res) {
                 SpellcraftMod.CHANNEL_HOLDER.sendToServer(new RequestNewPlayerSpell(slot, constructor.constructNBT()));
             } else {

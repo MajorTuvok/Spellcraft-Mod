@@ -1,4 +1,4 @@
-package com.mt.mcmods.spellcraft.common.spell.components;
+package com.mt.mcmods.spellcraft.common.spell.executables;
 
 import com.mt.mcmods.spellcraft.common.spell.entity.ISpellCallback;
 

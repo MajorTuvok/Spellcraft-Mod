@@ -1,6 +1,5 @@
-package com.mt.mcmods.spellcraft.common.spell.components;
+package com.mt.mcmods.spellcraft.common.spell.executables;
 
-import com.mt.mcmods.spellcraft.SpellcraftMod;
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import com.mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.nbt.NBTTagCompound;
@@ -8,10 +7,20 @@ import net.minecraft.nbt.NBTTagCompound;
 /**
  * Stub implementation of an SpellComponent.
  */
-public class VoidSpellExecutable extends AbsSpellExecutable {
+public class VoidSpellExecutable extends AbsSpellExecutable implements ILoggable {
+    private static boolean instantiated = false;
+    private static final VoidSpellExecutable INSTANCE = new VoidSpellExecutable();
 
-    public VoidSpellExecutable() {
-        setRegistryName(StringHelper.createResourceLocation(SpellcraftMod.MODID, "spell_component_void"));
+    public static VoidSpellExecutable getInstance() {
+        return INSTANCE;
+    }
+
+    private VoidSpellExecutable() {
+        if (instantiated) {
+            throw new AssertionError();
+        }
+        instantiated = true;
+        setRegistryName(StringHelper.createResourceLocation(MODID, "void", "spell", "executable"));
     }
 
     /**
@@ -22,8 +31,7 @@ public class VoidSpellExecutable extends AbsSpellExecutable {
      */
     @Override
     public boolean execute(ISpellExecutableCallback componentCallback) {
-        ILoggable.Log.info("Executing Void component!!!");
-        componentCallback.extractPower(5);
+        Log.trace("Executing Void component!!!");
         return true;
     }
 

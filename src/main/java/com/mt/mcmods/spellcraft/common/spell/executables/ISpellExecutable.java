@@ -1,10 +1,11 @@
-package com.mt.mcmods.spellcraft.common.spell.components;
+package com.mt.mcmods.spellcraft.common.spell.executables;
 
 import com.mt.mcmods.spellcraft.common.spell.ISpellType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -20,12 +21,13 @@ public interface ISpellExecutable extends INBTSerializable<NBTTagCompound>, IFor
      * @param componentCallback The ConditionCallback representing outside circumstances. Will probably be a Spell who's ISpellType is one of getSupportedTypes(), although this is not guaranteed. Use this to interfere with the outside world.
      * @return Whether or not this Component executed successfully. Return false and call IllegalCallbackDetected if the ISpellConditionCallback is not the required Type.
      */
-    public abstract boolean execute(ISpellExecutableCallback componentCallback);
+    public boolean execute(ISpellExecutableCallback componentCallback);
 
     /**
-     * Return all SpellTypes which are compatible with this component
+     * Return all SpellTypes which are compatible with this component.
      *
-     * @return A list of compatible SpellTypes. It is recommended to return an ImmutableList.
+     * @return A list of compatible SpellTypes. It is recommended to return an ImmutableList. May not be null.
      */
-    public abstract List<ISpellType> getSupportedTypes();
+    public @Nonnull
+    List<ISpellType> getSupportedTypes();
 }

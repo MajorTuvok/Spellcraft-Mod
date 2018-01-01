@@ -45,4 +45,6 @@ public enum PlayerSpellType implements ISpellType {
     public Spell constructableInstance() {
         return new PlayerSpell();
     }
+
+
 }
