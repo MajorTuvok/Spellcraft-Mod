@@ -1,9 +1,10 @@
 package com.mt.mcmods.spellcraft.common.spell;
 
+import com.mt.mcmods.spellcraft.common.exceptions.SpellStateIndexOutOfBoundsException;
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
-import com.mt.mcmods.spellcraft.common.spell.components.ISpellComponent;
-import com.mt.mcmods.spellcraft.common.spell.components.ISpellComponentCallback;
-import com.mt.mcmods.spellcraft.common.spell.components.VoidSpellComponent;
+import com.mt.mcmods.spellcraft.common.spell.components.ISpellExecutable;
+import com.mt.mcmods.spellcraft.common.spell.components.ISpellExecutableCallback;
+import com.mt.mcmods.spellcraft.common.spell.components.VoidSpellExecutable;
 import com.mt.mcmods.spellcraft.common.spell.conditions.CountingSpellCondition;
 import com.mt.mcmods.spellcraft.common.spell.conditions.ISpellCondition;
 import com.mt.mcmods.spellcraft.common.spell.conditions.ISpellConditionCallback;
@@ -36,14 +37,14 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
         this.curIndex = -1;
     }
 
-    public SpellState(String name, List<Map<? extends ISpellCondition, Boolean>> conditions, List<List<? extends ISpellComponent>> components, List<String> states) {
+    public SpellState(String name, List<Map<? extends ISpellCondition, Boolean>> conditions, List<List<? extends ISpellExecutable>> components, List<String> states) {
         this(name);
         Iterator<Map<? extends ISpellCondition, Boolean>> conditionsIterator = conditions.iterator();
-        Iterator<List<? extends ISpellComponent>> componentsIterator = components.iterator();
+        Iterator<List<? extends ISpellExecutable>> componentsIterator = components.iterator();
         Iterator<String> statesIterator = states.iterator();
         while (conditionsIterator.hasNext() && componentsIterator.hasNext() && statesIterator.hasNext()) {
             Map<? extends ISpellCondition, Boolean> condition = conditionsIterator.next();
-            List<? extends ISpellComponent> component = componentsIterator.next();
+            List<? extends ISpellExecutable> component = componentsIterator.next();
             String state = statesIterator.next();
             if (condition != null && !condition.isEmpty() && component != null && !component.isEmpty() && state != null) {
                 commands.add(new StateList(condition, component, state));
@@ -91,7 +92,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
         return false;
     }
 
-    public boolean executeActiveComponent(ISpellComponentCallback callback) {
+    public boolean executeActiveComponent(ISpellExecutableCallback callback) {
         return execute(curIndex, callback);
     }
 
@@ -106,7 +107,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
         return commands.get(index).holdConditionsTrue(conditionCallback);
     }
 
-    private boolean execute(int index, ISpellComponentCallback componentCallback) {
+    private boolean execute(int index, ISpellExecutableCallback componentCallback) {
         checkCommandIndex(index);
         return commands.get(index).execute(componentCallback);
     }
@@ -191,6 +192,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
             String name = compound.getString(KEY_NAME);
             SpellState state = new SpellState(name);
             state.deserializeNBT(compound);
+            return state;
         } else if (compound != null &&
                 !(compound.hasKey(KEY_NAME) && compound.hasKey(KEY_CONDITION_VALUES) && compound.hasKey(KEY_CONDITIONS) && compound.hasKey(KEY_COMPONENTS))) {
             throw new IllegalArgumentException("Attempted to reconstruct a SpellState from an Illegal NBTTagCompound!");
@@ -200,7 +202,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
 
     void checkCommandIndex(int index) {
         if (!hasCommandIndex(index))
-            throw new IndexOutOfBoundsException("Attempted to access SpellState commands with Illegal Index of " + index + " (size is " + commands.size() + ")!");
+            throw new SpellStateIndexOutOfBoundsException("Attempted to access SpellState commands with Illegal Index of " + index + " (size is " + commands.size() + ")!");
     }
 
     boolean hasCommandIndex(int index) {
@@ -208,11 +210,11 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
     }
 
     /**
-     * This class represents one State set in a SpellState. It may only be modified by SpellConstructor
+     * This class represents one State set in a SpellState. It may only be modified by SpellBuilder
      */
     static final class StateList {
         private final Map<ISpellCondition, Boolean> conditions;
-        private final List<ISpellComponent> components;
+        private final List<ISpellExecutable> components;
         private String nextState;
 
         StateList() {
@@ -221,7 +223,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
             this.nextState = "";
         }
 
-        private StateList(Map<? extends ISpellCondition, Boolean> conditions, List<? extends ISpellComponent> components, String nextState) {
+        private StateList(Map<? extends ISpellCondition, Boolean> conditions, List<? extends ISpellExecutable> components, String nextState) {
             this.conditions = new HashMap<>(Validate.notNull(conditions));
             this.components = new ArrayList<>(Validate.notNull(components));
             this.nextState = Validate.notNull(nextState);
@@ -229,11 +231,12 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
 
         private static StateList readFromNBT(NBTTagList conditions, NBTTagList conditionValues, NBTTagList components, NBTTagString nextState) {
             Iterator<NBTBase> conditionsIt = conditions.iterator();
-            Iterator<NBTBase> conditionsValuesIt = conditions.iterator();
+            Iterator<NBTBase> conditionsValuesIt = conditionValues.iterator();
             Map<ISpellCondition, Boolean> conditionMap = new HashMap<>();
-            List<ISpellComponent> componentsList = new LinkedList<>();
+            List<ISpellExecutable> componentsList = new LinkedList<>();
             String nState = nextState.getString();
             while (conditionsIt.hasNext() && conditionsValuesIt.hasNext()) {
+                conditionsIt.next();
                 conditionMap.put(new CountingSpellCondition(0,10) //NBTHelper.deserializeResourceLocation(conditionsIt.next()) - TODO implement as soon as Component registry is finished
                         , NBTHelper.booleanFromNBT(conditionsValuesIt.next()));
 
@@ -245,7 +248,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
             }
             for (NBTBase nbt :
                     components) {
-                componentsList.add(new VoidSpellComponent() //NBTHelper.deserializeResourceLocation(nbt) TODO implement as soon as Component registry is finished
+                componentsList.add(new VoidSpellExecutable() //NBTHelper.deserializeResourceLocation(nbt) TODO implement as soon as Component registry is finished
                 );
             }
             return new StateList(conditionMap, componentsList, nState);
@@ -274,8 +277,8 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
             return true;
         }
 
-        private boolean execute(ISpellComponentCallback callback) {
-            for (ISpellComponent component :
+        private boolean execute(ISpellExecutableCallback callback) {
+            for (ISpellExecutable component :
                     components) {
                 if (!component.execute(callback)) {
                     Log.trace("Component exited. Execution failed!");
@@ -306,7 +309,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
 
         private NBTTagList getComponentResources() {
             NBTTagList locations = new NBTTagList();
-            for (ISpellComponent component :
+            for (ISpellExecutable component :
                     components) {
                 if (component.getRegistryName() != null) {
                     locations.appendTag(NBTHelper.serializeResourceLocation(component.getRegistryName()));
@@ -321,7 +324,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
             return conditions;
         }
 
-        List<ISpellComponent> getComponents() {
+        List<ISpellExecutable> getComponents() {
             return components;
         }
 

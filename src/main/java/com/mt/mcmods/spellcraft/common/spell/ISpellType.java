@@ -17,7 +17,7 @@ public interface ISpellType {
 
     /**
      *
-     * @return A Spell who can be used in a SpellConstructor. This is not a fully usable Instance!
+     * @return A Spell who can be used in a SpellBuilder. This is not a fully usable Instance!
      * @throws InstantiationException on any Error
      */
     public Spell constructableInstance() throws InstantiationException;

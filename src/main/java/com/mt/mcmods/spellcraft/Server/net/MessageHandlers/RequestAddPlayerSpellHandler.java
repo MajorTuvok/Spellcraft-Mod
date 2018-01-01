@@ -1,10 +1,11 @@
 package com.mt.mcmods.spellcraft.Server.net.MessageHandlers;
 
 import com.mt.mcmods.spellcraft.Client.net.Messages.RequestNewPlayerSpell;
-import com.mt.mcmods.spellcraft.common.spell.SpellRegistry;
-import com.mt.mcmods.spellcraft.common.spell.entity.PlayerSpell;
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import com.mt.mcmods.spellcraft.common.items.wand.ItemWand;
+import com.mt.mcmods.spellcraft.common.spell.SpellRegistry;
+import com.mt.mcmods.spellcraft.common.spell.SpellTypes;
+import com.mt.mcmods.spellcraft.common.spell.entity.PlayerSpell;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -29,12 +30,12 @@ public class RequestAddPlayerSpellHandler implements IMessageHandler<RequestNewP
                 ItemStack stack = player.inventory.getStackInSlot(message.getSlot());
                 if (!stack.isEmpty() && stack.getItem() instanceof ItemWand) {
                     try {
-                        PlayerSpell spell = new PlayerSpell(player, message.getSlot());
-                        spell.setEfficiency(message.getEfficiency());
-                        spell.setMaxPower(message.getMaxPower());
+                        PlayerSpell spell = (PlayerSpell) SpellTypes.PLAYER_SPELL_TYPE.instantiate(message.getCompound());
                         SpellRegistry.registerSpell(spell);
                     } catch (IllegalArgumentException e) {
-                        ILoggable.Log.warn("Illegal Player!");
+                        ILoggable.Log.warn("Illegal Player!", e);
+                    } catch (InstantiationException e) {
+                        ILoggable.Log.error("Failed to instantiate Spell!", e);
                     }
                 } else {
                     ILoggable.Log.warn("Attempted to access illegal stack!");

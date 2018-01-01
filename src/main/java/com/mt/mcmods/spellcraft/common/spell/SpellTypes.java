@@ -11,10 +11,17 @@ import java.util.List;
 public class SpellTypes {
     private static final ArrayList<ISpellType> types = new ArrayList<>(1);
 
-    public static final ISpellType PLAYER_SPELL_TYPE = new PlayerSpellType();
+    public static final ISpellType PLAYER_SPELL_TYPE = PlayerSpellType.INSTANCE;
 
     public static void addType(ISpellType type) {
         types.add(type);
+    }
+
+    /**
+     * There should never be an Instance of this class
+     */
+    private SpellTypes() {
+
     }
 
     public static @Nullable

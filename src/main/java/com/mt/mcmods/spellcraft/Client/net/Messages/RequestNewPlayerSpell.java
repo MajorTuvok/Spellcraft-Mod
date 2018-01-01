@@ -2,21 +2,21 @@ package com.mt.mcmods.spellcraft.Client.net.Messages;
 
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class RequestNewPlayerSpell implements IMessage {
     private int slot;
-    private float efficiency;
-    private float maxPower;
+    private NBTTagCompound compound;
 
     public RequestNewPlayerSpell() {
-        this(-1, 100, Float.MAX_VALUE);
+        this(-1, null);
     }
 
-    public RequestNewPlayerSpell(int slot, float efficiency, float maxPower) {
+    public RequestNewPlayerSpell(int slot, NBTTagCompound compound) {
         this.slot = slot;
-        this.efficiency = efficiency;
-        this.maxPower = maxPower;
+        this.compound = compound;
     }
 
     /**
@@ -27,8 +27,7 @@ public class RequestNewPlayerSpell implements IMessage {
     @Override
     public void fromBytes(ByteBuf buf) {
         slot = buf.readInt();
-        efficiency = buf.readFloat();
-        maxPower = buf.readFloat();
+        compound = ByteBufUtils.readTag(buf);
     }
 
     /**
@@ -39,19 +38,14 @@ public class RequestNewPlayerSpell implements IMessage {
     @Override
     public void toBytes(ByteBuf buf) {
         buf.writeInt(slot);
-        buf.writeFloat(efficiency);
-        buf.writeFloat(maxPower);
+        ByteBufUtils.writeTag(buf, compound);
     }
 
     public int getSlot() {
         return slot;
     }
 
-    public float getEfficiency() {
-        return efficiency;
-    }
-
-    public float getMaxPower() {
-        return maxPower;
+    public NBTTagCompound getCompound() {
+        return compound;
     }
 }

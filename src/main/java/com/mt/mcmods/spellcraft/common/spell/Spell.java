@@ -2,10 +2,14 @@ package com.mt.mcmods.spellcraft.common.spell;
 
 import com.mt.mcmods.spellcraft.common.Capabilities.spellpower.ISpellPowerProvider;
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
+import com.mt.mcmods.spellcraft.common.spell.components.ISpellExecutableCallback;
+import com.mt.mcmods.spellcraft.common.spell.conditions.ISpellConditionCallback;
 import com.mt.mcmods.spellcraft.common.spell.entity.ISpellCallback;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -28,6 +32,7 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
     private SpellState currentState; //TODO provide @Nullable annotated getter
     private String displayName;
     private int id;
+    private boolean receivesTickEvents;
     private boolean active;
     private boolean firstTick;
     private float efficiency;
@@ -47,6 +52,7 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
         this.maxPower = Float.MAX_VALUE;
         powerProvider = null;
         this.firstTick = true;
+        this.receivesTickEvents = false;
     }
 
     public Spell(ISpellPowerProvider provider) throws NullPointerException {
@@ -59,14 +65,15 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
         this.states = new HashMap<>();
         this.currentState = null;
         this.firstTick = true;
-        MinecraftForge.EVENT_BUS.register(this);
+        this.receivesTickEvents = false;
+        activate();
     }
 
     public int getId() {
         return id;
     }
 
-    public boolean isActive() {
+    protected boolean isActive() {
         return active;
     }
 
@@ -82,6 +89,11 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
         return states;
     }
 
+    void setCurrentState(SpellState state) {
+        if (state == null) throw new NullPointerException("Cannot have a null State!");
+        this.currentState = state;
+    }
+
     @SubscribeEvent
     public final void onTick(TickEvent.ServerTickEvent event) {
         if (this.firstTick && event.phase != TickEvent.Phase.START) {
@@ -90,7 +102,7 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
             setActive(false);
             onCheckActive();
         } else if (getCurrentState()!= null && isActive()) {
-            if (getCurrentState().executeActiveComponent(null)) {
+            if (getCurrentState().executeActiveComponent(getExecutableCallback())) {
                 onPerform();
             } else {
                 onSpellExecutionFailed();
@@ -110,16 +122,16 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
         return efficiency;
     }
 
-    public void setEfficiency(float efficiency) {
-        this.efficiency = efficiency;
+    void setEfficiency(float efficiency) {
+        this.efficiency = MathHelper.clamp(efficiency, 0, 100);
     }
 
     public float getMaxPower() {
         return maxPower;
     }
 
-    public void setMaxPower(float maxPower) {
-        this.maxPower = maxPower;
+    void setMaxPower(float maxPower) {
+        this.maxPower = Math.max(maxPower, 0);
     }
 
     /**
@@ -186,6 +198,20 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
         }
     }
 
+    void activate() {
+        if (!receivesTickEvents) {
+            MinecraftForge.EVENT_BUS.register(this);
+            this.receivesTickEvents = true;
+        }
+    }
+
+    private void deactivate() {
+        if (receivesTickEvents) {
+            this.receivesTickEvents = false;
+            MinecraftForge.EVENT_BUS.unregister(this);
+        }
+    }
+
     /**
      * Called to determine whether onPerform should be called or not.
      * The implementation must call setActive(true) if the Spell should not be aborted and onPerform should be called.
@@ -194,7 +220,7 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
      */
     protected void onCheckActive() {
         Validate.notNull(getCurrentState(),"Cannot perform Spell Actions with a null SpellState!");
-        setActive(getCurrentState().moveToActiveCondition(null));
+        setActive(getCurrentState().moveToActiveCondition(getConditionCallback())); //TODO Callbacks!
     }
 
     /**
@@ -203,8 +229,14 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
      */
     protected abstract void onPerform();
 
+    protected abstract @MethodsReturnNonnullByDefault
+    ISpellExecutableCallback getExecutableCallback();
+
+    protected abstract @MethodsReturnNonnullByDefault
+    ISpellConditionCallback getConditionCallback();
+
     public void onAbort() {
-        MinecraftForge.EVENT_BUS.unregister(this);
+        deactivate();
         if (SpellRegistry.unregisterSpell(this) == null) {
             Log.error("Malicious Code was able to insert a Spell!!!");
         }

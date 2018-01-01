@@ -1,20 +1,27 @@
 package com.mt.mcmods.spellcraft.common.spell.entity;
 
+import com.mt.mcmods.spellcraft.common.exceptions.SpellInstantiationException;
 import com.mt.mcmods.spellcraft.common.spell.ISpellType;
 import com.mt.mcmods.spellcraft.common.spell.Spell;
 import com.mt.mcmods.spellcraft.common.util.NBTHelper;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class PlayerSpellType implements ISpellType {
+public enum PlayerSpellType implements ISpellType {
+    INSTANCE;
+
     @Override
-    public PlayerSpell instantiate(NBTTagCompound compound) {
-        if (!matches(compound))
-            return null;
-        if (!isPlayerOnServer(compound))
-            return null;
-        PlayerSpell spell = new PlayerSpell();
-        spell.deserializeNBT(compound);
-        return spell;
+    public PlayerSpell instantiate(NBTTagCompound compound) throws InstantiationException {
+        try {
+            if (!matches(compound))
+                return null;
+            if (!isPlayerOnServer(compound))
+                return null;
+            PlayerSpell spell = (PlayerSpell) constructableInstance();
+            spell.deserializeNBT(compound);
+            return spell;
+        } catch (Exception e) {
+            throw new SpellInstantiationException("Failed to instantiate PlayerSpell", e);
+        }
     }
 
     @Override
@@ -32,7 +39,7 @@ public class PlayerSpellType implements ISpellType {
     }
 
     /**
-     * @return A Spell who can be used in a SpellConstructor
+     * @return A Spell who can be used in a SpellBuilder
      */
     @Override
     public Spell constructableInstance() {

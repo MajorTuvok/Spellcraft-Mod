@@ -4,7 +4,6 @@ import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import com.mt.mcmods.spellcraft.common.registry.RegistryAdvanced;
 import com.mt.mcmods.spellcraft.common.spell.entity.EntitySpell;
 import com.mt.mcmods.spellcraft.common.util.NBTHelper;
-import jline.internal.Log;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -139,6 +138,7 @@ public class SpellRegistry extends WorldSavedData {
         idRegistry.putObject(id, spell);
         checkAdditionalRegistration(spell);
         spell.setId(id);
+        spell.activate();
         if (spell2 != null)
             registerSpell(spell2);
     }

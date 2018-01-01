@@ -8,7 +8,9 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import java.util.List;
 
 /**
- * Be aware that all Classes of this need to override the equals Method!
+ * Be aware that all Classes of this need to obey the contract of the equals Method!
+ * This is necessary because instance of this class are heavily used in Collections. Therefore they
+ * will be compared quite often with the equals Method...
  */
 public interface ISpellCondition extends INBTSerializable<NBTTagCompound>, IForgeRegistryEntry<ISpellCondition> {
     /**

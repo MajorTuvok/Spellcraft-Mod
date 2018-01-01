@@ -8,7 +8,11 @@ import com.mt.mcmods.spellcraft.common.Capabilities.wandproperties.IWandProperti
 import com.mt.mcmods.spellcraft.common.Capabilities.wandproperties.WandProperties;
 import com.mt.mcmods.spellcraft.common.Capabilities.wandproperties.WandPropertyDefinition;
 import com.mt.mcmods.spellcraft.common.Events.LeftClickEventHandler;
+import com.mt.mcmods.spellcraft.common.exceptions.UnknownSpellStateException;
 import com.mt.mcmods.spellcraft.common.items.ItemBase;
+import com.mt.mcmods.spellcraft.common.spell.components.VoidSpellExecutable;
+import com.mt.mcmods.spellcraft.common.spell.conditions.CountingSpellCondition;
+import com.mt.mcmods.spellcraft.common.spell.entity.PlayerSpellBuilder;
 import com.mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
@@ -147,7 +151,27 @@ public class ItemWand extends ItemBase implements LeftClickEventHandler.IClickLi
     Tuple<Boolean, EnumActionResult> onAnyLeftClick(EntityPlayer player, ItemStack stack, EnumHand hand, BlockPos pos) {
         int slot = player.inventory.getSlotFor(stack);
         IWandProperties properties = getProperties(stack);
-        SpellcraftMod.CHANNEL_HOLDER.sendToServer(new RequestNewPlayerSpell(slot, properties.getEfficiency(), properties.getMaxPower()));
+        try {
+            PlayerSpellBuilder constructor = new PlayerSpellBuilder();
+            boolean res = constructor.addSpellState("TestState");
+            res &= constructor.setStartState("TestState");
+            res &= constructor.addStateList("TestState");
+            res &= constructor.addComponent("TestState", 0, new VoidSpellExecutable());
+            res &= constructor.setEfficiency(properties.getEfficiency());
+            res &= constructor.setMaxPower(properties.getMaxPower());
+            res &= constructor.associateWithPlayer(player);
+            res &= constructor.setNextState("TestState", 0, "TestState");
+            res &= constructor.setCondition("TestState", 0, new CountingSpellCondition(0, 10), true);
+            if (res) {
+                SpellcraftMod.CHANNEL_HOLDER.sendToServer(new RequestNewPlayerSpell(slot, constructor.constructNBT()));
+            } else {
+                Log.error("Failed to construct Spell");
+            }
+        } catch (InstantiationException e) {
+            Log.error("Failed to instantiate SpellBuilder!", e);
+        } catch (UnknownSpellStateException | IndexOutOfBoundsException e) {
+            Log.error("Failed to create Spell!", e);
+        }
         return new Tuple<>(true, EnumActionResult.PASS);
     }
 

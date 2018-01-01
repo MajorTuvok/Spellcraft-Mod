@@ -1,12 +1,19 @@
 package com.mt.mcmods.spellcraft.common.spell.components;
 
-import jline.internal.Log;
+import com.mt.mcmods.spellcraft.SpellcraftMod;
+import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
+import com.mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * Stub implementation of an SpellComponent.
  */
-public class VoidSpellComponent extends AbsSpellComponent {
+public class VoidSpellExecutable extends AbsSpellExecutable {
+
+    public VoidSpellExecutable() {
+        setRegistryName(StringHelper.createResourceLocation(SpellcraftMod.MODID, "spell_component_void"));
+    }
+
     /**
      * Called by SpellState when execution is required.
      *
@@ -14,15 +21,15 @@ public class VoidSpellComponent extends AbsSpellComponent {
      * @return Whether or not this Component executed successfully. Return false and call IllegalCallbackDetected if the ISpellConditionCallback is not the required Type.
      */
     @Override
-    public boolean execute(ISpellComponentCallback componentCallback) {
-        Log.info("Executing Void component!!!");
+    public boolean execute(ISpellExecutableCallback componentCallback) {
+        ILoggable.Log.info("Executing Void component!!!");
         componentCallback.extractPower(5);
         return true;
     }
 
     @Override
     public NBTTagCompound serializeNBT() {
-        return null;
+        return new NBTTagCompound();
     }
 
     @Override

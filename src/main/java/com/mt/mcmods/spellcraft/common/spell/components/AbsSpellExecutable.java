@@ -8,7 +8,7 @@ import org.apache.commons.lang3.Validate;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class AbsSpellComponent extends IForgeRegistryEntry.Impl<ISpellComponent> implements ISpellComponent, Comparable<ISpellComponent> {
+public abstract class AbsSpellExecutable extends IForgeRegistryEntry.Impl<ISpellExecutable> implements ISpellExecutable, Comparable<ISpellExecutable> {
     /**
      * Return all SpellTypes which are compatible with this component. In case of this implementation SpellTypes.getAll() is returned.
      *
@@ -67,9 +67,9 @@ public abstract class AbsSpellComponent extends IForgeRegistryEntry.Impl<ISpellC
      */
     @Override
     public boolean equals(Object obj) {
-        return obj != null && obj instanceof ISpellComponent
-                && ((((ISpellComponent) obj).getRegistryName() != null && this.getRegistryName() != null && this.getRegistryName().equals(((ISpellComponent) obj).getRegistryName()))
-                || (this.getRegistryName() == null && ((ISpellComponent) obj).getRegistryName() == null));
+        return obj != null && obj instanceof ISpellExecutable
+                && ((((ISpellExecutable) obj).getRegistryName() != null && this.getRegistryName() != null && this.getRegistryName().equals(((ISpellExecutable) obj).getRegistryName()))
+                || (this.getRegistryName() == null && ((ISpellExecutable) obj).getRegistryName() == null));
     }
 
     /**
@@ -111,7 +111,7 @@ public abstract class AbsSpellComponent extends IForgeRegistryEntry.Impl<ISpellC
      *                              from being compared to this object.
      */
     @Override
-    public int compareTo(ISpellComponent o) {
+    public int compareTo(ISpellExecutable o) {
         return Validate.notNull(Validate.notNull(o).getRegistryName()).compareTo(Validate.notNull(this.getRegistryName()));
     }
 }

@@ -1,11 +1,13 @@
 package com.mt.mcmods.spellcraft.common.spell.conditions;
 
-import jline.internal.Log;
+import com.mt.mcmods.spellcraft.SpellcraftMod;
+import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
+import com.mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
 
-public class CountingSpellCondition extends AbsSpellCondition {
+public class CountingSpellCondition extends AbsSpellCondition { //TODO make singelton as soon as Component and Condition registries are created
     private static final String KEY_COUNT = "CountingSpellCondition_count";
     private static final String KEY_BORDER = "CountingSpellCondition_count";
     private static final String KEY_UPWARDS = "CountingSpellCondition_upwards";
@@ -17,12 +19,14 @@ public class CountingSpellCondition extends AbsSpellCondition {
         this.count = 0;
         this.border = 0;
         this.upwards = true;
+        setRegistryName(StringHelper.createResourceLocation(SpellcraftMod.MODID, "spell_condition_counting"));
     }
 
     public CountingSpellCondition(int startValue, int border) {
         this.count = startValue;
         this.border = border;
         setUpwards();
+        setRegistryName(StringHelper.createResourceLocation(SpellcraftMod.MODID, "spell_condition_counting"));
     }
 
     /**
@@ -33,7 +37,7 @@ public class CountingSpellCondition extends AbsSpellCondition {
      */
     @Override
     public boolean holdsTrue(ISpellConditionCallback conditionCallback) {
-        Log.info("Checking Counting SpellCondition!");
+        ILoggable.Log.info("Checking Counting SpellCondition! value=" + count);
         boolean res;
         if (upwards) {
             res = count < border;
