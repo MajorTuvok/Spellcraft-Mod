@@ -29,9 +29,6 @@ public class SpellcraftConditions extends BaseContainer<ISpellCondition>
     public static final ResourceLocation TYPE_EXECUTABLE_ACCESS = new ResourceLocation(StringHelper.createResourceLocation(MODID, "Type", "Condition", "Registry"));
     private static RegistryAdvanced<ISpellType, List<ISpellCondition>> typeConditions;
 
-    //Container fields
-    public static final CountingSpellCondition COUNTING_SPELL_CONDITION = CountingSpellCondition.getInstance();
-
     public static SpellcraftConditions getInstance(){
         return INSTANCE;
     }
@@ -42,17 +39,15 @@ public class SpellcraftConditions extends BaseContainer<ISpellCondition>
         instantiated = true;
     }
 
-    @SubscribeEvent
-    public void create(RegistryEvent.NewRegistry event) {
-        RegistryBuilder<ISpellCondition> builder = new RegistryBuilder<>();
-        builder.setType(ISpellCondition.class)
-                .setName(NAME)
-                .setDefaultKey(DEFAULT_KEY)
-                .disableOverrides()
-                .addCallback(this);
-        registry = builder.create();
-        getUtils().setRegistry(registry);
-        register(COUNTING_SPELL_CONDITION);
+    @Override
+    public void postInit() {
+        super.postInit();
+        Log.info("Found " + registry.getEntries().size() + " registered SpellConditions! :)");
+    }
+
+    @Override
+    public ISpellCondition createDummy(ResourceLocation key) {
+        return CountingSpellCondition.getStateInstance();
     }
 
     @Override
@@ -86,13 +81,28 @@ public class SpellcraftConditions extends BaseContainer<ISpellCondition>
         owner.setSlaveMap(TYPE_EXECUTABLE_ACCESS, typeConditions);
     }
 
-    @Override
-    public ISpellCondition createDummy(ResourceLocation key) {
-        return COUNTING_SPELL_CONDITION;
+    @SubscribeEvent
+    public void create(RegistryEvent.NewRegistry event) {
+        RegistryBuilder<ISpellCondition> builder = new RegistryBuilder<>();
+        builder.setType(ISpellCondition.class)
+                .setName(NAME)
+                .setDefaultKey(DEFAULT_KEY)
+                .disableOverrides()
+                .addCallback(this);
+        registry = builder.create();
+        getUtils().setRegistry(registry);
+        register(CountingSpellCondition.getGlobalInstance());
+        register(CountingSpellCondition.getStateInstance());
+        register(CountingSpellCondition.getLocalInstance());
     }
 
     @Override
     public ISpellCondition createMissing(ResourceLocation key, boolean isNetwork) {
         return null;
+    }
+
+    public @Nullable
+    ISpellCondition findCondition(ResourceLocation location) {
+        return registry.getValue(location);
     }
 }

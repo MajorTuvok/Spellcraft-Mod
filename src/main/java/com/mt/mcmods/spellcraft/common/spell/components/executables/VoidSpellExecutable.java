@@ -1,6 +1,7 @@
 package com.mt.mcmods.spellcraft.common.spell.components.executables;
 
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
+import com.mt.mcmods.spellcraft.common.spell.access.IAttributeProvider;
 import com.mt.mcmods.spellcraft.common.util.StringHelper;
 
 /**
@@ -21,10 +22,11 @@ public class VoidSpellExecutable extends AbsSpellExecutable implements ILoggable
      * Called by SpellState when execution is required.
      *
      * @param componentCallback The ConditionCallback representing outside circumstances. Will probably be a Spell who's ISpellType is one of getSupportedTypes(), although this is not guaranteed. Use this to interfere with the outside world.
+     * @param attributeProvider
      * @return Whether or not this Component executed successfully. Return false and call IllegalCallbackDetected if the ISpellConditionCallback is not the required Type.
      */
     @Override
-    public boolean execute(ISpellExecutableCallback componentCallback) {
+    public boolean execute(ISpellExecutableCallback componentCallback, IAttributeProvider attributeProvider) {
         Log.trace("Executing Void component!!!");
         return true;
     }

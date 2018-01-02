@@ -1,11 +1,16 @@
 package com.mt.mcmods.spellcraft.common.spell.components.conditions;
 
+import com.mt.mcmods.spellcraft.common.spell.access.AccessType;
+import com.mt.mcmods.spellcraft.common.spell.access.IAttributeAccess;
+import com.mt.mcmods.spellcraft.common.spell.access.IAttributeProvider;
+import com.mt.mcmods.spellcraft.common.spell.access.IAttributeSet;
 import com.mt.mcmods.spellcraft.common.spell.types.ISpellType;
 import com.mt.mcmods.spellcraft.common.spell.types.SpellTypes;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 
@@ -69,9 +74,9 @@ public abstract class AbsSpellCondition extends IForgeRegistryEntry.Impl<ISpellC
      */
     @Override
     public boolean equals(Object obj) {
-        return obj != null && obj instanceof ISpellCondition
+        return obj == this || (obj != null && obj instanceof ISpellCondition
                 && ((this.getRegistryName() != null && ((ISpellCondition) obj).getRegistryName() != null && ((ISpellCondition) obj).getRegistryName().equals(this.getRegistryName()))
-                || (this.getRegistryName() == null && ((ISpellCondition) obj).getRegistryName() == null));
+                || (this.getRegistryName() == null && ((ISpellCondition) obj).getRegistryName() == null)));
     }
 
     /**
@@ -115,5 +120,30 @@ public abstract class AbsSpellCondition extends IForgeRegistryEntry.Impl<ISpellC
     @Override
     public int compareTo(@Nonnull ISpellCondition o) {
         return Validate.notNull(Validate.notNull(o).getRegistryName()).compareTo(Validate.notNull(this.getRegistryName()));
+    }
+
+    @Nullable
+    @Override
+    public IAttributeSet getAttributes() {
+        return null;
+    }
+
+    /**
+     * Returns the Attributes for the given AccessType in the given Provider. Invocation will throw an NullPointerException if getAttributes() returns null.
+     * If the given AttributeProvider doesn't have attributes for this SpellConditions RegistryName it will add a new AttributeSet (retrieved via getAttributes()) to the
+     * given Provider and return it.
+     *
+     * @param attributeProvider
+     * @param type
+     * @return
+     */
+    public IAttributeSet getAttributes(IAttributeProvider attributeProvider, AccessType type) {
+        IAttributeAccess attributeAccess = attributeProvider.getAccess(type);
+        if (!attributeAccess.containsAttributeFor(getRegistryName())) {
+            IAttributeSet attributeSet = getAttributes();
+            attributeAccess.putAttributes(attributeSet);
+            return attributeSet;
+        }
+        return attributeAccess.getAttributes(getRegistryName());
     }
 }

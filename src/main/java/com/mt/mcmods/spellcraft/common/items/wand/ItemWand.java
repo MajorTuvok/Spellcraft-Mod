@@ -10,8 +10,8 @@ import com.mt.mcmods.spellcraft.common.Capabilities.wandproperties.WandPropertyD
 import com.mt.mcmods.spellcraft.common.Events.LeftClickEventHandler;
 import com.mt.mcmods.spellcraft.common.exceptions.UnknownSpellStateException;
 import com.mt.mcmods.spellcraft.common.items.ItemBase;
-import com.mt.mcmods.spellcraft.common.spell.components.conditions.SpellcraftConditions;
-import com.mt.mcmods.spellcraft.common.spell.components.executables.SpellcraftExecutables;
+import com.mt.mcmods.spellcraft.common.spell.components.conditions.CountingSpellCondition;
+import com.mt.mcmods.spellcraft.common.spell.components.executables.VoidSpellExecutable;
 import com.mt.mcmods.spellcraft.common.spell.entity.PlayerSpellBuilder;
 import com.mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.client.util.ITooltipFlag;
@@ -152,18 +152,18 @@ public class ItemWand extends ItemBase implements LeftClickEventHandler.IClickLi
         int slot = player.inventory.getSlotFor(stack);
         IWandProperties properties = getProperties(stack);
         try {
-            PlayerSpellBuilder constructor = new PlayerSpellBuilder();
-            boolean res = constructor.addSpellState("TestState");
-            res &= constructor.setStartState("TestState");
-            res &= constructor.addStateList("TestState");
-            res &= constructor.addComponent("TestState", 0, SpellcraftExecutables.VOID_EXECUTABLE);
-            res &= constructor.setEfficiency(properties.getEfficiency());
-            res &= constructor.setMaxPower(properties.getMaxPower());
-            res &= constructor.associateWithPlayer(player);
-            res &= constructor.setNextState("TestState", 0, "TestState");
-            res &= constructor.setCondition("TestState", 0, SpellcraftConditions.COUNTING_SPELL_CONDITION, true);
+            PlayerSpellBuilder builder = new PlayerSpellBuilder();
+            boolean res = builder.addSpellState("TestState");
+            res &= builder.setStartState("TestState");
+            res &= builder.addStateList("TestState");
+            res &= builder.addComponent("TestState", 0, VoidSpellExecutable.getInstance());
+            res &= builder.setEfficiency(properties.getEfficiency());
+            res &= builder.setMaxPower(properties.getMaxPower());
+            res &= builder.associateWithPlayer(player);
+            res &= builder.setNextState("TestState", 0, "TestState");
+            res &= builder.setCondition("TestState", 0, CountingSpellCondition.getStateInstance(), true);
             if (res) {
-                SpellcraftMod.CHANNEL_HOLDER.sendToServer(new RequestNewPlayerSpell(slot, constructor.constructNBT()));
+                SpellcraftMod.CHANNEL_HOLDER.sendToServer(new RequestNewPlayerSpell(slot, builder.constructNBT()));
             } else {
                 Log.error("Failed to construct Spell");
             }

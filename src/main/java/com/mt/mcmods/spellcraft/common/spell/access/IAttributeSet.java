@@ -15,8 +15,10 @@ public interface IAttributeSet extends INBTSerializable<NBTTagCompound>{
     public Set<AccessType> getSupportedAccessTypes();
 
     /**
-     *
+     * This Method must return the RegistryName of the SpellComponent associated with this AttributeSet.
+     * This is necessary so that it is possible to reinstantiate AttributeSets without making any Assumptions via Reflection.
      * @return The identifying ResourceLocation for this AttributeSet
      */
-    public @Nonnull ResourceLocation getKey();
+    public @Nonnull
+    ResourceLocation getComponentRegistryName();
 }

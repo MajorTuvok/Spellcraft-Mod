@@ -1,11 +1,13 @@
 package com.mt.mcmods.spellcraft.common.spell.components.executables;
 
+import com.mt.mcmods.spellcraft.common.spell.access.IAttributeSet;
 import com.mt.mcmods.spellcraft.common.spell.types.ISpellType;
 import com.mt.mcmods.spellcraft.common.spell.types.SpellTypes;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 
@@ -69,9 +71,9 @@ public abstract class AbsSpellExecutable extends IForgeRegistryEntry.Impl<ISpell
      */
     @Override
     public boolean equals(Object obj) {
-        return obj != null && obj instanceof ISpellExecutable
+        return obj == this || (obj != null && obj instanceof ISpellExecutable
                 && ((((ISpellExecutable) obj).getRegistryName() != null && this.getRegistryName() != null && this.getRegistryName().equals(((ISpellExecutable) obj).getRegistryName()))
-                || (this.getRegistryName() == null && ((ISpellExecutable) obj).getRegistryName() == null));
+                || (this.getRegistryName() == null && ((ISpellExecutable) obj).getRegistryName() == null)));
     }
 
     /**
@@ -117,5 +119,9 @@ public abstract class AbsSpellExecutable extends IForgeRegistryEntry.Impl<ISpell
         return Validate.notNull(Validate.notNull(o).getRegistryName()).compareTo(Validate.notNull(this.getRegistryName()));
     }
 
-
+    @Nullable
+    @Override
+    public IAttributeSet getAttributes() {
+        return null;
+    }
 }

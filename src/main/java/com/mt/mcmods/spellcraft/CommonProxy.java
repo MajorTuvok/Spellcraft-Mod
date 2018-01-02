@@ -21,6 +21,7 @@ import com.mt.mcmods.spellcraft.common.items.SpellcraftItems;
 import com.mt.mcmods.spellcraft.common.materials.Materials;
 import com.mt.mcmods.spellcraft.common.spell.SpellRegistry;
 import com.mt.mcmods.spellcraft.common.spell.components.conditions.SpellcraftConditions;
+import com.mt.mcmods.spellcraft.common.spell.components.executables.SpellcraftExecutables;
 import com.mt.mcmods.spellcraft.common.util.ChannelHolder;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -32,6 +33,7 @@ public abstract class CommonProxy implements ILoggable {
     public final SpellcraftBlocks blocks;
     public final SpellcraftItems items;
     public final SpellcraftConditions conditions;
+    public final SpellcraftExecutables executables;
     private final Materials materials;
 
     public CommonProxy() {
@@ -39,6 +41,7 @@ public abstract class CommonProxy implements ILoggable {
         items = SpellcraftItems.getInstance();
         materials = Materials.getINSTANCE();
         conditions = SpellcraftConditions.getInstance();
+        executables = SpellcraftExecutables.getInstance();
     }
 
     public void preInit(FMLPreInitializationEvent e) {
@@ -48,6 +51,7 @@ public abstract class CommonProxy implements ILoggable {
         items.commonPreInit();
         blocks.commonPreInit();
         conditions.commonPreInit();
+        executables.commonPreInit();
         NetworkRegistry.INSTANCE.registerGuiHandler(SpellcraftMod.instance, new SpellcraftGuiHandler());
         registerMessages();
         SpellcraftCapabilities.registerCapabilities();
@@ -63,6 +67,7 @@ public abstract class CommonProxy implements ILoggable {
         items.postInit();
         blocks.postInit();
         conditions.postInit();
+        executables.postInit();
     }
 
     public void serverStarting(FMLServerStartingEvent event) {

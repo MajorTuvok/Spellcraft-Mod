@@ -16,12 +16,12 @@ public abstract class EntitySpell extends Spell {
     public static final String KEY_ENTITY = "EntitySpell_entity";
     public static final String KEY_WORLD = "EntitySpell_world";
     private Entity entity;
-    private static final float ENTITY_ASSOCIATED_DRAW = 0.05f;
+    private static final float ENTITY_ASSOCIATED_DRAW = 0.05f;  //TODO add to config
 
     /**
      * This constructor should only be used with deserializeNBT(NBTTagCompound)
      */
-    public EntitySpell() {
+    protected EntitySpell() {
         super();
     }
 

@@ -4,16 +4,13 @@ import com.mt.mcmods.spellcraft.common.Capabilities.spellpower.ISpellPowerProvid
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import com.mt.mcmods.spellcraft.common.spell.access.AccessType;
 import com.mt.mcmods.spellcraft.common.spell.access.IAttributeAccess;
-import com.mt.mcmods.spellcraft.common.spell.access.IAttributeSet;
 import com.mt.mcmods.spellcraft.common.spell.access.ISpellCallback;
 import com.mt.mcmods.spellcraft.common.spell.components.conditions.ISpellConditionCallback;
 import com.mt.mcmods.spellcraft.common.spell.components.executables.ISpellExecutableCallback;
 import com.mt.mcmods.spellcraft.common.spell.types.ISpellType;
-import com.mt.mcmods.spellcraft.common.util.NBTHelper;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -24,30 +21,42 @@ import org.apache.commons.lang3.Validate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompound> {
-    public static final String KEY_ID = "Spell_id";
     private static final String KEY_ACTIVE = "Spell_active";
+    private static final String KEY_ACCESS_PROVIDER = "Spell_global_access_provider";
+    private static final String KEY_CURRENT_STATE = "Spell_current_state";
     private static final String KEY_EFFICIENCY = "Spell_efficiency";
     private static final String KEY_MAX_POWER = "Spell_maxPower";
-    private static final String KEY_DISPLAY_NAME = "Spell_displayName";
     private static final String KEY_STATES = "Spell_states";
-    private static final String KEY_CURRENT_STATE = "Spell_current_state";
-    private HashMap<String, SpellState> states;
+    private static final String KEY_DISPLAY_NAME = "Spell_displayName";
+    public static final String KEY_ID = "Spell_id";
+    private boolean active;
     private SpellState currentState; //TODO provide @Nullable annotated getter
     private String displayName;
-    private int id;
-    private boolean receivesTickEvents;
-    private boolean active;
-    private boolean firstTick;
     private float efficiency;
+    private boolean firstTick;
+    private IAttributeAccess globalAccess;
+    private int id;
     private float maxPower;
     private ISpellPowerProvider powerProvider;
-    private IAttributeAccess globalAccess;
+    private boolean receivesTickEvents;
     private ISpellCallback spellCallback;
+    private HashMap<String, SpellState> states;
+
+    public Spell(ISpellPowerProvider provider) throws NullPointerException {
+        this.displayName = "";
+        this.id = Integer.MIN_VALUE;
+        this.efficiency = 100.0f;
+        this.maxPower = Float.MAX_VALUE;
+        Validate.notNull(provider, "Cannot construct Spell without PowerProvider");
+        this.powerProvider = provider;
+        this.states = new HashMap<>();
+        this.currentState = null;
+        this.firstTick = true;
+        this.receivesTickEvents = false;
+        activate();
+    }
 
     /**
      * This constructor should only be used in conjunction with deserializeNBT(NBTTagCompound)
@@ -67,67 +76,22 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
         this.spellCallback = null;
     }
 
-    public Spell(ISpellPowerProvider provider) throws NullPointerException {
-        this.displayName = "";
-        this.id = Integer.MIN_VALUE;
-        this.efficiency = 100.0f;
-        this.maxPower = Float.MAX_VALUE;
-        Validate.notNull(provider, "Cannot construct Spell without PowerProvider");
-        this.powerProvider = provider;
-        this.states = new HashMap<>();
-        this.currentState = null;
-        this.firstTick = true;
-        this.receivesTickEvents = false;
-        activate();
-    }
-
     public int getId() {
         return id;
-    }
-
-    protected boolean isActive() {
-        return active;
-    }
-
-    protected void setActive(boolean active) {
-        this.active = active;
     }
 
     void setId(int id) {
         this.id = id;
     }
 
-    HashMap<String, SpellState> getStates() {
-        return states;
+    public @Nullable
+    SpellState getCurrentState() {
+        return currentState;
     }
 
     void setCurrentState(SpellState state) {
         if (state == null) throw new NullPointerException("Cannot have a null State!");
         this.currentState = state;
-    }
-
-    @SubscribeEvent
-    public final void onTick(TickEvent.ServerTickEvent event) {
-        if (this.firstTick && event.phase != TickEvent.Phase.START) {
-            this.firstTick = false;
-        } else if (getCurrentState()!= null && event.phase == TickEvent.Phase.START) {
-            setActive(false);
-            onCheckActive();
-        } else if (getCurrentState()!= null && isActive()) {
-            if (getCurrentState().executeActiveComponent(getExecutableCallback())) {
-                onPerform();
-            } else {
-                onSpellExecutionFailed();
-            }
-            currentState = states.get(currentState.nextState());
-        } else {
-            onAbort(getCurrentState()==null?"No State defined!":null);
-        }
-
-    }
-
-    public @Nullable SpellState getCurrentState() {
-        return currentState;
     }
 
     public float getEfficiency() {
@@ -161,6 +125,70 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
         }
     }
 
+    /**
+     * Gets the types-provided PowerProvider for this Spell-Object, or null if none was set.
+     * Might be null if constructed from NBT and subclasses didn't set the PowerProvider in serialize NBT
+     *
+     * @return The SpellPowerProvider associated with this Spell
+     */
+    public @Nullable
+    ISpellPowerProvider getPowerProvider() {
+        return powerProvider;
+    }
+
+    /**
+     * Allows subclasses to set the spellPowerProvider (for example after serializing NBT).
+     * Providing a null value will have no effect.
+     *
+     * @param provider The new SpellPowerProvider to use
+     */
+    protected void setPowerProvider(ISpellPowerProvider provider) {
+        if (provider != null)
+            powerProvider = provider;
+    }
+
+    /**
+     * @return The ISpellType which can be used for constructing and initializing Spell-Objects
+     */
+    public @Nonnull
+    ISpellType getType() {
+        return getSpellCallback().getSpellType();
+    }
+
+    HashMap<String, SpellState> getStates() {
+        return states;
+    }
+
+    protected boolean isActive() {
+        return active;
+    }
+
+    protected void setActive(boolean active) {
+        this.active = active;
+    }
+
+    protected ISpellCallback getSpellCallback() {
+        if (spellCallback == null) {
+            spellCallback = createSpellCallback();
+        }
+        return spellCallback;
+    }
+
+    protected @Nonnull
+    ISpellExecutableCallback getExecutableCallback() {
+        return (ISpellExecutableCallback) getSpellCallback();
+    }
+
+    protected @Nonnull
+    ISpellConditionCallback getConditionCallback() {
+        return (ISpellConditionCallback) getSpellCallback();
+    }
+
+    protected IAttributeAccess getGlobalAccess() {
+        if (globalAccess == null) globalAccess = createGlobalAccess();
+        return globalAccess;
+    }
+
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound compound = new NBTTagCompound();
@@ -177,6 +205,7 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
             stateList.appendTag(state.serializeNBT());
         }
         compound.setTag(KEY_STATES, stateList);
+        compound.setTag(KEY_ACCESS_PROVIDER, getGlobalAccess().serializeNBT());
         getType().apply(compound);
         return compound;
     }
@@ -208,19 +237,57 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
                 currentState = states.get(nbt.getString(KEY_CURRENT_STATE));
             }
         }
+        if (nbt.hasKey(KEY_ACCESS_PROVIDER))
+            getGlobalAccess().deserializeNBT(nbt.getCompoundTag(KEY_ACCESS_PROVIDER));
+    }
+
+    @SubscribeEvent
+    public final void onTick(TickEvent.ServerTickEvent event) {
+        if (this.firstTick && event.phase != TickEvent.Phase.START) {
+            this.firstTick = false;
+        } else if (getCurrentState() != null && event.phase == TickEvent.Phase.START) {
+            setActive(false);
+            onCheckActive();
+        } else if (getCurrentState() != null && isActive()) {
+            if (getCurrentState().executeActiveComponent(getExecutableCallback(), getGlobalAccess())) {
+                onPerform();
+            } else {
+                onSpellExecutionFailed();
+            }
+            currentState = states.get(currentState.nextState());
+        } else {
+            onAbort(getCurrentState() == null ? "No State defined!" : null);
+        }
+
+    }
+
+    public void onAbort() {
+        deactivate();
+        if (SpellRegistry.unregisterSpell(this) == null) {
+            Log.error("Malicious Code was able to insert a Spell!!!");
+        }
+    }
+
+    public void onAbort(String error) {
+        if (error != null && !error.isEmpty())
+            Log.error("Spell Execution is aborted because an Error occurred: " + error);
+        onAbort();
+    }
+
+    /**
+     * Convenience overload for extractPower(getPowerProvider(), amount)
+     *
+     * @param amount the amount of power to extract
+     * @return The actual amount of power consumed
+     */
+    public float extractPower(float amount) {
+        return extractPower(getPowerProvider(), amount);
     }
 
     void activate() {
         if (!receivesTickEvents) {
             MinecraftForge.EVENT_BUS.register(this);
             this.receivesTickEvents = true;
-        }
-    }
-
-    private void deactivate() {
-        if (receivesTickEvents) {
-            this.receivesTickEvents = false;
-            MinecraftForge.EVENT_BUS.unregister(this);
         }
     }
 
@@ -232,7 +299,7 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
      */
     protected void onCheckActive() {
         Validate.notNull(getCurrentState(),"Cannot perform Spell Actions with a null SpellState!");
-        setActive(getCurrentState().moveToActiveCondition(getConditionCallback())); //TODO Callbacks!
+        setActive(getCurrentState().moveToActiveCondition(getConditionCallback(), getGlobalAccess()));
     }
 
     /**
@@ -243,33 +310,11 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
     protected abstract @Nonnull
     ISpellCallback createSpellCallback();
 
-    protected ISpellCallback getSpellCallback() {
-        if (spellCallback == null) {
-            spellCallback = createSpellCallback();
-        }
-        return spellCallback;
-    }
-
     /**
      * Called when the Spell should do it's Tick Action. Called in TickEvent.Phase.END from onTick.
      * Called after The SpellState executed and will only be called if it executed successfully
      */
     protected abstract void onPerform();
-
-    protected @Nonnull
-    ISpellExecutableCallback getExecutableCallback() {
-        return (ISpellExecutableCallback) getSpellCallback();
-    }
-
-    protected @Nonnull
-    ISpellConditionCallback getConditionCallback() {
-        return (ISpellConditionCallback) getSpellCallback();
-    }
-
-    protected IAttributeAccess getGlobalAccess() {
-        if (globalAccess == null) globalAccess = createGlobalAccess();
-        return globalAccess;
-    }
 
     /**
      * Subclasses should override this, if they wish to provide their own AttributeAccess Implementation.
@@ -278,20 +323,7 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
      */
     protected @Nonnull
     IAttributeAccess createGlobalAccess() {
-        return new AccessProviderImpl();
-    }
-
-    public void onAbort() {
-        deactivate();
-        if (SpellRegistry.unregisterSpell(this) == null) {
-            Log.error("Malicious Code was able to insert a Spell!!!");
-        }
-    }
-
-    public void onAbort(String error) {
-        if (error!=null && !error.isEmpty())
-            Log.error("Spell Execution is aborted because an Error occurred: "+error);
-        onAbort();
+        return new AccessProviderImpl(AccessType.GLOBAL);
     }
 
     /**
@@ -339,38 +371,6 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
     }
 
     /**
-     * Convenience overload for extractPower(getPowerProvider(), amount)
-     *
-     * @param amount the amount of power to extract
-     * @return The actual amount of power consumed
-     */
-    public float extractPower(float amount) {
-        return extractPower(getPowerProvider(), amount);
-    }
-
-    /**
-     * Gets the types-provided PowerProvider for this Spell-Object, or null if none was set.
-     * Might be null if constructed from NBT and subclasses didn't set the PowerProvider in serialize NBT
-     *
-     * @return The SpellPowerProvider associated with this Spell
-     */
-    public @Nullable
-    ISpellPowerProvider getPowerProvider() {
-        return powerProvider;
-    }
-
-    /**
-     * Allows subclasses to set the spellPowerProvider (for example after serializing NBT).
-     * Providing a null value will have no effect.
-     *
-     * @param provider The new SpellPowerProvider to use
-     */
-    protected void setPowerProvider(ISpellPowerProvider provider) {
-        if (provider != null)
-            powerProvider = provider;
-    }
-
-    /**
      * Called by the SpellRegistry when this Spell-Object is moved to the unregistered Spell-List.
      * By default this will simply stop receiving Tick-Events.
      */
@@ -394,119 +394,16 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
         return true;
     }
 
-    protected class AccessProviderImpl implements IAttributeAccess {
-        private static final String KEY_KEYS = "AccessProviderImpl_keys";
-        private static final String KEY_VALUES = "AccessProviderImpl_values";
-        private HashMap<ResourceLocation, IAttributeSet> underlyingMap;
-
-        protected AccessProviderImpl() {
-            this.underlyingMap = new HashMap<>();
+    private void deactivate() {
+        if (receivesTickEvents) {
+            this.receivesTickEvents = false;
+            MinecraftForge.EVENT_BUS.unregister(this);
         }
-
-        /**
-         * Get the Attributes for the given ResourceLocation
-         *
-         * @param key The ResourceLocation to look for
-         * @return The IAttributeSet for the corresponding key, if found. Null if not.
-         * @throws NullPointerException if key was null
-         */
-        @Nullable
-        @Override
-        public IAttributeSet getAttributes(ResourceLocation key) {
-            if (key == null) throw new NullPointerException("Cannot retrieve Attributes for null key");
-            return underlyingMap.get(key);
-        }
-
-        /**
-         * Checks if this AttributeAccess contains the given key
-         *
-         * @param key The key to look for
-         * @return True if this AttributeAccess contains the given key, false if not
-         * @throws NullPointerException if key was null
-         */
-        @Override
-        public boolean containsAttributeFor(ResourceLocation key) {
-            if (key == null) throw new NullPointerException("Cannot check Attributes for null key");
-            return underlyingMap.containsKey(key);
-        }
-
-        /**
-         * Attempts to add the given AttributeSet to this AttributeAccess.
-         * Will fail if it already contains an AttributeSet with the ResourceLocation provided by this AttributeSet.
-         * Will fail if the AttributeSet doesn't permit being added to this Access (e.g. getSupportedTypes).
-         *
-         * @param set The set to add
-         * @return true if the AttributeSet could be added, false if not
-         * @throws NullPointerException if set was null
-         */
-        @Override
-        public boolean putAttributes(IAttributeSet set) {
-            if (set == null) throw new NullPointerException("Cannot add null Attributes");
-            Set<AccessType> types = set.getSupportedAccessTypes();
-            ResourceLocation key = set.getKey();
-            if (underlyingMap.containsKey(key)) return false;
-            if (!types.contains(getType())) return false;
-            underlyingMap.put(key, set);
-            return true;
-        }
-
-        /**
-         * Attempts to remove the AttributeSet for the given key from this AttributeAccess.
-         *
-         * @param key The key for the set to remove
-         * @return An AttributeSet if Operation was successful, null if not
-         * @throws NullPointerException if key was null
-         */
-        @Override
-        public IAttributeSet removeAttributes(ResourceLocation key) {
-            if (key == null) throw new NullPointerException("Cannot remove attributes for null key");
-            return underlyingMap.containsKey(key) ? underlyingMap.remove(key) : null;
-        }
-
-        /**
-         * @return The AccessType of which this AttributeAccess is
-         */
-        @Override
-        public AccessType getType() {
-            return AccessType.GLOBAL;
-        }
-
-        @Override
-        public NBTTagCompound serializeNBT() {
-            NBTTagCompound compound = new NBTTagCompound();
-            NBTTagList keys = new NBTTagList();
-            NBTTagList values = new NBTTagList();
-            for (Map.Entry<ResourceLocation, IAttributeSet> entry :
-                    underlyingMap.entrySet()) {
-                keys.appendTag(NBTHelper.serializeResourceLocation(entry.getKey()));
-                values.appendTag(entry.getValue().serializeNBT());
-            }
-            compound.setTag(KEY_KEYS, keys);
-            compound.setTag(KEY_VALUES, values);
-            return compound;
-        }
-
-        @Override
-        public void deserializeNBT(NBTTagCompound nbt) {
-            if (!nbt.hasKey(KEY_KEYS) || !nbt.hasKey(KEY_VALUES))
-                throw new IllegalArgumentException("Cannot deserialize NBT-Data frin NBTTagCompound which wasn't previously created by serializeNBT");
-            Iterator<NBTBase> keys = ((NBTTagList) nbt.getTag(KEY_KEYS)).iterator();
-            Iterator<NBTBase> values = ((NBTTagList) nbt.getTag(KEY_VALUES)).iterator();
-            while (keys.hasNext() && values.hasNext()) {
-                
-            }
-        }
-
     }
 
     protected abstract class SpellCallbackImpl implements ISpellCallback, ISpellExecutableCallback, ISpellConditionCallback {
 
         protected SpellCallbackImpl() {
-        }
-
-        @Override
-        public void onIllegalCallbackDetected() {
-
         }
 
         /**
@@ -523,15 +420,12 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
         @Override
         public abstract ISpellType getSpellType();
 
+        @Override
+        public void onIllegalCallbackDetected() {
 
-    }
+        }
 
-    /**
-     * @return The ISpellType which can be used for constructing and initializing Spell-Objects
-     */
-    public @Nonnull
-    ISpellType getType() {
-        return getSpellCallback().getSpellType();
+
     }
 
 

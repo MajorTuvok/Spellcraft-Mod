@@ -20,6 +20,8 @@ import java.util.Map;
 public class SpellcraftExecutables extends BaseContainer<ISpellExecutable>
         implements IForgeRegistry.AddCallback<ISpellExecutable>, IForgeRegistry.ClearCallback<ISpellExecutable>,
         IForgeRegistry.CreateCallback<ISpellExecutable>, IForgeRegistry.DummyFactory<ISpellExecutable>, IForgeRegistry.MissingFactory<ISpellExecutable> {
+    private static final SpellcraftExecutables INSTANCE = new SpellcraftExecutables();
+    private boolean instantiated = false;
     //Registry Managing fields
     private static final ResourceLocation NAME = new ResourceLocation(StringHelper.createResourceLocation(MODID, "Spell", "Executable", "Registry"));
     private static final ResourceLocation DEFAULT_KEY = new ResourceLocation(StringHelper.createResourceLocation(MODID, "Unidentified", "Spell", "Executable"));
@@ -30,8 +32,20 @@ public class SpellcraftExecutables extends BaseContainer<ISpellExecutable>
     //Container fields
     public static VoidSpellExecutable VOID_EXECUTABLE = VoidSpellExecutable.getInstance();
 
-    public SpellcraftExecutables() {
+    private SpellcraftExecutables() {
         super();
+        if (instantiated) throw new AssertionError();
+        instantiated = true;
+    }
+
+    public static SpellcraftExecutables getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    public void postInit() {
+        super.postInit();
+        Log.info("Found " + registry.getEntries().size() + " registered SpellExecutables! :)");
     }
 
     @SubscribeEvent
@@ -86,5 +100,10 @@ public class SpellcraftExecutables extends BaseContainer<ISpellExecutable>
     @Override
     public ISpellExecutable createMissing(ResourceLocation key, boolean isNetwork) {
         return null;
+    }
+
+    public @Nullable
+    ISpellExecutable findExecutable(ResourceLocation location) {
+        return registry.getValue(location);
     }
 }
