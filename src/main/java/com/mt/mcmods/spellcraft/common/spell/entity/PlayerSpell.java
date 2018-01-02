@@ -1,8 +1,10 @@
 package com.mt.mcmods.spellcraft.common.spell.entity;
 
+import com.mt.mcmods.spellcraft.common.spell.access.IPlayerSpellConditionCallback;
+import com.mt.mcmods.spellcraft.common.spell.access.IPlayerSpellExecutableCallback;
+import com.mt.mcmods.spellcraft.common.spell.access.ISpellCallback;
 import com.mt.mcmods.spellcraft.common.spell.types.ISpellType;
-import com.mt.mcmods.spellcraft.common.spell.conditions.ISpellConditionCallback;
-import com.mt.mcmods.spellcraft.common.spell.executables.ISpellExecutableCallback;
+import com.mt.mcmods.spellcraft.common.spell.types.SpellTypes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -10,7 +12,7 @@ import javax.annotation.Nonnull;
 
 import static com.mt.mcmods.spellcraft.common.spell.types.SpellTypes.PLAYER_SPELL_TYPE;
 
-public class PlayerSpell extends EntitySpell implements IPlayerSpellExecutableCallback, IPlayerSpellConditionCallback {
+public class PlayerSpell extends EntitySpell {
     private static final String KEY_SLOT = "PlayerSpell_slot";
     private int slot;
 
@@ -32,9 +34,8 @@ public class PlayerSpell extends EntitySpell implements IPlayerSpellExecutableCa
         return (EntityPlayer) super.getEntity();
     }
 
-    @Override
     public @Nonnull
-    ISpellType getType() {
+    ISpellType getSpellType() {
         return PLAYER_SPELL_TYPE;
     }
 
@@ -52,13 +53,26 @@ public class PlayerSpell extends EntitySpell implements IPlayerSpellExecutableCa
             slot = nbt.getInteger(KEY_SLOT);
     }
 
+    /**
+     * Subclasses must override this to provide their own SpellCallback Implementation which, by default, will be used as ConditionCallback and ExecutableCallback.
+     *
+     * @return Returns a new SpellCallback for this Spell-Object. It is not defined when this Method is called and it should therefore not rely upon any instance field.
+     */
+    @Nonnull
     @Override
-    protected ISpellExecutableCallback getExecutableCallback() {
-        return this;
+    protected ISpellCallback createSpellCallback() {
+        return new PlayerSpellCallbackImpl();
     }
 
-    @Override
-    protected ISpellConditionCallback getConditionCallback() {
-        return this;
+    protected class PlayerSpellCallbackImpl extends SpellCallbackImpl implements IPlayerSpellExecutableCallback, IPlayerSpellConditionCallback {
+        @Override
+        public ISpellType getSpellType() {
+            return SpellTypes.PLAYER_SPELL_TYPE;
+        }
+
+        @Override
+        public EntityPlayer getEntity() {
+            return PlayerSpell.this.getEntity();
+        }
     }
 }

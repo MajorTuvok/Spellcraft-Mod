@@ -10,7 +10,6 @@ import com.mt.mcmods.spellcraft.Server.net.MessageHandlers.RequestAddPlayerSpell
 import com.mt.mcmods.spellcraft.Server.net.MessageHandlers.RequestSyncEntitySpellpowerHandler;
 import com.mt.mcmods.spellcraft.Server.net.Messages.ShowParticle;
 import com.mt.mcmods.spellcraft.Server.net.Messages.SyncEntitySpellpower;
-import com.mt.mcmods.spellcraft.common.spell.SpellRegistry;
 import com.mt.mcmods.spellcraft.common.Capabilities.SpellcraftCapabilities;
 import com.mt.mcmods.spellcraft.common.ConfigurationManager;
 import com.mt.mcmods.spellcraft.common.Events.EventHandler;
@@ -20,7 +19,8 @@ import com.mt.mcmods.spellcraft.common.gui.SpellcraftGuiHandler;
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import com.mt.mcmods.spellcraft.common.items.SpellcraftItems;
 import com.mt.mcmods.spellcraft.common.materials.Materials;
-import com.mt.mcmods.spellcraft.common.spell.conditions.SpellcraftConditions;
+import com.mt.mcmods.spellcraft.common.spell.SpellRegistry;
+import com.mt.mcmods.spellcraft.common.spell.components.conditions.SpellcraftConditions;
 import com.mt.mcmods.spellcraft.common.util.ChannelHolder;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;

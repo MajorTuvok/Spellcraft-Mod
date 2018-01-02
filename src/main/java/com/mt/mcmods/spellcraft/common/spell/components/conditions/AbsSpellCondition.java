@@ -1,4 +1,4 @@
-package com.mt.mcmods.spellcraft.common.spell.executables;
+package com.mt.mcmods.spellcraft.common.spell.components.conditions;
 
 import com.mt.mcmods.spellcraft.common.spell.types.ISpellType;
 import com.mt.mcmods.spellcraft.common.spell.types.SpellTypes;
@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class AbsSpellExecutable extends IForgeRegistryEntry.Impl<ISpellExecutable> implements ISpellExecutable, Comparable<ISpellExecutable> {
+public abstract class AbsSpellCondition extends IForgeRegistryEntry.Impl<ISpellCondition> implements ISpellCondition, Comparable<ISpellCondition> {
     /**
      * Return all SpellTypes which are compatible with this component. In case of this implementation SpellTypes.getAll() is returned.
      *
@@ -69,9 +69,9 @@ public abstract class AbsSpellExecutable extends IForgeRegistryEntry.Impl<ISpell
      */
     @Override
     public boolean equals(Object obj) {
-        return obj != null && obj instanceof ISpellExecutable
-                && ((((ISpellExecutable) obj).getRegistryName() != null && this.getRegistryName() != null && this.getRegistryName().equals(((ISpellExecutable) obj).getRegistryName()))
-                || (this.getRegistryName() == null && ((ISpellExecutable) obj).getRegistryName() == null));
+        return obj != null && obj instanceof ISpellCondition
+                && ((this.getRegistryName() != null && ((ISpellCondition) obj).getRegistryName() != null && ((ISpellCondition) obj).getRegistryName().equals(this.getRegistryName()))
+                || (this.getRegistryName() == null && ((ISpellCondition) obj).getRegistryName() == null));
     }
 
     /**
@@ -113,9 +113,7 @@ public abstract class AbsSpellExecutable extends IForgeRegistryEntry.Impl<ISpell
      *                              from being compared to this object.
      */
     @Override
-    public int compareTo(ISpellExecutable o) {
+    public int compareTo(@Nonnull ISpellCondition o) {
         return Validate.notNull(Validate.notNull(o).getRegistryName()).compareTo(Validate.notNull(this.getRegistryName()));
     }
-
-
 }

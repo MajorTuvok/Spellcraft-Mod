@@ -1,4 +1,4 @@
-package com.mt.mcmods.spellcraft.common.spell.executables;
+package com.mt.mcmods.spellcraft.common.spell.components.executables;
 
 import com.mt.mcmods.spellcraft.common.BaseContainer;
 import com.mt.mcmods.spellcraft.common.registry.RegistryAdvanced;

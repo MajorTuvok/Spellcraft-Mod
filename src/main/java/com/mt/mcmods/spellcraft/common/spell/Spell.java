@@ -2,14 +2,18 @@ package com.mt.mcmods.spellcraft.common.spell;
 
 import com.mt.mcmods.spellcraft.common.Capabilities.spellpower.ISpellPowerProvider;
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
-import com.mt.mcmods.spellcraft.common.spell.conditions.ISpellConditionCallback;
-import com.mt.mcmods.spellcraft.common.spell.entity.ISpellCallback;
-import com.mt.mcmods.spellcraft.common.spell.executables.ISpellExecutableCallback;
+import com.mt.mcmods.spellcraft.common.spell.access.AccessType;
+import com.mt.mcmods.spellcraft.common.spell.access.IAttributeAccess;
+import com.mt.mcmods.spellcraft.common.spell.access.IAttributeSet;
+import com.mt.mcmods.spellcraft.common.spell.access.ISpellCallback;
+import com.mt.mcmods.spellcraft.common.spell.components.conditions.ISpellConditionCallback;
+import com.mt.mcmods.spellcraft.common.spell.components.executables.ISpellExecutableCallback;
 import com.mt.mcmods.spellcraft.common.spell.types.ISpellType;
-import mcp.MethodsReturnNonnullByDefault;
+import com.mt.mcmods.spellcraft.common.util.NBTHelper;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -20,8 +24,11 @@ import org.apache.commons.lang3.Validate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
-public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompound>, ISpellCallback {
+public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompound> {
     public static final String KEY_ID = "Spell_id";
     private static final String KEY_ACTIVE = "Spell_active";
     private static final String KEY_EFFICIENCY = "Spell_efficiency";
@@ -39,6 +46,8 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
     private float efficiency;
     private float maxPower;
     private ISpellPowerProvider powerProvider;
+    private IAttributeAccess globalAccess;
+    private ISpellCallback spellCallback;
 
     /**
      * This constructor should only be used in conjunction with deserializeNBT(NBTTagCompound)
@@ -54,6 +63,8 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
         powerProvider = null;
         this.firstTick = true;
         this.receivesTickEvents = false;
+        this.globalAccess = null;
+        this.spellCallback = null;
     }
 
     public Spell(ISpellPowerProvider provider) throws NullPointerException {
@@ -225,16 +236,50 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
     }
 
     /**
+     * Subclasses must override this to provide their own SpellCallback Implementation which, by default, will be used as ConditionCallback and ExecutableCallback.
+     *
+     * @return Returns a new SpellCallback for this Spell-Object. It is not defined when this Method is called and it should therefore not rely upon any instance field.
+     */
+    protected abstract @Nonnull
+    ISpellCallback createSpellCallback();
+
+    protected ISpellCallback getSpellCallback() {
+        if (spellCallback == null) {
+            spellCallback = createSpellCallback();
+        }
+        return spellCallback;
+    }
+
+    /**
      * Called when the Spell should do it's Tick Action. Called in TickEvent.Phase.END from onTick.
      * Called after The SpellState executed and will only be called if it executed successfully
      */
     protected abstract void onPerform();
 
-    protected abstract @MethodsReturnNonnullByDefault
-    ISpellExecutableCallback getExecutableCallback();
+    protected @Nonnull
+    ISpellExecutableCallback getExecutableCallback() {
+        return (ISpellExecutableCallback) getSpellCallback();
+    }
 
-    protected abstract @MethodsReturnNonnullByDefault
-    ISpellConditionCallback getConditionCallback();
+    protected @Nonnull
+    ISpellConditionCallback getConditionCallback() {
+        return (ISpellConditionCallback) getSpellCallback();
+    }
+
+    protected IAttributeAccess getGlobalAccess() {
+        if (globalAccess == null) globalAccess = createGlobalAccess();
+        return globalAccess;
+    }
+
+    /**
+     * Subclasses should override this, if they wish to provide their own AttributeAccess Implementation.
+     *
+     * @return Create the GlobalAccess Object for this Spell. It is not defined when this Method is called and it should therefore not rely upon any instance field.
+     */
+    protected @Nonnull
+    IAttributeAccess createGlobalAccess() {
+        return new AccessProviderImpl();
+    }
 
     public void onAbort() {
         deactivate();
@@ -299,7 +344,6 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
      * @param amount the amount of power to extract
      * @return The actual amount of power consumed
      */
-    @Override
     public float extractPower(float amount) {
         return extractPower(getPowerProvider(), amount);
     }
@@ -350,15 +394,145 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
         return true;
     }
 
+    protected class AccessProviderImpl implements IAttributeAccess {
+        private static final String KEY_KEYS = "AccessProviderImpl_keys";
+        private static final String KEY_VALUES = "AccessProviderImpl_values";
+        private HashMap<ResourceLocation, IAttributeSet> underlyingMap;
+
+        protected AccessProviderImpl() {
+            this.underlyingMap = new HashMap<>();
+        }
+
+        /**
+         * Get the Attributes for the given ResourceLocation
+         *
+         * @param key The ResourceLocation to look for
+         * @return The IAttributeSet for the corresponding key, if found. Null if not.
+         * @throws NullPointerException if key was null
+         */
+        @Nullable
+        @Override
+        public IAttributeSet getAttributes(ResourceLocation key) {
+            if (key == null) throw new NullPointerException("Cannot retrieve Attributes for null key");
+            return underlyingMap.get(key);
+        }
+
+        /**
+         * Checks if this AttributeAccess contains the given key
+         *
+         * @param key The key to look for
+         * @return True if this AttributeAccess contains the given key, false if not
+         * @throws NullPointerException if key was null
+         */
+        @Override
+        public boolean containsAttributeFor(ResourceLocation key) {
+            if (key == null) throw new NullPointerException("Cannot check Attributes for null key");
+            return underlyingMap.containsKey(key);
+        }
+
+        /**
+         * Attempts to add the given AttributeSet to this AttributeAccess.
+         * Will fail if it already contains an AttributeSet with the ResourceLocation provided by this AttributeSet.
+         * Will fail if the AttributeSet doesn't permit being added to this Access (e.g. getSupportedTypes).
+         *
+         * @param set The set to add
+         * @return true if the AttributeSet could be added, false if not
+         * @throws NullPointerException if set was null
+         */
+        @Override
+        public boolean putAttributes(IAttributeSet set) {
+            if (set == null) throw new NullPointerException("Cannot add null Attributes");
+            Set<AccessType> types = set.getSupportedAccessTypes();
+            ResourceLocation key = set.getKey();
+            if (underlyingMap.containsKey(key)) return false;
+            if (!types.contains(getType())) return false;
+            underlyingMap.put(key, set);
+            return true;
+        }
+
+        /**
+         * Attempts to remove the AttributeSet for the given key from this AttributeAccess.
+         *
+         * @param key The key for the set to remove
+         * @return An AttributeSet if Operation was successful, null if not
+         * @throws NullPointerException if key was null
+         */
+        @Override
+        public IAttributeSet removeAttributes(ResourceLocation key) {
+            if (key == null) throw new NullPointerException("Cannot remove attributes for null key");
+            return underlyingMap.containsKey(key) ? underlyingMap.remove(key) : null;
+        }
+
+        /**
+         * @return The AccessType of which this AttributeAccess is
+         */
+        @Override
+        public AccessType getType() {
+            return AccessType.GLOBAL;
+        }
+
+        @Override
+        public NBTTagCompound serializeNBT() {
+            NBTTagCompound compound = new NBTTagCompound();
+            NBTTagList keys = new NBTTagList();
+            NBTTagList values = new NBTTagList();
+            for (Map.Entry<ResourceLocation, IAttributeSet> entry :
+                    underlyingMap.entrySet()) {
+                keys.appendTag(NBTHelper.serializeResourceLocation(entry.getKey()));
+                values.appendTag(entry.getValue().serializeNBT());
+            }
+            compound.setTag(KEY_KEYS, keys);
+            compound.setTag(KEY_VALUES, values);
+            return compound;
+        }
+
+        @Override
+        public void deserializeNBT(NBTTagCompound nbt) {
+            if (!nbt.hasKey(KEY_KEYS) || !nbt.hasKey(KEY_VALUES))
+                throw new IllegalArgumentException("Cannot deserialize NBT-Data frin NBTTagCompound which wasn't previously created by serializeNBT");
+            Iterator<NBTBase> keys = ((NBTTagList) nbt.getTag(KEY_KEYS)).iterator();
+            Iterator<NBTBase> values = ((NBTTagList) nbt.getTag(KEY_VALUES)).iterator();
+            while (keys.hasNext() && values.hasNext()) {
+                
+            }
+        }
+
+    }
+
+    protected abstract class SpellCallbackImpl implements ISpellCallback, ISpellExecutableCallback, ISpellConditionCallback {
+
+        protected SpellCallbackImpl() {
+        }
+
+        @Override
+        public void onIllegalCallbackDetected() {
+
+        }
+
+        /**
+         * Extracts Power from this Spells powerProvider
+         *
+         * @param amount the amount of power to extract
+         * @return The actual amount of power consumed
+         */
+        @Override
+        public float extractPower(float amount) {
+            return Spell.this.extractPower(amount);
+        }
+
+        @Override
+        public abstract ISpellType getSpellType();
+
+
+    }
+
     /**
      * @return The ISpellType which can be used for constructing and initializing Spell-Objects
      */
-    @Override
-    public abstract @Nonnull
-    ISpellType getType();
-
-    @Override
-    public void onIllegalCallbackDetected() {
-
+    public @Nonnull
+    ISpellType getType() {
+        return getSpellCallback().getSpellType();
     }
+
+
 }

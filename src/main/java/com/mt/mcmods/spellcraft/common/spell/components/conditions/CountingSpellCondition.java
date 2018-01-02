@@ -1,13 +1,10 @@
-package com.mt.mcmods.spellcraft.common.spell.conditions;
+package com.mt.mcmods.spellcraft.common.spell.components.conditions;
 
 import com.mt.mcmods.spellcraft.SpellcraftMod;
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import com.mt.mcmods.spellcraft.common.util.StringHelper;
-import net.minecraft.nbt.NBTTagCompound;
 
-import javax.annotation.Nonnull;
-
-public class CountingSpellCondition extends AbsSpellCondition { //TODO make singelton as soon as Component and Condition registries are created
+public class CountingSpellCondition extends AbsSpellCondition {
     private static final String KEY_COUNT = "CountingSpellCondition_count";
     private static final String KEY_BORDER = "CountingSpellCondition_count";
     private static final String KEY_UPWARDS = "CountingSpellCondition_upwards";

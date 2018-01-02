@@ -1,4 +1,4 @@
-package com.mt.mcmods.spellcraft.common.spell.entity;
+package com.mt.mcmods.spellcraft.common.spell.access;
 
 import com.mt.mcmods.spellcraft.common.spell.types.ISpellType;
 
@@ -11,7 +11,7 @@ public interface ISpellCallback {
      */
     public float extractPower(float amount);
 
-    public ISpellType getType();
+    public ISpellType getSpellType();
 
     public void onIllegalCallbackDetected();
 }

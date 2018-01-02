@@ -1,4 +1,4 @@
-package com.mt.mcmods.spellcraft.common.spell.attributes;
+package com.mt.mcmods.spellcraft.common.spell.access;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -6,7 +6,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 public interface IAttributeProvider extends INBTSerializable<NBTTagCompound>{

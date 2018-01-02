@@ -10,9 +10,9 @@ import com.mt.mcmods.spellcraft.common.Capabilities.wandproperties.WandPropertyD
 import com.mt.mcmods.spellcraft.common.Events.LeftClickEventHandler;
 import com.mt.mcmods.spellcraft.common.exceptions.UnknownSpellStateException;
 import com.mt.mcmods.spellcraft.common.items.ItemBase;
-import com.mt.mcmods.spellcraft.common.spell.conditions.SpellcraftConditions;
+import com.mt.mcmods.spellcraft.common.spell.components.conditions.SpellcraftConditions;
+import com.mt.mcmods.spellcraft.common.spell.components.executables.SpellcraftExecutables;
 import com.mt.mcmods.spellcraft.common.spell.entity.PlayerSpellBuilder;
-import com.mt.mcmods.spellcraft.common.spell.executables.SpellcraftExecutables;
 import com.mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;

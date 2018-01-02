@@ -1,4 +1,4 @@
-package com.mt.mcmods.spellcraft.common.spell.attributes;
+package com.mt.mcmods.spellcraft.common.spell.access;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;

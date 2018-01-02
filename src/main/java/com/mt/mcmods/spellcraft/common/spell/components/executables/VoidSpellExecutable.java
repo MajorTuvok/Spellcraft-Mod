@@ -1,8 +1,7 @@
-package com.mt.mcmods.spellcraft.common.spell.executables;
+package com.mt.mcmods.spellcraft.common.spell.components.executables;
 
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import com.mt.mcmods.spellcraft.common.util.StringHelper;
-import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * Stub implementation of an SpellComponent.

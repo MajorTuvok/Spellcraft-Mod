@@ -1,4 +1,4 @@
-package com.mt.mcmods.spellcraft.common.spell.conditions;
+package com.mt.mcmods.spellcraft.common.spell.components.conditions;
 
 import com.mt.mcmods.spellcraft.common.BaseContainer;
 import com.mt.mcmods.spellcraft.common.registry.RegistryAdvanced;

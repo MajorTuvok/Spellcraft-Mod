@@ -2,12 +2,12 @@ package com.mt.mcmods.spellcraft.common.spell;
 
 import com.mt.mcmods.spellcraft.common.exceptions.SpellStateIndexOutOfBoundsException;
 import com.mt.mcmods.spellcraft.common.interfaces.ILoggable;
-import com.mt.mcmods.spellcraft.common.spell.conditions.CountingSpellCondition;
-import com.mt.mcmods.spellcraft.common.spell.conditions.ISpellCondition;
-import com.mt.mcmods.spellcraft.common.spell.conditions.ISpellConditionCallback;
-import com.mt.mcmods.spellcraft.common.spell.executables.ISpellExecutable;
-import com.mt.mcmods.spellcraft.common.spell.executables.ISpellExecutableCallback;
-import com.mt.mcmods.spellcraft.common.spell.executables.VoidSpellExecutable;
+import com.mt.mcmods.spellcraft.common.spell.components.conditions.CountingSpellCondition;
+import com.mt.mcmods.spellcraft.common.spell.components.conditions.ISpellCondition;
+import com.mt.mcmods.spellcraft.common.spell.components.conditions.ISpellConditionCallback;
+import com.mt.mcmods.spellcraft.common.spell.components.executables.ISpellExecutable;
+import com.mt.mcmods.spellcraft.common.spell.components.executables.ISpellExecutableCallback;
+import com.mt.mcmods.spellcraft.common.spell.components.executables.VoidSpellExecutable;
 import com.mt.mcmods.spellcraft.common.util.NBTHelper;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
