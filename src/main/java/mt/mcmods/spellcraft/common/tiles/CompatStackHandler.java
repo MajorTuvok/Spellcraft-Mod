@@ -67,6 +67,31 @@ public class CompatStackHandler extends ItemStackHandler implements ICompatStack
         return super.extractItem(slot, amount, simulate);
     }
 
+    public @Nonnull
+    NonNullList<ItemStack> getSubStack(int singleStack) { //TODO return implementation wrapper
+        validateSlotIndex(singleStack);
+        NonNullList<ItemStack> inv = NonNullList.create();
+        inv.add(stacks.get(singleStack));
+        return inv;
+    }
+
+    public @Nonnull
+    NonNullList<ItemStack> getSubStacks(int from, int to) {
+        validateSlotIndex(from);
+        validateSlotIndex(to);
+        NonNullList<ItemStack> inv = NonNullList.create();
+        if (from < to) {
+            for (int i = from; i <= to; ++i) {
+                inv.add(stacks.get(i));
+            }
+        } else if (from > to) {
+            for (int i = from; i >= to; --i) {
+                inv.add(stacks.get(i));
+            }
+        }
+        return inv;
+    }
+
     //------------------ItemStackHandler Methods ----------------------------------------------
 
 

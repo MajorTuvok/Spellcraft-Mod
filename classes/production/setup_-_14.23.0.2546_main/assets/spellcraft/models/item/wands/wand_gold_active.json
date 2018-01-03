@@ -1,6 +1,6 @@
 {
-  "parent":"spellcraft:item/wands/wand_active",
+  "parent": "spellcraft:item/wands/wand_active",
   "textures": {
-    "layer0":"spellcraft:items/wands/wand_gold_active"
+    "layer0": "spellcraft:items/wands/wand_gold_active"
   }
 }

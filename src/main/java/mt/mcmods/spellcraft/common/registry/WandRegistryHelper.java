@@ -29,6 +29,22 @@ public class WandRegistryHelper {
         return boundDef;
     }
 
+    public boolean hasCorePart(ItemStack stack) {
+        return hasCorePart(new ItemStackWrapper(stack));
+    }
+
+    public boolean hasCorePart(ItemStackWrapper stack) {
+        return coreMap.containsKey(stack);
+    }
+
+    public boolean hasTipPart(ItemStack stack) {
+        return hasTipPart(new ItemStackWrapper(stack));
+    }
+
+    public boolean hasTipPart(ItemStackWrapper stack) {
+        return tipMap.containsKey(stack);
+    }
+
     public void addCorePart(@Nonnull Block coreCraftingItem, @Nonnull WandPropertyDefinition definition) {
         addCorePart(Item.getItemFromBlock(coreCraftingItem), definition);
     }

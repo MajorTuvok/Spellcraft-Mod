@@ -5,8 +5,9 @@
     "uvlock": true
   },
   "variants": {
-    "normal": [{
-
-    }]
+    "normal": [
+      {
+      }
+    ]
   }
 }

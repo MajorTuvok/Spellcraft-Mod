@@ -66,9 +66,9 @@ public class GuiWandCraftingTable extends BaseGui {
                 getDelegate().drawScaledStringTopLeft(I18n.format("tile.wand_crafting_table.gui.wand_properties_standard_info_1",
                         Math.round(definition.getMinMaxPower()), Math.round(definition.getMaxMaxPower())),
                         TEXT_START_X, TEXT_START_Y_2 + INFO_OFFSET, Color.BLACK.getRGB(), TEXT_SCALE * getScaledResolution().getScaleFactor());
-                GlStateManager.enableLighting();
-                GlStateManager.enableDepth();
                 GlStateManager.enableRescaleNormal();
+                GlStateManager.enableDepth();
+                GlStateManager.enableLighting();
                 translateForeground();
             }
         }

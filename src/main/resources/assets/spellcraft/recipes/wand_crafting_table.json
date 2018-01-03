@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "W W",
+    "ICG",
+    "W W"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:log",
+      "data": 0
+    },
+    "I": [
+      {
+        "item": "minecraft:iron_ingot"
+      }
+    ],
+    "C": [
+      {
+        "item": "minecraft:crafting_table"
+      }
+    ],
+    "G": [
+      {
+        "item": "minecraft:gold_ingot"
+      }
+    ]
+  },
+  "result": {
+    "item": "spellcraft:wand_crafting_table",
+    "data": 0
+  }
+}

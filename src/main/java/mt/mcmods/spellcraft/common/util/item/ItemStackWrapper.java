@@ -61,7 +61,7 @@ public class ItemStackWrapper implements Cloneable, INBTSerializable<NBTTagCompo
      */
     @Override
     public int hashCode() {
-        return getStackHash(get());
+        return stack.isEmpty() ? getStackHash(get()) : stack.getItem().hashCode();
     }
 
     /**
@@ -113,7 +113,8 @@ public class ItemStackWrapper implements Cloneable, INBTSerializable<NBTTagCompo
     @Override
     public boolean equals(Object obj) {
         return obj instanceof ItemStackWrapper ?
-                areItemStacksEqual(stack, ((ItemStackWrapper) obj).get()) :
+                ((ItemStackWrapper) obj).get().isEmpty() == this.get().isEmpty() &&
+                        ((!this.get().isEmpty() && this.get().getItem() == ((ItemStackWrapper) obj).get().getItem()) || this.get().isEmpty()) :
                 obj instanceof ItemStack && areItemStacksEqual(get(), (ItemStack) obj);
     }
 
