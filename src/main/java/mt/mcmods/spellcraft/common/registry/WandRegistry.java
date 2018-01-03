@@ -7,10 +7,12 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.NotThreadSafe;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+@NotThreadSafe
 public class WandRegistry {
     public static final WandRegistry INSTANCE = new WandRegistry();
     private RegistryAdvanced<WandRecipe, ItemWand> recipeWandMap;
@@ -28,17 +30,17 @@ public class WandRegistry {
         }
     }
 
-    public void addWand(@Nonnull ItemStack first, @Nonnull ItemStack second, @Nonnull ItemWand wand) {
-        WandRecipe recipe = new WandRecipe(first, second);
+    public void addWand(@Nonnull ItemStack tip, @Nonnull ItemStack core, @Nonnull ItemWand wand) {
+        WandRecipe recipe = new WandRecipe(tip, core);
         recipeWandMap.putObject(recipe, wand);
         wandRecipeMap.putObject(wand, recipe);
     }
 
-    public boolean hasWand(@Nonnull ItemStack first, @Nonnull ItemStack second) {
-        if (first.isEmpty() || second.isEmpty()) {
+    public boolean hasWand(@Nonnull ItemStack tip, @Nonnull ItemStack core) {
+        if (tip.isEmpty() || core.isEmpty()) {
             return false;
         } else {
-            WandRecipe recipe = new WandRecipe(first, second);
+            WandRecipe recipe = new WandRecipe(tip, core);
             boolean res = recipeWandMap.containsKey(recipe);
             return res;
         }
@@ -49,11 +51,11 @@ public class WandRegistry {
     }
 
     public @Nullable
-    ItemWand getWand(@Nonnull ItemStack first, @Nonnull ItemStack second) {
-        if (first.isEmpty() || second.isEmpty()) {
+    ItemWand getWand(@Nonnull ItemStack tip, @Nonnull ItemStack core) {
+        if (tip.isEmpty() || core.isEmpty()) {
             return null;
         } else {
-            WandRecipe recipe = new WandRecipe(first, second);
+            WandRecipe recipe = new WandRecipe(tip, core);
             return recipeWandMap.getObject(recipe);
         }
     }

@@ -3,10 +3,10 @@ itemGroup.Spellcraft=Spellcraft
 
 item.cobblestone_gold_wand.name=gold-tip Cobblestone-Wand
 item.cobblestone_iron_wand.name=iron-tip Cobblestone-Wand
-item.iron_gold_wand.name=gold-tip Iron-Wand
+item.iron_gold_wand.name=iron-tip Gold-Wand
 item.iron_iron_wand.name=iron-tip Iron-Wand
 item.gold_gold_wand.name=gold-tip Gold-Wand
-item.gold_iron_wand.name=iron-tip Gold-Wand
+item.gold_iron_wand.name=gold-tip Iron-Wand
 item.log_gold_wand.name=gold-tip Oak-Wand
 item.log_iron_wand.name=iron-tip Oak-Wand
 item.stone_gold_wand.name=gold-tip Stone-Wand
@@ -17,3 +17,8 @@ wand.max_power=Maximum Spellpower
 
 misc.moreInformation=<Hold SHIFT for more details>
 misc.missing.information=Cannot show Information
+
+tile.wand_crafting_table.name=Wand Crafting Table
+tile.wand_crafting_table.gui.wand_properties_title=%s:
+tile.wand_crafting_table.gui.wand_properties_standard_info_0=Efficiency: %3d-%3d%%
+tile.wand_crafting_table.gui.wand_properties_standard_info_1=Spellpower: %3d-%3d

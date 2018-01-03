@@ -19,8 +19,10 @@ import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.NotThreadSafe;
 import java.util.*;
 
+@NotThreadSafe
 public class SpellRegistry extends WorldSavedData {
     private static final String NAME = ILoggable.MODID + " SpellRegistry-WorldSavedData";
     private static final String KEY_SPELLS = "SpellRegistry_flattenedIdRegistry";

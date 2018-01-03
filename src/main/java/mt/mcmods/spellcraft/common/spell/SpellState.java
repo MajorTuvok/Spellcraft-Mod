@@ -21,8 +21,10 @@ import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.NotThreadSafe;
 import java.util.*;
 
+@NotThreadSafe
 public final class SpellState implements INBTSerializable<NBTTagCompound>, ILoggable {
     private static final String KEY_COMPONENTS = "SpellState_set_components";
     private static final String KEY_CONDITIONS = "SpellState_set_conditions";

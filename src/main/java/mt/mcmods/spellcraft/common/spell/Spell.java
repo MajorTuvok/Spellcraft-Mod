@@ -20,8 +20,10 @@ import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.NotThreadSafe;
 import java.util.HashMap;
 
+@NotThreadSafe
 public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompound> {
     private static final String KEY_ACTIVE = "Spell_active";
     private static final String KEY_ACCESS_PROVIDER = "Spell_global_access_provider";
@@ -32,7 +34,7 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
     private static final String KEY_DISPLAY_NAME = "Spell_displayName";
     public static final String KEY_ID = "Spell_id";
     private boolean active;
-    private SpellState currentState; //TODO provide @Nullable annotated getter
+    private SpellState currentState;
     private String displayName;
     private float efficiency;
     private boolean firstTick;

@@ -311,6 +311,44 @@ public class GuiDrawingDelegate implements ILoggable, IGuiRenderProvider {
      * Draws a string scaled with the given Scale Factor.
      * Coordinates are relative to the bottom right end of the String.
      *
+     * @param text  The String to draw
+     * @param x     The x-Coordinate
+     * @param y     The y-Coordinate
+     * @param color The color to draw with
+     * @param scale The scale to scale the String by
+     */
+    public void drawScaledString(String text, float x, float y, int color, float scale) {
+        float reverse = 1.0f / scale;
+        float yAdd = 4.0f;
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(scale, scale, 1);
+        int length = getFontRenderer().getStringWidth(text);
+        getFontRenderer().drawString(text, Math.round(x * reverse - length), Math.round((y - yAdd) * reverse), color);
+        GlStateManager.popMatrix();
+    }
+
+    /**
+     * Draws a string scaled with the given Scale Factor.
+     * Coordinates are relative to the Top Left end of the String.
+     *
+     * @param text  The String to draw
+     * @param x     The x-Coordinate
+     * @param y     The y-Coordinate
+     * @param color The color to draw with
+     * @param scale The scale to scale the String by
+     */
+    public void drawScaledStringTopLeft(String text, float x, float y, int color, float scale) {
+        float reverse = 1.0f / scale;
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(scale, scale, 1);
+        getFontRenderer().drawString(text, Math.round(x * reverse), Math.round(y * reverse), color);
+        GlStateManager.popMatrix();
+    }
+
+    /**
+     * Draws a string scaled with the given Scale Factor.
+     * Coordinates are relative to the bottom right end of the String.
+     *
      * @param text           The String to draw
      * @param x              The x-Coordinate
      * @param y              The y-Coordinate
@@ -318,7 +356,7 @@ public class GuiDrawingDelegate implements ILoggable, IGuiRenderProvider {
      * @param scale          The scale to scale the String by
      * @param resScaleFactor The ScaleFactor of the current Resolution
      */
-    public void drawScaledString(String text, float x, float y, int color, float scale, float resScaleFactor) {
+    public void drawScaledStringWithResScale(String text, float x, float y, int color, float scale, float resScaleFactor) {
         float reverse = 1.0f / scale;
         float yAdd = 4.0f * resScaleFactor;
         GlStateManager.pushMatrix();
@@ -326,7 +364,23 @@ public class GuiDrawingDelegate implements ILoggable, IGuiRenderProvider {
         int length = getFontRenderer().getStringWidth(text);
         getFontRenderer().drawString(text, Math.round(x * reverse - length), Math.round((y - yAdd) * reverse), color);
         GlStateManager.popMatrix();
+    }
 
+    /**
+     * Draws a string scaled with the given Scale Factor.
+     * Coordinates are relative to the bottom right end of the String.
+     * This Method takes the size of the gui into account and is therefore equal to calling
+     * drawScaledStringWithResScale(text,x+getXSize(),y+getYSize(),color,scale,resScaleFactor).
+     *
+     * @param text           The String to draw
+     * @param x              The x-Coordinate
+     * @param y              The y-Coordinate
+     * @param color          The color to draw with
+     * @param scale          The scale to scale the String by
+     * @param resScaleFactor The ScaleFactor of the current Resolution
+     */
+    public void drawScaledStringWithResScaleInGui(String text, float x, float y, int color, float scale, float resScaleFactor) {
+        drawScaledStringWithResScale(text, x + getXSize(), y + getYSize(), color, scale, resScaleFactor);
     }
 
     //----------------------------Interfaces ---------------------------------------------------------------

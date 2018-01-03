@@ -41,12 +41,12 @@ public class SpellcraftItems extends BaseContainer<Item> {
         ResourceLocation goldLocation = new ResourceLocation(StringHelper.createResourceLocation(ILoggable.MODID, "wands", "wand_gold"));
         WAND_IRON_IRON = help.getWand(StringHelper.createUnlocalizedName("iron", "iron", "wand"), Items.IRON_INGOT, Items.IRON_INGOT);
         WAND_IRON_IRON.setCustomLocation(ironLocation);
-        help.getWand(StringHelper.createUnlocalizedName("iron", "gold", "wand"), Items.IRON_INGOT, Items.GOLD_INGOT).setCustomLocation(goldLocation);
+        help.getWand(StringHelper.createUnlocalizedName("iron", "gold", "wand"), Items.IRON_INGOT, Items.GOLD_INGOT).setCustomLocation(ironLocation);
         help.getWand(StringHelper.createUnlocalizedName("cobblestone", "iron", "wand"), Items.IRON_INGOT, Blocks.COBBLESTONE).setCustomLocation(ironLocation);
         help.getWand(StringHelper.createUnlocalizedName("cobblestone", "gold", "wand"), Items.GOLD_INGOT, Blocks.COBBLESTONE).setCustomLocation(goldLocation);
         help.getWand(StringHelper.createUnlocalizedName("stone", "iron", "wand"), Items.IRON_INGOT, Blocks.STONE).setCustomLocation(ironLocation);
         help.getWand(StringHelper.createUnlocalizedName("stone", "gold", "wand"), Items.GOLD_INGOT, Blocks.STONE).setCustomLocation(goldLocation);
-        help.getWand(StringHelper.createUnlocalizedName("gold", "iron", "wand"), Items.GOLD_INGOT, Items.IRON_INGOT).setCustomLocation(ironLocation);
+        help.getWand(StringHelper.createUnlocalizedName("gold", "iron", "wand"), Items.GOLD_INGOT, Items.IRON_INGOT).setCustomLocation(goldLocation);
         help.getWand(StringHelper.createUnlocalizedName("gold", "gold", "wand"), Items.GOLD_INGOT, Items.GOLD_INGOT).setCustomLocation(goldLocation);
         help.getWand(StringHelper.createUnlocalizedName("log", "iron", "wand"), Items.IRON_INGOT, Blocks.LOG).setCustomLocation(ironLocation);
         help.getWand(StringHelper.createUnlocalizedName("log", "gold", "wand"), Items.GOLD_INGOT, Blocks.LOG).setCustomLocation(goldLocation);

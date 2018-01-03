@@ -9,8 +9,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.NotThreadSafe;
 import java.util.HashMap;
 
+@NotThreadSafe
 public class WandRegistryHelper {
     private HashMap<ItemStackWrapper, WandPropertyDefinition> coreMap;
     private HashMap<ItemStackWrapper, WandPropertyDefinition> tipMap;

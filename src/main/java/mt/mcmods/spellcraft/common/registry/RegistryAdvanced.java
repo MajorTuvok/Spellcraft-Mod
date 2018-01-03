@@ -3,10 +3,12 @@ package mt.mcmods.spellcraft.common.registry;
 import net.minecraft.util.registry.RegistrySimple;
 import org.apache.commons.lang3.Validate;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+@NotThreadSafe
 public class RegistryAdvanced<K, V> extends RegistrySimple<K, V> {
     public RegistryAdvanced() {
         super();

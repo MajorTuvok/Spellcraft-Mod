@@ -2,10 +2,12 @@ package mt.mcmods.spellcraft.common.registry;
 
 import net.minecraft.util.registry.RegistryNamespaced;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+@NotThreadSafe
 public class RegistryNamespacedAdvanced<K, V> extends RegistryNamespaced<K, V> {
     public RegistryNamespacedAdvanced() {
         super();

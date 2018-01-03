@@ -13,12 +13,13 @@ import net.minecraft.util.NonNullList;
 import javax.annotation.Nonnull;
 
 public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
-    private static final int INVENTORY_STACK_TIP = 0;
-    private static final int INVENTORY_STACK_CORE = 1;
-    private static final int INVENTORY_STACK_CRYSTAL = 2;
-    private static final int INVENTORY_STACK_WOOD = 3;
-    private static final int INVENTORY_STACK_WAND = 4;
-    private static final int INVENTORY_SLOTS = 5;
+    public static final int INVENTORY_SLOTS = 5;
+    public static final int INVENTORY_STACK_CORE = 1;
+    public static final int INVENTORY_STACK_CRYSTAL = 2;
+    //better would be an enum - TODO replace with enum
+    public static final int INVENTORY_STACK_TIP = 0;
+    public static final int INVENTORY_STACK_WAND = 4;
+    public static final int INVENTORY_STACK_WOOD = 3;
 
     public TileEntityWandCraftingTable() {
         super(INVENTORY_SLOTS);
@@ -28,7 +29,7 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
         return hasCompatibleWood() && WandRegistry.INSTANCE.hasWand(getTipCraftingStack(), getCoreCraftingStack());
     }
 
-    public void showCraftableWand() { //TODO remove Bug: cannot find Wand if stacks have different sizes than the recipe
+    public void showCraftableWand() {
         if (hasCraftableWand()) {
             ItemWand itemWand = WandRegistry.INSTANCE.getWand(getTipCraftingStack(), getCoreCraftingStack());
             if (itemWand != null && !ItemHelper.areItemsAssignable(getWandCraftingStack(), itemWand)) {

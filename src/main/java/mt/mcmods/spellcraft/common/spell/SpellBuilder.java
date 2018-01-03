@@ -9,8 +9,10 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.NotThreadSafe;
 import java.util.ArrayList;
 
+@NotThreadSafe
 public class SpellBuilder implements ILoggable {
     private boolean isValid;
     private Spell spell;

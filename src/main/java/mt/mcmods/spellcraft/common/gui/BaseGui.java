@@ -7,6 +7,7 @@ import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
@@ -15,23 +16,22 @@ import net.minecraft.entity.player.InventoryPlayer;
 import javax.annotation.Nonnull;
 
 public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvider {
-    private SlotDrawingDelegate delegate;
+    private SlotDrawingDelegate mDelegate;
+    private ScaledResolution mScaledResolution;
 
     public BaseGui(InventoryPlayer inventoryPlayer, BaseGuiContainer inventorySlotsIn, int xSize, int ySize) {
         super(inventorySlotsIn);
         this.xSize = xSize;
         this.ySize = ySize;
-        delegate = new SlotDrawingDelegate(inventoryPlayer, this, inventorySlotsIn);
+        mDelegate = new SlotDrawingDelegate(inventoryPlayer, this, inventorySlotsIn);
+        if (mc != null)
+            mScaledResolution = new ScaledResolution(mc);
+        else
+            mScaledResolution = new ScaledResolution(Minecraft.getMinecraft());
     }
 
-    /**
-     * Adds the buttons (and other controls) to the screen in question. Called when the GUI is displayed and when the
-     * window resizes, the buttonList is cleared beforehand.
-     */
-    @Override
-    public void initGui() {
-        super.initGui();
-        delegate.setMeasurements(getGuiMeasurements());
+    public SlotDrawingDelegate getDelegate() {
+        return mDelegate;
     }
 
     /**
@@ -105,16 +105,27 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
         return new GUIMeasurements(xSize, ySize, guiLeft, guiTop);
     }
 
-    public SlotDrawingDelegate getDelegate() {
-        return delegate;
+    public ScaledResolution getScaledResolution() {
+        return mScaledResolution;
+    }
+
+    /**
+     * Adds the buttons (and other controls) to the screen in question. Called when the GUI is displayed and when the
+     * window resizes, the buttonList is cleared beforehand.
+     */
+    @Override
+    public void initGui() {
+        super.initGui();
+        mDelegate.setMeasurements(getGuiMeasurements());
+        mScaledResolution = new ScaledResolution(mc);
     }
 
     protected void translateForeground() {
-        GlStateManager.translate(-guiLeft, -guiTop, 0);//drawScreen somehow translates the Forground by guiLeft and GuiTop...
+        GlStateManager.translate(-guiLeft, -guiTop, 0);//drawScreen somehow translates the Foreground by guiLeft and GuiTop...
     }
 
     protected void revertTranslateForeground() {
-        GlStateManager.translate(guiLeft, guiTop, 0);//drawScreen somehow translates the Forground by guiLeft and GuiTop...
+        GlStateManager.translate(guiLeft, guiTop, 0);//drawScreen somehow translates the Foreground by guiLeft and GuiTop...
     }
 
 }

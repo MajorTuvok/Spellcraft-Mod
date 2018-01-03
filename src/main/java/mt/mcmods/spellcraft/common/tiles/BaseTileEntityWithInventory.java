@@ -21,12 +21,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-
 public class BaseTileEntityWithInventory extends TileEntity implements IInventory, IMarkDirtyCallback, ILoggable, ITickable {
     private static final String KEY_INVENTORY = "BaseTileEntityWithInventory_inventoryCompound";
     private ICompatStackHandler inventory;
     private ArrayList<TickingRunnable> tickingRunnables;
-    private boolean dirty;
 
     public BaseTileEntityWithInventory(int size) {
         inventory = createInventory(size);
@@ -88,7 +86,8 @@ public class BaseTileEntityWithInventory extends TileEntity implements IInventor
      * @param index
      */
     @Override
-    public ItemStack getStackInSlot(int index) {
+    public @Nonnull
+    ItemStack getStackInSlot(int index) {
         return inventory.getStackInSlot(index);
     }
 
@@ -99,7 +98,8 @@ public class BaseTileEntityWithInventory extends TileEntity implements IInventor
      * @param count
      */
     @Override
-    public ItemStack decrStackSize(int index, int count) {
+    public @Nonnull
+    ItemStack decrStackSize(int index, int count) {
         return inventory.decrStackSize(index, count);
     }
 
@@ -109,7 +109,8 @@ public class BaseTileEntityWithInventory extends TileEntity implements IInventor
      * @param index
      */
     @Override
-    public ItemStack removeStackFromSlot(int index) {
+    public @Nonnull
+    ItemStack removeStackFromSlot(int index) {
         return inventory.removeStackFromSlot(index);
     }
 
@@ -198,16 +199,6 @@ public class BaseTileEntityWithInventory extends TileEntity implements IInventor
     @Override
     public boolean hasCustomName() {
         return inventory.hasCustomName();
-    }
-
-    /**
-     * For tile entities, ensures the chunk containing the tile entity is saved to disk later - the game won't think it
-     * hasn't changed and skip it.
-     */
-    @Override
-    public void markDirty() {
-        super.markDirty();
-        this.dirty = true;
     }
 
     public List<ItemStack> getInvContent() {

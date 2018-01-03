@@ -77,7 +77,7 @@ public class GameOverlayGui extends Gui implements
                 int r = Math.round(255 * (1 - powerFactor));
                 int color = new Color(r, gb, gb).getRGB();
                 String text = "" + Math.round(provider.getPower());
-                delegate.drawScaledString(text, resolution.getScaledWidth(), getBarYPos(resolution), color, 0.8f, resolution.getScaleFactor());
+                delegate.drawScaledStringWithResScale(text, resolution.getScaledWidth(), getBarYPos(resolution), color, 0.8f, resolution.getScaleFactor());
             }
         }
     }
