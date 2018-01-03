@@ -30,8 +30,8 @@ public class SpellcraftConditions extends BaseContainer<ISpellCondition>
     //Container fields
     public static ISpellCondition COUNTING_GLOBAL = CountingSpellCondition.getGlobalInstance();
     private static RegistryAdvanced<ISpellType, List<ISpellCondition>> typeConditions;
-    public static ISpellCondition COUNTING_LOCAL = CountingSpellCondition.getGlobalInstance();
-    public static ISpellCondition COUNTING_STATE = CountingSpellCondition.getGlobalInstance();
+    public static ISpellCondition COUNTING_LOCAL = CountingSpellCondition.getLocalInstance();
+    public static ISpellCondition COUNTING_STATE = CountingSpellCondition.getStateInstance();
     public static final ResourceLocation TYPE_CONDITION_ACCESS = new ResourceLocation(StringHelper.createResourceLocation(ILoggable.MODID, "Type", "Condition", "Registry"));
 
     public static SpellcraftConditions getInstance(){

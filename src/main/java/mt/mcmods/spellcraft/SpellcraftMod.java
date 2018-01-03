@@ -15,7 +15,7 @@ public class SpellcraftMod implements ILoggable {
     public static ChannelHolder CHANNEL_HOLDER = null;
     @Mod.Instance(MODID)
     public static SpellcraftMod instance = new SpellcraftMod();
-    @SidedProxy(clientSide = "com.mt.mcmods.spellcraft.ClientProxy", serverSide = "com.mt.mcmods.spellcraft.ServerProxy")
+    @SidedProxy(clientSide = "mt.mcmods.spellcraft.ClientProxy", serverSide = "mt.mcmods.spellcraft.ServerProxy")
     public static CommonProxy proxy;
 
     @Mod.EventHandler
