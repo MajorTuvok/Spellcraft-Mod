@@ -17,14 +17,16 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BaseTileEntityWithInventory extends TileEntity implements IInventory, IMarkDirtyCallback, ILoggable, ITickable {
-    private static final String NBT_COMPOUND_NAME_INVENTORY = "BaseTileEntityWithInventory_inventoryCompound";
+    private static final String KEY_INVENTORY = "BaseTileEntityWithInventory_inventoryCompound";
     private ICompatStackHandler inventory;
     private ArrayList<TickingRunnable> tickingRunnables;
+    private boolean dirty;
 
     public BaseTileEntityWithInventory(int size) {
         inventory = createInventory(size);
@@ -33,22 +35,22 @@ public class BaseTileEntityWithInventory extends TileEntity implements IInventor
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-        compound.setTag(NBT_COMPOUND_NAME_INVENTORY, inventory.serializeNBT());
-        return super.writeToNBT(compound);
+    public void readFromNBT(NBTTagCompound compound) {
+        inventory.deserializeNBT(compound.getCompoundTag(KEY_INVENTORY));
+        super.readFromNBT(compound);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        inventory.deserializeNBT(compound.getCompoundTag(NBT_COMPOUND_NAME_INVENTORY));
-        super.readFromNBT(compound);
+    public @Nonnull
+    NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        compound.setTag(KEY_INVENTORY, inventory.serializeNBT());
+        return super.writeToNBT(compound);
     }
 
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
         return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
     }
-
 
     @Override
     public @Nullable
@@ -196,6 +198,16 @@ public class BaseTileEntityWithInventory extends TileEntity implements IInventor
     @Override
     public boolean hasCustomName() {
         return inventory.hasCustomName();
+    }
+
+    /**
+     * For tile entities, ensures the chunk containing the tile entity is saved to disk later - the game won't think it
+     * hasn't changed and skip it.
+     */
+    @Override
+    public void markDirty() {
+        super.markDirty();
+        this.dirty = true;
     }
 
     public List<ItemStack> getInvContent() {

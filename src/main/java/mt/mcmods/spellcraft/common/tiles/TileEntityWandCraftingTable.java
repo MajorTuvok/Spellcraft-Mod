@@ -7,6 +7,7 @@ import mt.mcmods.spellcraft.common.util.item.ItemHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nonnull;
@@ -202,6 +203,16 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
             if (index == INVENTORY_STACK_WAND && ItemHelper.isWand(getStackInSlot(index)))
                 craftWand();
             return super.removeStackFromSlot(index);
+        }
+
+        @Override
+        public NBTTagCompound serializeNBT() {
+            return super.serializeNBT();
+        }
+
+        @Override
+        public void deserializeNBT(NBTTagCompound nbt) {
+            super.deserializeNBT(nbt);
         }
     }
 }

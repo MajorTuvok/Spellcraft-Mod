@@ -85,8 +85,8 @@ public class WandRegistry {
 
         @Override
         public int hashCode() {
-            int result = getHead().isEmpty() ? 1 : getHead().getItem().hashCode();
-            result = 31 * result + (getCore().isEmpty() ? 1 : getCore().getItem().hashCode());
+            int result = getHead().getItem().hashCode(); //direct call possible, because Stacks used may not be empty
+            result = 31 * result + getCore().getItem().hashCode();
             return result;
         }
 
@@ -99,44 +99,8 @@ public class WandRegistry {
         }
 
         /**
-         * Indicates whether some other object is "equal to" this one.
-         * <p>
-         * The {@code equals} method implements an equivalence relation
-         * on non-null object references:
-         * <ul>
-         * <li>It is <i>reflexive</i>: for any non-null reference value
-         * {@code x}, {@code x.equals(x)} should return
-         * {@code true}.
-         * <li>It is <i>symmetric</i>: for any non-null reference values
-         * {@code x} and {@code y}, {@code x.equals(y)}
-         * should return {@code true} if and only if
-         * {@code y.equals(x)} returns {@code true}.
-         * <li>It is <i>transitive</i>: for any non-null reference values
-         * {@code x}, {@code y}, and {@code z}, if
-         * {@code x.equals(y)} returns {@code true} and
-         * {@code y.equals(z)} returns {@code true}, then
-         * {@code x.equals(z)} should return {@code true}.
-         * <li>It is <i>consistent</i>: for any non-null reference values
-         * {@code x} and {@code y}, multiple invocations of
-         * {@code x.equals(y)} consistently return {@code true}
-         * or consistently return {@code false}, provided no
-         * information used in {@code equals} comparisons on the
-         * objects is modified.
-         * <li>For any non-null reference value {@code x},
-         * {@code x.equals(null)} should return {@code false}.
-         * </ul>
-         * <p>
-         * The {@code equals} method for class {@code Object} implements
-         * the most discriminating possible equivalence relation on objects;
-         * that is, for any non-null reference values {@code x} and
-         * {@code y}, this method returns {@code true} if and only
-         * if {@code x} and {@code y} refer to the same object
-         * ({@code x == y} has the value {@code true}).
-         * <p>
-         * Note that it is generally necessary to override the {@code hashCode}
-         * method whenever this method is overridden, so as to maintain the
-         * general contract for the {@code hashCode} method, which states
-         * that equal objects must have equal hash codes.
+         * This Equals Method compares the two Recipes by checking whether the Items in both WandRecipes (checking whether it is a WandRecipe first) are equal.
+         * It does not take StackSizes into account.
          *
          * @param obj the reference object with which to compare.
          * @return {@code true} if this object is the same as the obj
@@ -149,7 +113,8 @@ public class WandRegistry {
             boolean res = false;
             if (obj instanceof WandRecipe) {
                 WandRecipe recipe = (WandRecipe) obj;
-                res = recipe.getCore().getItem() == this.getCore().getItem() && recipe.getHead().getItem() == this.getHead().getItem();
+                //using equals to ensure compatibility if they ever remove there Item-Singleton principle (Object.equals is effectively the same as ==)
+                res = recipe.getCore().getItem().equals(this.getCore().getItem()) && recipe.getHead().getItem().equals(this.getHead().getItem());
             }
             return res;
         }

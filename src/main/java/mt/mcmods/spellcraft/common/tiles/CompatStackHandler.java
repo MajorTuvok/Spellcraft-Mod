@@ -40,15 +40,40 @@ public class CompatStackHandler extends ItemStackHandler implements ICompatStack
         init();
     }
 
-//------------------ItemStackHandler Methods ----------------------------------------------
+    @Override
+    public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+        super.setStackInSlot(slot, stack);
+        markDirty();
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack getStackInSlot(int slot) {
+        markDirty();
+        return super.getStackInSlot(slot);
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+        markDirty();
+        return super.insertItem(slot, stack, simulate);
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        markDirty();
+        return super.extractItem(slot, amount, simulate);
+    }
+
+    //------------------ItemStackHandler Methods ----------------------------------------------
 
 
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound tagCompound = super.serializeNBT();
-        boolean hasName = hasCustomName();
-        tagCompound.setBoolean(NBT_NAME_HAS_NAME, hasName);
-        if (hasName) {
+        if (hasCustomName()) {
             tagCompound.setString(NBT_NAME_NAME, mName);
         }
         return tagCompound;
@@ -57,7 +82,7 @@ public class CompatStackHandler extends ItemStackHandler implements ICompatStack
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
         super.deserializeNBT(nbt);
-        if (nbt.getBoolean(NBT_NAME_HAS_NAME)) {
+        if (nbt.hasKey(NBT_NAME_NAME)) {
             mName = nbt.getString(NBT_NAME_NAME);
         } else {
             mName = null;
