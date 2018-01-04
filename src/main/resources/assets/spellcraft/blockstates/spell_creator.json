@@ -1,0 +1,13 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "spellcraft:spell_creator",
+    "uvlock": true
+  },
+  "variants": {
+    "normal": [
+      {
+      }
+    ]
+  }
+}

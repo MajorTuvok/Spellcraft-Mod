@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "spellcraft:blocks/spell_creator_top",
+    "down": "spellcraft:blocks/spell_creator_side",
+    "up": "spellcraft:blocks/spell_creator_top",
+    "north": "spellcraft:blocks/spell_creator_side",
+    "east": "spellcraft:blocks/spell_creator_side",
+    "south": "spellcraft:blocks/spell_creator_side",
+    "west": "spellcraft:blocks/spell_creator_side"
+  }
+}

@@ -21,8 +21,9 @@ public class SpellcraftBlocks extends BaseContainer<Block> {
     private static boolean instantiated = false;
     private static final SpellcraftBlocks INSTANCE = new SpellcraftBlocks();
     private static final int GENERATOR_WEIGHT = 2;
-    public static BlockWandCraftingTable WAND_CRAFTING_TABLE;
     private final RegistryUtils<Item> itemRegistryUtils;
+    public static BlockSpellCreator SPELL_CREATOR;
+    public static BlockWandCraftingTable WAND_CRAFTING_TABLE;
 
     public static SpellcraftBlocks getInstance() {
         return INSTANCE;
@@ -38,6 +39,7 @@ public class SpellcraftBlocks extends BaseContainer<Block> {
     private static void createBlocks() {
         ILoggable.Log.info("Creating Blocks");
         WAND_CRAFTING_TABLE = new BlockWandCraftingTable();
+        SPELL_CREATOR = new BlockSpellCreator();
     }
 
     @Override
@@ -45,10 +47,12 @@ public class SpellcraftBlocks extends BaseContainer<Block> {
     public void onRegistryEvent(RegistryEvent.Register<Block> e) {
         createBlocks();
         super.onRegistryEvent(e);
-        ILoggable.Log.info("Registering SpellcraftBlocks");
+        ILoggable.Log.info("Registering Blocks");
         register(WAND_CRAFTING_TABLE);
-        ILoggable.Log.info("Adding SpellcraftItemBlocks");
+        register(SPELL_CREATOR);
+        ILoggable.Log.info("Adding ItemBlocks");
         registerBlockItem(WAND_CRAFTING_TABLE);
+        registerBlockItem(SPELL_CREATOR);
     }
 
     @Override

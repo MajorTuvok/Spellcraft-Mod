@@ -21,3 +21,4 @@ tile.wand_crafting_table.name=Zauberstab Crafting Table
 tile.wand_crafting_table.gui.wand_properties_title=%s:
 tile.wand_crafting_table.gui.wand_properties_standard_info_0=Effizienz: %d%%-%d%%
 tile.wand_crafting_table.gui.wand_properties_standard_info_1=Zauberspruchkraft: %d-%d
+tile.spell_creator.name=Zauberspruch Erschaffer

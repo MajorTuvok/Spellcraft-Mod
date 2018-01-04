@@ -50,8 +50,8 @@ public class BaseContainer<T extends IForgeRegistryEntry<T>> implements ILoggabl
         getUtils().clientInit();
     }
 
-    protected void register(T thing) {
-        getUtils().register(thing);
+    protected T register(T thing) {
+        return getUtils().register(thing);
     }
 
     @SideOnly(Side.CLIENT)

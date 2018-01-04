@@ -21,7 +21,7 @@ public abstract class BaseTileEntityBlock<T extends TileEntity> extends BaseBloc
 
     @Override
     @SuppressWarnings("unchecked")
-//Because we created this Block to provide TileEntity's of Type T we can return them safely. Be aware that calling this on a Block who is not an Corresponding Block will result in an CalssCastException.
+//Because we created this Block to provide TileEntity's of Type T we can return them safely. Be aware that calling this on a Block who is not an Corresponding Block will result in an ClassCastException.
     public T getTileEntity(IBlockAccess world, BlockPos pos) {
         return (T) world.getTileEntity(pos);
     }

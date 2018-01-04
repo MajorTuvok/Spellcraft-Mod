@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
 import java.util.EnumSet;
 import java.util.Set;
 
-public class CountingSpellCondition extends AbsSpellCondition {
+public final class CountingSpellCondition extends AbsSpellCondition {
     private static final String KEY_COUNT = "CountingSpellCondition_count";
     private static final String KEY_BORDER = "CountingSpellCondition_count";
     private static final String KEY_UPWARDS = "CountingSpellCondition_upwards";

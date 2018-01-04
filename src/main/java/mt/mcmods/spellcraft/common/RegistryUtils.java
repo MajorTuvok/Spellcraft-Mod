@@ -106,13 +106,14 @@ public class RegistryUtils<T extends IForgeRegistryEntry<T>> implements ILoggabl
         registerAll(toRegister);
     }
 
-    public void register(T toRegister) {
+    public T register(T toRegister) {
         if (this.registry != null && toRegister != null) {
             this.registry.register(toRegister);
             checkAdditionalRegistration(toRegister);
         } else {
             Log.error("Failed to registerGameOverlayListener thing(" + (toRegister != null ? getName(toRegister) + ") because there was no registry available!" : "null) because thing was null"));
         }
+        return toRegister;
     }
 
     @SafeVarargs

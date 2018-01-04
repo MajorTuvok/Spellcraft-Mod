@@ -7,6 +7,7 @@ import mt.mcmods.spellcraft.common.spell.types.ISpellType;
 import mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryInternal;
@@ -24,15 +25,18 @@ public class SpellcraftConditions extends BaseContainer<ISpellCondition>
     private boolean instantiated = false;
     private static final SpellcraftConditions INSTANCE = new SpellcraftConditions();
     private static final ResourceLocation DEFAULT_KEY = new ResourceLocation(StringHelper.createResourceLocation(ILoggable.MODID, "Spell_Condition", "Unidentified"));
+    public static final ResourceLocation TYPE_CONDITION_ACCESS = new ResourceLocation(StringHelper.createResourceLocation(ILoggable.MODID, "Type", "Condition", "Registry"));
     //Registry Managing fields
     private static final ResourceLocation NAME = new ResourceLocation(StringHelper.createResourceLocation(ILoggable.MODID, "Spell_Conditions"));
     private static IForgeRegistry<ISpellCondition> registry;
-    //Container fields
-    public static ISpellCondition COUNTING_GLOBAL = CountingSpellCondition.getGlobalInstance();
     private static RegistryAdvanced<ISpellType, List<ISpellCondition>> typeConditions;
-    public static ISpellCondition COUNTING_LOCAL = CountingSpellCondition.getLocalInstance();
-    public static ISpellCondition COUNTING_STATE = CountingSpellCondition.getStateInstance();
-    public static final ResourceLocation TYPE_CONDITION_ACCESS = new ResourceLocation(StringHelper.createResourceLocation(ILoggable.MODID, "Type", "Condition", "Registry"));
+    public static ISpellCondition ALWAYS_FALSE;
+    public static ISpellCondition ALWAYS_TRUE;
+    //Container fields
+    public static ISpellCondition COUNTING_GLOBAL;
+    public static ISpellCondition COUNTING_LOCAL;
+    public static ISpellCondition COUNTING_STATE;
+
 
     public static SpellcraftConditions getInstance(){
         return INSTANCE;
@@ -46,18 +50,21 @@ public class SpellcraftConditions extends BaseContainer<ISpellCondition>
 
     @Override
     @SubscribeEvent
-    public void onRegistryEvent(RegistryEvent.Register<ISpellCondition> e) {
+    public void onRegistryEvent(Register<ISpellCondition> e) {
         super.onRegistryEvent(e);
-        ILoggable.Log.info("Registry event received!");
-        register(COUNTING_GLOBAL);
-        register(COUNTING_STATE);
-        register(COUNTING_LOCAL);
+        Log.info("Registering SpellConditions!");
+        COUNTING_GLOBAL = register(CountingSpellCondition.getGlobalInstance());
+        COUNTING_LOCAL = register(CountingSpellCondition.getStateInstance());
+        COUNTING_STATE = register(CountingSpellCondition.getLocalInstance());
+        ALWAYS_TRUE = register(TrueCondition.getINSTANCE());
+        ALWAYS_FALSE = register(FalseCondition.getINSTANCE());
+        Log.info("Successfully Registered SpellConditions!");
     }
 
     @Override
     public void postInit() {
         super.postInit();
-        ILoggable.Log.info("Found " + registry.getEntries().size() + " registered SpellConditions! :)");
+        Log.info("Found " + registry.getEntries().size() + " registered SpellConditions! :)");
     }
 
     @Override
@@ -98,6 +105,7 @@ public class SpellcraftConditions extends BaseContainer<ISpellCondition>
 
     @SubscribeEvent
     public void create(RegistryEvent.NewRegistry event) {
+        Log.info("Creating SpellCondition registry!");
         RegistryBuilder<ISpellCondition> builder = new RegistryBuilder<>();
         builder.setType(ISpellCondition.class)
                 .setName(NAME)
@@ -106,6 +114,7 @@ public class SpellcraftConditions extends BaseContainer<ISpellCondition>
                 .addCallback(this);
         registry = builder.create();
         getUtils().setRegistry(registry);
+        Log.info("Successfully created SpellCondition registry!");
     }
 
     @Override

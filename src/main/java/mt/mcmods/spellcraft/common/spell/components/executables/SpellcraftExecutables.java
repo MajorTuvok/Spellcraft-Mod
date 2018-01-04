@@ -7,6 +7,7 @@ import mt.mcmods.spellcraft.common.spell.types.ISpellType;
 import mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryInternal;
@@ -31,7 +32,7 @@ public class SpellcraftExecutables extends BaseContainer<ISpellExecutable>
     private static RegistryAdvanced<ISpellType, List<ISpellExecutable>> typeExecutables;
 
     //Container fields
-    public static VoidSpellExecutable VOID_EXECUTABLE = VoidSpellExecutable.getInstance();
+    public static ISpellExecutable VOID_EXECUTABLE;
 
     private SpellcraftExecutables() {
         super();
@@ -44,13 +45,23 @@ public class SpellcraftExecutables extends BaseContainer<ISpellExecutable>
     }
 
     @Override
+    @SubscribeEvent
+    public void onRegistryEvent(Register<ISpellExecutable> e) {
+        super.onRegistryEvent(e);
+        Log.info("Registering SpellExecutables!");
+        VOID_EXECUTABLE = register(VoidSpellExecutable.getInstance());
+        Log.info("Successfully Registered SpellExecutables!");
+    }
+
+    @Override
     public void postInit() {
         super.postInit();
-        ILoggable.Log.info("Found " + registry.getEntries().size() + " registered SpellExecutables! :)");
+        Log.info("Found " + registry.getEntries().size() + " registered SpellExecutables! :)");
     }
 
     @SubscribeEvent
     public void create(RegistryEvent.NewRegistry event) {
+        Log.info("Creating SpellExecutable registry!");
         RegistryBuilder<ISpellExecutable> builder = new RegistryBuilder<>();
         builder.setType(ISpellExecutable.class)
                 .setName(NAME)
@@ -59,7 +70,7 @@ public class SpellcraftExecutables extends BaseContainer<ISpellExecutable>
                 .addCallback(this);
         registry = builder.create();
         getUtils().setRegistry(registry);
-        register(VOID_EXECUTABLE);
+        Log.info("Successfully created SpellExecutable registry!");
     }
 
     @Override
