@@ -59,6 +59,7 @@ public class BaseTileEntityWithInventory extends TileEntity implements IInventor
         return super.getCapability(capability, facing);
     }
 
+
     protected ICompatStackHandler createInventory(int size) {
         return new CompatStackHandler(size);
     }

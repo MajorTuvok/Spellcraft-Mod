@@ -15,6 +15,8 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
+import static mt.mcmods.spellcraft.common.items.tools.ToolInfo.AXE;
+
 public class BlockWandCraftingTable extends BaseTileEntityBlock<TileEntityWandCraftingTable> {
     private static final String NAME = StringHelper.createUnlocalizedName("wand", "crafting", "table");
 
@@ -22,7 +24,7 @@ public class BlockWandCraftingTable extends BaseTileEntityBlock<TileEntityWandCr
         super(Material.WOOD, NAME);
         setHardness(2.5f);
         setResistance(2.5f);
-        setHarvestLevel("axe", 0);
+        setHarvestLevel(AXE.getToolClass(), 0);
     }
 
     @Override
@@ -53,5 +55,21 @@ public class BlockWandCraftingTable extends BaseTileEntityBlock<TileEntityWandCr
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         playerIn.openGui(SpellcraftMod.instance, GuiID.GUIWandCraftingTable.ordinal(), worldIn, pos.getX(), pos.getY(), pos.getZ());
         return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
+    }
+
+    /**
+     * Called before the Block is set to air in the world. Called regardless of if the player's tool can actually
+     * collect this block
+     *
+     * @param worldIn
+     * @param pos
+     * @param state
+     * @param player
+     */
+    @Override
+    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
+        super.onBlockHarvested(worldIn, pos, state, player);
+        TileEntityWandCraftingTable tileEntityWandCraftingTable = getTileEntity(worldIn, pos);
+        tileEntityWandCraftingTable.spawnItemDrops(worldIn, pos);
     }
 }

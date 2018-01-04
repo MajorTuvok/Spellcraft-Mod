@@ -1,0 +1,23 @@
+#Warning: There may be no spaces until the first letter of the localized Word! (not allowed: itemGroup.Spellcraft = Spellcraft)
+itemGroup.Spellcraft=Spellcraft
+
+item.cobblestone_gold_wand.name=Gold-Spitze Bruchstein-Zauberstab
+item.cobblestone_iron_wand.name=Eisen-Spitze Bruchstein-Zauberstab
+item.iron_gold_wand.name=Eisen-Spitze Gold-Zauberstab
+item.iron_iron_wand.name=Eisen-Spitze Eisen-Zauberstab
+item.gold_gold_wand.name=Gold-Spitze Gold-Zauberstab
+item.gold_iron_wand.name=Gold-Spitze Eisen-Zauberstab
+item.log_gold_wand.name=Gold-Spitze Holz-Zauberstab
+item.log_iron_wand.name=Eisen-Spitze Holz-Zauberstab
+item.stone_gold_wand.name=Gold-Spitze Stein-Zauberstab
+item.stone_iron_wand.name=Eisen-Spitze Stein-Zauberstab
+
+tooltips.information.more=%s<Drücke %sSchleichen%s für mehr Infos>
+tooltips.information.missing=%sKeine Informationen
+tooltips.wand.efficiency=%sEffizienz: %s%d%%
+tooltips.wand.max_power=%sMaximale Zauberspruchkraft: %s%d
+
+tile.wand_crafting_table.name=Zauberstab Crafting Table
+tile.wand_crafting_table.gui.wand_properties_title=%s:
+tile.wand_crafting_table.gui.wand_properties_standard_info_0=Effizienz: %d%%-%d%%
+tile.wand_crafting_table.gui.wand_properties_standard_info_1=Zauberspruchkraft: %d-%d

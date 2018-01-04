@@ -28,15 +28,15 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
-    private static final String KEY_COMPOUNDS = "TileEntityWandCraftingTable_compound_list";
+    public static final int INVENTORY_SLOTS = 5;
+    //better would be an enum - TODO replace with enum
     public static final int INVENTORY_STACK_CORE = 1;
     public static final int INVENTORY_STACK_CRYSTAL = 2;
     public static final int INVENTORY_STACK_TIP = 0;
     public static final int INVENTORY_STACK_WAND = 4;
     public static final int INVENTORY_STACK_WOOD = 3;
+    private static final String KEY_COMPOUNDS = "TileEntityWandCraftingTable_compound_list";
     private static final String KEY_WANDS = "TileEntityWandCraftingTable_wand_list";
-    //better would be an enum - TODO replace with enum
-    public static final int INVENTORY_SLOTS = 5;
     private Map<ItemWand, NBTTagCompound> mWandNBTTagMap;
 
     public TileEntityWandCraftingTable() {
@@ -44,20 +44,44 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
         mWandNBTTagMap = new HashMap<>();
     }
 
-    public boolean hasCraftableWand() {
-        return hasCompatibleWood() && WandRegistry.INSTANCE.hasWand(getTipCraftingStack(), getCoreCraftingStack());
+    public ItemStack getTipCraftingStack() {
+        return getStackInSlot(INVENTORY_STACK_TIP);
     }
 
     public void setTipCraftingStack(ItemStack stack) {
         getInventory().setStackInSlot(INVENTORY_STACK_TIP, stack);
     }
 
+    public ItemStack getCoreCraftingStack() {
+        return getStackInSlot(INVENTORY_STACK_CORE);
+    }
+
     public void setCoreCraftingStack(ItemStack stack) {
         getInventory().setStackInSlot(INVENTORY_STACK_CORE, stack);
     }
 
+    public ItemStack getCrystalCraftingStack() {
+        return getStackInSlot(INVENTORY_STACK_CRYSTAL);
+    }
+
     public void setCrystalCraftingStack(ItemStack stack) {
         getInventory().setStackInSlot(INVENTORY_STACK_CRYSTAL, stack);
+    }
+
+    public ItemStack getWoodCraftingStack() {
+        return getStackInSlot(INVENTORY_STACK_WOOD);
+    }
+
+    public void setWoodCraftingStack(ItemStack stack) {
+        getInventory().setStackInSlot(INVENTORY_STACK_WOOD, stack);
+    }
+
+    public ItemStack getWandCraftingStack() {
+        return getStackInSlot(INVENTORY_STACK_WAND);
+    }
+
+    public void setWandCraftingStack(ItemStack stack) {
+        getInventory().setStackInSlot(INVENTORY_STACK_WAND, stack);
     }
 
     @Override
@@ -80,6 +104,7 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
                     Log.debug("Could not deserialize TileEntityWandCraftingTable wand-compound map entry. This is probably due to updating Mods.");
                 }
             }
+            Log.info("Read Wand-crafting nbt. Map size is now " + mWandNBTTagMap.size() + ".");
             if (wands.hasNext()) {
                 Log.warn("TileEntityWandCraftingTable:Noticed corrupted NBT-Data! There are too many Wand-Entries for the given Compounds! This may lead to errors further down the line!");
             } else if (compounds.hasNext()) {
@@ -89,43 +114,6 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
             Log.debug("Could not deserialize TileEntityWandCraftingTable wand-compound map. This is probably due to updating Spellcraft.");
         }
         super.readFromNBT(compound);
-    }
-
-    public ItemStack getTipCraftingStack() {
-        return getStackInSlot(INVENTORY_STACK_TIP);
-    }
-
-    public ItemStack getCoreCraftingStack() {
-        return getStackInSlot(INVENTORY_STACK_CORE);
-    }
-
-    public ItemStack getCrystalCraftingStack() {
-        return getStackInSlot(INVENTORY_STACK_CRYSTAL);
-    }
-
-    public ItemStack getWoodCraftingStack() {
-        return getStackInSlot(INVENTORY_STACK_WOOD);
-    }
-
-    public ItemStack getWandCraftingStack() {
-        return getStackInSlot(INVENTORY_STACK_WAND);
-    }
-
-    public void setWoodCraftingStack(ItemStack stack) {
-        getInventory().setStackInSlot(INVENTORY_STACK_WOOD, stack);
-    }
-
-    public void setWandCraftingStack(ItemStack stack) {
-        getInventory().setStackInSlot(INVENTORY_STACK_WAND, stack);
-    }
-
-    @Nullable
-    @Override
-    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getItemHandlerForFacing(facing));
-        }
-        return super.getCapability(capability, facing);
     }
 
     @Nonnull
@@ -139,8 +127,84 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
             compounds.appendTag(entry.getValue());
         }
         compound.setTag(KEY_WANDS, wands);
-        compound.setTag(KEY_COMPOUNDS, compound);
+        compound.setTag(KEY_COMPOUNDS, compounds);
+        Log.info("Wrote Wand-crafting nbt with " + wands.tagCount() + " wands and " + compounds.tagCount() + " compounds.");
         return super.writeToNBT(compound);
+    }
+
+    @Nullable
+    @Override
+    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getItemHandlerForFacing(facing));
+        }
+        return super.getCapability(capability, facing);
+    }
+
+    @Override
+    protected ICompatStackHandler createInventory(int size) {
+        return new WandCraftingStackHandler(size);
+    }
+
+    @Override
+    protected WandCraftingStackHandler getInventory() {
+        return (WandCraftingStackHandler) super.getInventory();
+    }
+
+    /**
+     * Like the old updateEntity(), except more generic.
+     * Called every Tick.
+     */
+    @Override
+    public void update() {
+        super.update();
+        showCraftableWand();
+    }
+
+    private boolean hasCraftableWand() {
+        return hasCompatibleWood() && WandRegistry.INSTANCE.hasWand(getTipCraftingStack(), getCoreCraftingStack());
+    }
+
+    private void craftWand(ItemWand wand) {
+        if (hasCraftableWand()) {
+            setTipCraftingStack(ItemHelper.decreaseStackSize(getTipCraftingStack(), 1));
+            setCoreCraftingStack(ItemHelper.decreaseStackSize(getCoreCraftingStack(), 1));
+            setWoodCraftingStack(ItemHelper.decreaseStackSize(getWoodCraftingStack(), 1));
+            mWandNBTTagMap.remove(wand);
+        }
+    }
+
+    private void showCraftableWand() {
+        if (hasCraftableWand()) {
+            ItemWand itemWand = WandRegistry.INSTANCE.getWand(getTipCraftingStack(), getCoreCraftingStack());
+            if (itemWand != null && !ItemHelper.areItemsEqual(getWandCraftingStack(), itemWand)) {
+                ItemStack stack;
+                if (mWandNBTTagMap.containsKey(itemWand)) {
+                    stack = new ItemStack(itemWand);
+                    stack.setTagCompound(mWandNBTTagMap.get(itemWand));
+                } else {
+                    stack = itemWand.getDefaultInstance();
+                }
+                setWandCraftingStack(stack);
+            } else if (itemWand == null) {
+                setWandCraftingStack(ItemStack.EMPTY);
+            }
+            checkStackCompound(itemWand);
+        } else {
+            setWandCraftingStack(ItemStack.EMPTY);
+        }
+    }
+
+    private void checkStackCompound(ItemWand itemWand) {
+        if (!getWandCraftingStack().isEmpty()) {
+            ItemStack stack = getWandCraftingStack();
+            if (itemWand != stack.getItem() && mWandNBTTagMap.containsKey(itemWand)) {
+                stack.setTagCompound(mWandNBTTagMap.get(itemWand));
+            } else {
+                mWandNBTTagMap.put(itemWand, stack.getTagCompound());
+                markDirty();
+            }
+        }
     }
 
     private IItemHandler getItemHandlerForFacing(@Nullable EnumFacing facing) {
@@ -167,46 +231,6 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
         return !ItemHelper.isEmptyOrNull(getWoodCraftingStack())
                 && getWoodCraftingStack().getItem() instanceof ItemBlock
                 && ((ItemBlock) getWoodCraftingStack().getItem()).getBlock() == Blocks.LOG;
-    }
-
-    @Override
-    protected ICompatStackHandler createInventory(int size) {
-        return new WandCraftingStackHandler(size);
-    }
-
-    @Override
-    protected WandCraftingStackHandler getInventory() {
-        return (WandCraftingStackHandler) super.getInventory();
-    }
-
-    public void craftWand(ItemWand wand) {
-        if (hasCraftableWand()) {
-            setTipCraftingStack(ItemHelper.decreaseStackSize(getTipCraftingStack(), 1));
-            setCoreCraftingStack(ItemHelper.decreaseStackSize(getCoreCraftingStack(), 1));
-            setWoodCraftingStack(ItemHelper.decreaseStackSize(getWoodCraftingStack(), 1));
-            mWandNBTTagMap.remove(wand);
-        }
-    }
-
-    public void showCraftableWand() {
-        if (hasCraftableWand()) {
-            ItemWand itemWand = WandRegistry.INSTANCE.getWand(getTipCraftingStack(), getCoreCraftingStack());
-            if (itemWand != null && !ItemHelper.areItemsEqual(getWandCraftingStack(), itemWand)) {
-                ItemStack stack;
-                if (mWandNBTTagMap.containsKey(itemWand)) {
-                    stack = new ItemStack(itemWand);
-                    stack.setTagCompound(mWandNBTTagMap.get(itemWand));
-                } else {
-                    stack = itemWand.getDefaultInstance();
-                    mWandNBTTagMap.put(itemWand, stack.getTagCompound());
-                }
-                setWandCraftingStack(stack);
-            } else if (itemWand == null) {
-                setWandCraftingStack(ItemStack.EMPTY);
-            }
-        } else {
-            setWandCraftingStack(ItemStack.EMPTY);
-        }
     }
 
     private class WandCraftingStackHandler extends CompatStackHandler {

@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 
-public class ItemBaseHoe extends ItemHoe implements ILoggable, INamed, IRenderable, ToolConstants {
+public class ItemBaseHoe extends ItemHoe implements ILoggable, INamed, IRenderable {
     private String mName;
 
     public ItemBaseHoe(ToolMaterial material, String name) {

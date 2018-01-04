@@ -2,7 +2,9 @@ package mt.mcmods.spellcraft.common.util;
 
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import mt.mcmods.spellcraft.common.interfaces.INamed;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -78,5 +80,25 @@ public class StringHelper {
                         ((INamed) obj).getName() :
                         (obj instanceof ResourceLocation ? ((ResourceLocation) obj).getResourcePath() : obj.toString()))
                 : "unnamed");
+    }
+
+    public static @Nullable
+    String getOreIdentityName(ItemStack stack) {
+        int[] ids = OreDictionary.getOreIDs(stack);
+        if (ids.length > 0) {
+            return OreDictionary.getOreName(ids[0]);
+        } else if (stack.getItem().getRegistryName() != null) {
+            return getSubstringAfterLastIndexOf("/", stack.getItem().getRegistryName().getResourcePath());
+        } else {
+            return null;
+        }
+    }
+
+    public static @Nullable
+    String getSubstringAfterLastIndexOf(String regex, String s) {
+        if (s == null || regex == null) return null;
+        int index = s.lastIndexOf(regex) + 1;
+        if (index <= 0 || index >= s.length()) return s;
+        return s.substring(index);
     }
 }

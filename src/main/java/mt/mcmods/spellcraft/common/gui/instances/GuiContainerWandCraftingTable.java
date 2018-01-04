@@ -2,7 +2,6 @@ package mt.mcmods.spellcraft.common.gui.instances;
 
 import mt.mcmods.spellcraft.common.gui.BaseGuiContainer;
 import mt.mcmods.spellcraft.common.gui.helper.PlayerInventoryOffsets;
-import mt.mcmods.spellcraft.common.gui.helper.slots.MultiChangeSlot;
 import mt.mcmods.spellcraft.common.gui.helper.slots.SingleElementSlot;
 import mt.mcmods.spellcraft.common.interfaces.ISlotChangedListener;
 import mt.mcmods.spellcraft.common.registry.WandRegistryHelper;
@@ -13,6 +12,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,7 +37,7 @@ public class GuiContainerWandCraftingTable extends BaseGuiContainer implements I
 
     @Override
     public void onSlotChanged() {
-        getEntity().showCraftableWand();
+        //getEntity().showCraftableWand();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class GuiContainerWandCraftingTable extends BaseGuiContainer implements I
         addSlotToContainer(new TipCraftingSlot(handler));
         addSlotToContainer(new WoodCraftingSlot(handler));
         addSlotToContainer(new CoreCraftingSlot(handler));
-        addSlotToContainer(new UpdateWandSlot(handler, TileEntityWandCraftingTable.INVENTORY_STACK_CRYSTAL, CRAFTING_X_1, CRAFTING_Y_2));
+        addSlotToContainer(new CrystalCraftingSlot(handler, TileEntityWandCraftingTable.INVENTORY_STACK_CRYSTAL, CRAFTING_X_1, CRAFTING_Y_2));
         addSlotToContainer(new WandSlot(handler));
     }
 
@@ -70,14 +70,13 @@ public class GuiContainerWandCraftingTable extends BaseGuiContainer implements I
         }
     }
 
-    private class UpdateWandSlot extends MultiChangeSlot {
-        private UpdateWandSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
+    private class CrystalCraftingSlot extends SlotItemHandler {
+        private CrystalCraftingSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
             super(itemHandler, index, xPosition, yPosition);
-            addListener(GuiContainerWandCraftingTable.this);
         }
     }
 
-    private class TipCraftingSlot extends UpdateWandSlot {
+    private class TipCraftingSlot extends SlotItemHandler {
         private TipCraftingSlot(IItemHandler itemHandler) {
             super(itemHandler, TileEntityWandCraftingTable.INVENTORY_STACK_TIP, CRAFTING_X_1, CRAFTING_Y_0);
         }
@@ -93,7 +92,7 @@ public class GuiContainerWandCraftingTable extends BaseGuiContainer implements I
         }
     }
 
-    private class CoreCraftingSlot extends UpdateWandSlot {
+    private class CoreCraftingSlot extends SlotItemHandler {
         private CoreCraftingSlot(IItemHandler itemHandler) {
             super(itemHandler, TileEntityWandCraftingTable.INVENTORY_STACK_CORE, CRAFTING_X_2, CRAFTING_Y_1);
         }
@@ -109,7 +108,7 @@ public class GuiContainerWandCraftingTable extends BaseGuiContainer implements I
         }
     }
 
-    private class WoodCraftingSlot extends UpdateWandSlot {
+    private class WoodCraftingSlot extends SlotItemHandler {
         private WoodCraftingSlot(IItemHandler itemHandler) {
             super(itemHandler, TileEntityWandCraftingTable.INVENTORY_STACK_WOOD, CRAFTING_X_0, CRAFTING_Y_1);
         }

@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 
-public class ItemBaseShovel extends ItemSpade implements INamed, ILoggable, IRenderable, ToolConstants {
+public class ItemBaseShovel extends ItemSpade implements INamed, ILoggable, IRenderable {
     private String mName;
 
     public ItemBaseShovel(ToolMaterial material, String name) {

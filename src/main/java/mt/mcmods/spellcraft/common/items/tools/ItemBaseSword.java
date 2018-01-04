@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 
-public class ItemBaseSword extends ItemSword implements ILoggable, ToolConstants, INamed, IRenderable {
+public class ItemBaseSword extends ItemSword implements ILoggable, INamed, IRenderable {
     private String mName;
 
     public ItemBaseSword(ToolMaterial material, String name) {

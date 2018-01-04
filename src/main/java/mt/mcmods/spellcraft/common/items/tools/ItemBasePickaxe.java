@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 
-public class ItemBasePickaxe extends ItemPickaxe implements ILoggable, INamed, IRenderable, ToolConstants {
+public class ItemBasePickaxe extends ItemPickaxe implements ILoggable, INamed, IRenderable {
     private String mName;
 
     public ItemBasePickaxe(ToolMaterial material, String name) {

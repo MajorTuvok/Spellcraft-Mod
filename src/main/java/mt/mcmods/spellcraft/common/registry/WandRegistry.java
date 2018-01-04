@@ -2,6 +2,7 @@ package mt.mcmods.spellcraft.common.registry;
 
 import mt.mcmods.spellcraft.common.RegistryUtils;
 import mt.mcmods.spellcraft.common.items.wand.ItemWand;
+import mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -76,6 +77,8 @@ public class WandRegistry {
     public static class WandRecipe {
         private final ItemStack head;
         private final ItemStack core;
+        private final String coreName;
+        private final String headName;
 
         private WandRecipe(@Nonnull ItemStack head, @Nonnull ItemStack core) {
             this.head = head;
@@ -83,13 +86,15 @@ public class WandRegistry {
             if (this.head.isEmpty() || this.core.isEmpty()) {
                 throw new IllegalArgumentException("Wands may only be crafted with non Empty stacks");
             }
+            this.headName = StringHelper.getOreIdentityName(head);
+            this.coreName = StringHelper.getOreIdentityName(core);
+            if (coreName == null || headName == null) {
+                throw new IllegalArgumentException("Wand Registry items must have at least Registry names! (" + head + ", " + core + ")");
+            }
         }
 
-        @Override
-        public int hashCode() {
-            int result = getHead().getItem().hashCode(); //direct call possible, because Stacks used may not be empty
-            result = 31 * result + getCore().getItem().hashCode();
-            return result;
+        protected String getHeadName() {
+            return headName;
         }
 
         public ItemStack getHead() {
@@ -98,6 +103,17 @@ public class WandRegistry {
 
         public ItemStack getCore() {
             return core;
+        }
+
+        protected String getCoreName() {
+            return coreName;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = headName.hashCode(); //direct call possible, because Stacks used may not be empty
+            result = 31 * result + coreName.hashCode();
+            return result;
         }
 
         /**
@@ -115,8 +131,7 @@ public class WandRegistry {
             boolean res = false;
             if (obj instanceof WandRecipe) {
                 WandRecipe recipe = (WandRecipe) obj;
-                //using equals to ensure compatibility if they ever remove there Item-Singleton principle (Object.equals is effectively the same as ==)
-                res = recipe.getCore().getItem().equals(this.getCore().getItem()) && recipe.getHead().getItem().equals(this.getHead().getItem());
+                res = recipe.getCoreName().equals(this.getCoreName()) && recipe.getHeadName().equals(this.getHeadName());
             }
             return res;
         }

@@ -105,7 +105,7 @@ public class WandRegistryHelper {
         if (!tipMap.containsKey(tipCraftingItem) || tipCraftingItem.get().isEmpty())
             throw new IllegalArgumentException("Cannot instantiate Wand with unknown tipCraftingItem!");
         if (!coreMap.containsKey(coreCraftingItem) || coreCraftingItem.get().isEmpty())
-            throw new IllegalArgumentException("Cannot instantiate Wand with unknown tipCraftingItem!");
+            throw new IllegalArgumentException("Cannot instantiate Wand with unknown coreCraftingItem!");
         WandPropertyDefinition tipDef = tipMap.get(tipCraftingItem);
         WandPropertyDefinition coreDef = coreMap.get(coreCraftingItem);
         WandPropertyDefinition wandDef = new WandPropertyDefinition(

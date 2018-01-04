@@ -9,7 +9,10 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 
-public class ItemBaseAxe extends ItemAxe implements ILoggable, INamed, IRenderable, ToolConstants {
+import static mt.mcmods.spellcraft.common.items.tools.ToolInfo.AXE_DAMAGE_MODIFIER;
+import static mt.mcmods.spellcraft.common.items.tools.ToolInfo.AXE_VANILLA_SPEED;
+
+public class ItemBaseAxe extends ItemAxe implements ILoggable, INamed, IRenderable {
     private String mName;
 
     public ItemBaseAxe(ToolMaterial material, String itemName) {
