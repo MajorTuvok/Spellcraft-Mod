@@ -40,12 +40,12 @@ public enum LocaleKey {
         return I18n.format(stack.getUnlocalizedName() + ".name");
     }
 
+    public String getLangKey() {
+        return mLangKey;
+    }
+
     public String get(Object... args) {
-        if (mArgCount > 0 && (args == null || args.length < mArgCount)) {
-            throw new RuntimeException("Internal Error: Contact Developers! To few Arguments given!");
-        } else if (mArgCount > 0 && args.length > mArgCount) {
-            throw new RuntimeException("Internal Error: Contact Developers! To many Arguments given!");
-        }
-        return I18n.format(mLangKey, args);
+        assert mArgCount <= 0 || ((args != null && args.length == mArgCount)) : "Argument mismatch! " + (args == null ? "Given Argument List was null!" : (args.length < mArgCount ? "Provided to few Arguments!" : "Provided to many Arguments"));
+        return I18n.format(getLangKey(), args);
     }
 }

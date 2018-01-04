@@ -104,7 +104,6 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
                     Log.debug("Could not deserialize TileEntityWandCraftingTable wand-compound map entry. This is probably due to updating Mods.");
                 }
             }
-            Log.info("Read Wand-crafting nbt. Map size is now " + mWandNBTTagMap.size() + ".");
             if (wands.hasNext()) {
                 Log.warn("TileEntityWandCraftingTable:Noticed corrupted NBT-Data! There are too many Wand-Entries for the given Compounds! This may lead to errors further down the line!");
             } else if (compounds.hasNext()) {
@@ -128,7 +127,6 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
         }
         compound.setTag(KEY_WANDS, wands);
         compound.setTag(KEY_COMPOUNDS, compounds);
-        Log.info("Wrote Wand-crafting nbt with " + wands.tagCount() + " wands and " + compounds.tagCount() + " compounds.");
         return super.writeToNBT(compound);
     }
 
