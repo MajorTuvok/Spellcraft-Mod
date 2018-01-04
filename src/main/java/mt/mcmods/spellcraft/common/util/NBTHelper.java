@@ -170,6 +170,10 @@ public class NBTHelper {
         return compound.hasKey(tag) ? compound.getLong(tag) : defaultValue;
     }
 
+    /*
+     * own code starts here...
+     */
+
     public static boolean isSpellEntityInstantiated(NBTTagCompound compound) {
         if (compound.hasKey(EntitySpell.KEY_WORLD) && compound.hasUniqueId(EntitySpell.KEY_ENTITY) && compound.getUniqueId(EntitySpell.KEY_ENTITY) != null) {
             MinecraftServer server = SpellRegistry.getServer();
