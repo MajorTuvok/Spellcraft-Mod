@@ -15,6 +15,7 @@ import mt.mcmods.spellcraft.common.spell.components.conditions.CountingSpellCond
 import mt.mcmods.spellcraft.common.spell.components.executables.VoidSpellExecutable;
 import mt.mcmods.spellcraft.common.spell.entity.PlayerSpellBuilder;
 import mt.mcmods.spellcraft.common.util.StringHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -28,11 +29,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+
+import static org.lwjgl.input.Keyboard.isKeyDown;
 
 public class ItemWand extends ItemBase implements IClickListener {
     public static final ResourceLocation DEFAULT_WAND_TEXTURE = new ResourceLocation(StringHelper.createResourceLocation(SpellcraftMod.MODID, "items", "wands", "wand"));
@@ -78,13 +83,30 @@ public class ItemWand extends ItemBase implements IClickListener {
      * @param flagIn
      */
     @Override
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
-        addWandPropertiesInformation(stack, worldIn, tooltip, flagIn);
+        if (worldIn == null) {
+            worldIn = Minecraft.getMinecraft().world;
+        }
+        Optional<Boolean> bool = addWandPropertiesInformation(stack, worldIn, tooltip, flagIn);
+        /*if (bool.isPresent()) {
+            if (bool.get()) {
+                Log.trace("Successfully added Information");
+            } else {
+                Log.trace("Information was missing");
+            }
+        } else {
+            Log.trace("No extended information available");
+        }*/
     }
 
-    protected Optional<Boolean> addWandPropertiesInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        return getProperties(stack).addPropertyTooltip(tooltip, true);
+    private Optional<Boolean> addWandPropertiesInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        boolean extended = false;
+        if (worldIn != null && worldIn.isRemote) {
+            extended = isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode());
+        }
+        return getProperties(stack).addPropertyTooltip(tooltip, extended);
     }
 
     /**

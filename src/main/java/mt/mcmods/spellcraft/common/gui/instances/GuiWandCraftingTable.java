@@ -5,12 +5,12 @@ import mt.mcmods.spellcraft.common.gui.BaseGui;
 import mt.mcmods.spellcraft.common.items.wand.ItemWand;
 import mt.mcmods.spellcraft.common.tiles.TileEntityWandCraftingTable;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
 
 import java.awt.*;
 
+import static mt.mcmods.spellcraft.common.LocaleKey.*;
 import static mt.mcmods.spellcraft.common.gui.helper.GuiResources.GUI_BLANK;
 import static mt.mcmods.spellcraft.common.gui.helper.GuiResources.SLOT;
 import static mt.mcmods.spellcraft.common.gui.instances.GuiContainerWandCraftingTable.*;
@@ -58,12 +58,12 @@ public class GuiWandCraftingTable extends BaseGui {
                 GlStateManager.disableLighting();
                 GlStateManager.disableDepth();
                 GlStateManager.disableRescaleNormal();
-                getDelegate().drawScaledStringTopLeft(I18n.format("tile.wand_crafting_table.gui.wand_properties_title", I18n.format(wandItem.getUnlocalizedName() + ".name")),
+                getDelegate().drawScaledStringTopLeft(GUI_WAND_CRAFTING_TABLE_WAND_PROPS_TITLE.get(getLocalizedName(wandItem)),
                         TEXT_START_X, TEXT_START_Y_1, Color.BLACK.getRGB(), TEXT_SCALE * getScaledResolution().getScaleFactor() * 1.25f);
-                getDelegate().drawScaledStringTopLeft(I18n.format("tile.wand_crafting_table.gui.wand_properties_standard_info_0",
+                getDelegate().drawScaledStringTopLeft(GUI_WAND_CRAFTING_TABLE_WAND_PROPS_INFO_STANDARD_0.get(
                         Math.round(definition.getMinEfficiency()), Math.round(definition.getMaxEfficiency())),
                         TEXT_START_X, TEXT_START_Y_2, Color.BLACK.getRGB(), TEXT_SCALE * getScaledResolution().getScaleFactor());
-                getDelegate().drawScaledStringTopLeft(I18n.format("tile.wand_crafting_table.gui.wand_properties_standard_info_1",
+                getDelegate().drawScaledStringTopLeft(GUI_WAND_CRAFTING_TABLE_WAND_PROPS_INFO_STANDARD_1.get(
                         Math.round(definition.getMinMaxPower()), Math.round(definition.getMaxMaxPower())),
                         TEXT_START_X, TEXT_START_Y_2 + INFO_OFFSET, Color.BLACK.getRGB(), TEXT_SCALE * getScaledResolution().getScaleFactor());
                 GlStateManager.enableRescaleNormal();

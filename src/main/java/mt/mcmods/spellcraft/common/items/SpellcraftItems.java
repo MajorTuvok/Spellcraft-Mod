@@ -1,6 +1,7 @@
 package mt.mcmods.spellcraft.common.items;
 
 
+import mt.mcmods.spellcraft.CommonProxy;
 import mt.mcmods.spellcraft.common.BaseContainer;
 import mt.mcmods.spellcraft.common.Capabilities.wandproperties.WandPropertyDefinition;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
@@ -77,6 +78,7 @@ public class SpellcraftItems extends BaseContainer<Item> {
         createItems();
         super.onRegistryEvent(e);
         ILoggable.Log.info("Registering Items");
+        CommonProxy.ITEM_REGISTRY = e.getRegistry();
         WandRegistry.INSTANCE.onRegister(getUtils());
         ILoggable.Log.trace("Created Tools successfully. Registering");
         ILoggable.Log.debug("Succeeded creating tools");

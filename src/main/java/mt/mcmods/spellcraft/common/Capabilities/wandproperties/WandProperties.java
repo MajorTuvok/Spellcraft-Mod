@@ -2,7 +2,6 @@ package mt.mcmods.spellcraft.common.Capabilities.wandproperties;
 
 import mt.mcmods.spellcraft.SpellcraftMod;
 import mt.mcmods.spellcraft.common.registry.WandRegistryHelper;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static mt.mcmods.spellcraft.common.LocaleKey.*;
 import static mt.mcmods.spellcraft.common.util.NBTHelper.getPersistentData;
 import static mt.mcmods.spellcraft.common.util.NBTHelper.setPersistentData;
 
@@ -228,25 +228,25 @@ public class WandProperties implements IWandProperties {
             boolean missing = false;
             WandPropertyDefinition boundDefinition = WandRegistryHelper.INSTANCE.getBoundDefinition();
             if (hasEfficiency()) {
-                tooltip.add(TextFormatting.GRAY + I18n.format("wand.efficiency") + ": " +
-                        (getEfficiency() >= boundDefinition.getPerfectEfficiencyBorder() ? TextFormatting.GOLD : (getEfficiency() >= definition.getPerfectEfficiencyBorder() ? TextFormatting.AQUA : TextFormatting.DARK_BLUE)) +
-                        Math.round(getEfficiency()) + "%");
+                tooltip.add(TOOLTIP_WAND_EFFICIENCY.get(TextFormatting.GRAY,
+                        (getEfficiency() >= boundDefinition.getPerfectEfficiencyBorder() ? TextFormatting.GOLD : (getEfficiency() >= definition.getPerfectEfficiencyBorder() ? TextFormatting.AQUA : TextFormatting.DARK_BLUE)),
+                        Math.round(getEfficiency())));
             } else {
                 missing = true;
             }
             if (hasMaxPower()) {
-                tooltip.add(TextFormatting.GRAY + I18n.format("wand.max_power") + ": " +
-                        (getMaxPower() >= boundDefinition.getPerfectMaxPowerBorder() ? TextFormatting.GOLD : (getMaxPower() >= definition.getPerfectMaxPowerBorder() ? TextFormatting.AQUA : TextFormatting.DARK_BLUE))
-                        + Math.round(getMaxPower()));
+                tooltip.add(TOOLTIP_WAND_MAX_POWER.get(TextFormatting.GRAY,
+                        (getMaxPower() >= boundDefinition.getPerfectMaxPowerBorder() ? TextFormatting.GOLD : (getMaxPower() >= definition.getPerfectMaxPowerBorder() ? TextFormatting.AQUA : TextFormatting.DARK_BLUE)),
+                        Math.round(getMaxPower())));
             } else {
                 missing = true;
             }
             if (missing) {
-                tooltip.add(TextFormatting.GRAY + I18n.format("misc.missing.information"));
+                tooltip.add(TOOLTIP_INFORMATION_MISSING.get(TextFormatting.GRAY));
             }
             return Optional.of(missing);
         } else {
-            tooltip.add(TextFormatting.DARK_GRAY + TextFormatting.ITALIC.toString() + I18n.format("misc.moreInformation"));
+            tooltip.add(TOOLTIP_INFORMATION_MORE.get(TextFormatting.DARK_GRAY, TextFormatting.DARK_GRAY.toString() + TextFormatting.ITALIC, TextFormatting.DARK_GRAY));
         }
         return Optional.empty();
     }

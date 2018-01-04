@@ -24,13 +24,16 @@ import mt.mcmods.spellcraft.common.spell.SpellRegistry;
 import mt.mcmods.spellcraft.common.spell.components.conditions.SpellcraftConditions;
 import mt.mcmods.spellcraft.common.spell.components.executables.SpellcraftExecutables;
 import mt.mcmods.spellcraft.common.util.ChannelHolder;
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.registries.IForgeRegistry;
 
 public abstract class CommonProxy implements ILoggable {
     public static final ChannelHolder CHANNEL_HOLDER = new ChannelHolder(MODID);
     public static ConfigurationManager CONFIG = new ConfigurationManager();
+    public static IForgeRegistry<Item> ITEM_REGISTRY = null;
     public final SpellcraftBlocks blocks;
     public final SpellcraftItems items;
     public final SpellcraftConditions conditions;

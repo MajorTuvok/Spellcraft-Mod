@@ -1,32 +1,47 @@
 package mt.mcmods.spellcraft.common.tiles;
 
+import mt.mcmods.spellcraft.CommonProxy;
 import mt.mcmods.spellcraft.common.interfaces.ICompatStackHandler;
 import mt.mcmods.spellcraft.common.items.wand.ItemWand;
 import mt.mcmods.spellcraft.common.registry.WandRegistry;
+import mt.mcmods.spellcraft.common.util.NBTHelper;
 import mt.mcmods.spellcraft.common.util.item.ItemHelper;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
-    public static final int INVENTORY_SLOTS = 5;
+    private static final String KEY_COMPOUNDS = "TileEntityWandCraftingTable_compound_list";
     public static final int INVENTORY_STACK_CORE = 1;
     public static final int INVENTORY_STACK_CRYSTAL = 2;
-    //better would be an enum - TODO replace with enum
     public static final int INVENTORY_STACK_TIP = 0;
     public static final int INVENTORY_STACK_WAND = 4;
     public static final int INVENTORY_STACK_WOOD = 3;
+    private static final String KEY_WANDS = "TileEntityWandCraftingTable_wand_list";
+    //better would be an enum - TODO replace with enum
+    public static final int INVENTORY_SLOTS = 5;
+    private Map<ItemWand, NBTTagCompound> mWandNBTTagMap;
 
     public TileEntityWandCraftingTable() {
         super(INVENTORY_SLOTS);
+        mWandNBTTagMap = new HashMap<>();
     }
 
     public boolean hasCraftableWand() {
@@ -45,12 +60,35 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
         getInventory().setStackInSlot(INVENTORY_STACK_CRYSTAL, stack);
     }
 
-    public void craftWand() {
-        if (hasCraftableWand()) {
-            setTipCraftingStack(ItemHelper.decreaseStackSize(getTipCraftingStack(), 1));
-            setCoreCraftingStack(ItemHelper.decreaseStackSize(getCoreCraftingStack(), 1));
-            setWoodCraftingStack(ItemHelper.decreaseStackSize(getWoodCraftingStack(), 1));
+    @Override
+    public void readFromNBT(NBTTagCompound compound) {
+        if (compound.hasKey(KEY_WANDS) && compound.hasKey(KEY_COMPOUNDS)) {
+            Iterator<NBTBase> wands = ((NBTTagList) compound.getTag(KEY_WANDS)).iterator();
+            Iterator<NBTBase> compounds = ((NBTTagList) compound.getTag(KEY_COMPOUNDS)).iterator();
+            while (wands.hasNext() && compounds.hasNext()) {
+                ResourceLocation registryName = NBTHelper.deserializeResourceLocation((NBTTagString) wands.next());
+                NBTTagCompound compoundTag = (NBTTagCompound) compounds.next();
+                if (registryName != null && compoundTag != null && CommonProxy.ITEM_REGISTRY.containsKey(registryName)) {
+                    Item wand = CommonProxy.ITEM_REGISTRY.getValue(registryName);
+                    if (wand instanceof ItemWand) {
+                        ItemWand itemWand = (ItemWand) wand;
+                        mWandNBTTagMap.put(itemWand, compoundTag);
+                    } else {
+                        Log.warn("Could not deserialize TileEntityWandCraftingTable wand-compound map entry. Retrieved Item but item for " + registryName + " was not an ItemWand! Some Mod overrode this with an incompatible Item!");
+                    }
+                } else {
+                    Log.debug("Could not deserialize TileEntityWandCraftingTable wand-compound map entry. This is probably due to updating Mods.");
+                }
+            }
+            if (wands.hasNext()) {
+                Log.warn("TileEntityWandCraftingTable:Noticed corrupted NBT-Data! There are too many Wand-Entries for the given Compounds! This may lead to errors further down the line!");
+            } else if (compounds.hasNext()) {
+                Log.warn("TileEntityWandCraftingTable:Noticed corrupted NBT-Data! There are too many Compound-Entries for the given Compounds! This may lead to errors further down the line!");
+            }
+        } else {
+            Log.debug("Could not deserialize TileEntityWandCraftingTable wand-compound map. This is probably due to updating Spellcraft.");
         }
+        super.readFromNBT(compound);
     }
 
     public ItemStack getTipCraftingStack() {
@@ -90,18 +128,19 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
         return super.getCapability(capability, facing);
     }
 
-    public void showCraftableWand() {
-        if (hasCraftableWand()) {
-            ItemWand itemWand = WandRegistry.INSTANCE.getWand(getTipCraftingStack(), getCoreCraftingStack());
-            if (itemWand != null && !ItemHelper.areItemsEqual(getWandCraftingStack(), itemWand)) {
-                ItemStack stack = new ItemStack(itemWand);
-                setWandCraftingStack(stack);
-            } else if (itemWand == null) {
-                setWandCraftingStack(ItemStack.EMPTY);
-            }
-        } else {
-            setWandCraftingStack(ItemStack.EMPTY);
+    @Nonnull
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        NBTTagList wands = new NBTTagList();
+        NBTTagList compounds = new NBTTagList();
+        for (Map.Entry<ItemWand, NBTTagCompound> entry :
+                mWandNBTTagMap.entrySet()) {
+            wands.appendTag(NBTHelper.serializeResourceLocation(entry.getKey().getRegistryName()));
+            compounds.appendTag(entry.getValue());
         }
+        compound.setTag(KEY_WANDS, wands);
+        compound.setTag(KEY_COMPOUNDS, compound);
+        return super.writeToNBT(compound);
     }
 
     private IItemHandler getItemHandlerForFacing(@Nullable EnumFacing facing) {
@@ -140,6 +179,36 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
         return (WandCraftingStackHandler) super.getInventory();
     }
 
+    public void craftWand(ItemWand wand) {
+        if (hasCraftableWand()) {
+            setTipCraftingStack(ItemHelper.decreaseStackSize(getTipCraftingStack(), 1));
+            setCoreCraftingStack(ItemHelper.decreaseStackSize(getCoreCraftingStack(), 1));
+            setWoodCraftingStack(ItemHelper.decreaseStackSize(getWoodCraftingStack(), 1));
+            mWandNBTTagMap.remove(wand);
+        }
+    }
+
+    public void showCraftableWand() {
+        if (hasCraftableWand()) {
+            ItemWand itemWand = WandRegistry.INSTANCE.getWand(getTipCraftingStack(), getCoreCraftingStack());
+            if (itemWand != null && !ItemHelper.areItemsEqual(getWandCraftingStack(), itemWand)) {
+                ItemStack stack;
+                if (mWandNBTTagMap.containsKey(itemWand)) {
+                    stack = new ItemStack(itemWand);
+                    stack.setTagCompound(mWandNBTTagMap.get(itemWand));
+                } else {
+                    stack = itemWand.getDefaultInstance();
+                    mWandNBTTagMap.put(itemWand, stack.getTagCompound());
+                }
+                setWandCraftingStack(stack);
+            } else if (itemWand == null) {
+                setWandCraftingStack(ItemStack.EMPTY);
+            }
+        } else {
+            setWandCraftingStack(ItemStack.EMPTY);
+        }
+    }
+
     private class WandCraftingStackHandler extends CompatStackHandler {
         public WandCraftingStackHandler() {
             super();
@@ -153,17 +222,6 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
             super(stacks);
         }
 
-        @Nonnull
-        @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            ItemStack before = getStackInSlot(slot);
-            ItemStack result = super.extractItem(slot, amount, simulate);
-            if (slot == INVENTORY_STACK_WAND
-                    && ItemHelper.isWand(before))
-                craftWand();
-            return result;
-        }
-
         @Override
         public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
             ItemStack before = getStackInSlot(slot);
@@ -171,7 +229,18 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
             if (slot == INVENTORY_STACK_WAND
                     && ItemHelper.isWand(before)
                     && stack.isEmpty())
-                craftWand();
+                craftWand((ItemWand) before.getItem());
+        }
+
+        @Nonnull
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            ItemStack before = getStackInSlot(slot);
+            ItemStack result = super.extractItem(slot, amount, simulate);
+            if (slot == INVENTORY_STACK_WAND
+                    && ItemHelper.isWand(before))
+                craftWand((ItemWand) before.getItem());
+            return result;
         }
 
         /**
@@ -184,8 +253,8 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
         @Override
         public ItemStack decrStackSize(int index, int count) {
             if (index == INVENTORY_STACK_WAND
-                    && !getStackInSlot(index).isEmpty())
-                craftWand();
+                    && ItemHelper.isWand(getStackInSlot(index)))
+                craftWand((ItemWand) getStackInSlot(index).getItem());
             return super.decrStackSize(index, count);
         }
 
@@ -198,7 +267,7 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
         @Override
         public ItemStack removeStackFromSlot(int index) {
             if (index == INVENTORY_STACK_WAND && ItemHelper.isWand(getStackInSlot(index)))
-                craftWand();
+                craftWand((ItemWand) getStackInSlot(index).getItem());
             return super.removeStackFromSlot(index);
         }
     }
