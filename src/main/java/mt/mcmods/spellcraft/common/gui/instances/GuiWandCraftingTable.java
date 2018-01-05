@@ -10,8 +10,8 @@ import net.minecraft.item.Item;
 import java.awt.*;
 
 import static mt.mcmods.spellcraft.common.LocaleKey.*;
-import static mt.mcmods.spellcraft.common.gui.helper.GuiResources.GUI_BLANK;
-import static mt.mcmods.spellcraft.common.gui.helper.GuiResources.SLOT;
+import static mt.mcmods.spellcraft.common.gui.helper.GuiResource.GUI_BLANK;
+import static mt.mcmods.spellcraft.common.gui.helper.GuiResource.SLOT;
 import static mt.mcmods.spellcraft.common.gui.instances.GuiContainerWandCraftingTable.*;
 
 public class GuiWandCraftingTable extends BaseGui {

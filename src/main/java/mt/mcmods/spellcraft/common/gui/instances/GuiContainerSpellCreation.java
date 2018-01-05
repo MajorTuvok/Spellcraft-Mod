@@ -1,6 +1,6 @@
 package mt.mcmods.spellcraft.common.gui.instances;
 
-import mt.mcmods.spellcraft.common.gui.helper.GuiResources;
+import mt.mcmods.spellcraft.common.gui.helper.GuiResource;
 import mt.mcmods.spellcraft.common.gui.helper.PlayerInventoryOffsets;
 import mt.mcmods.spellcraft.common.tiles.TileEntitySpellCreator;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class GuiContainerSpellCreation extends GuiContainerSpellCreator {
-    private static final PlayerInventoryOffsets OFFSETS = GuiResources.GUI_BLANK_MAX.getSuggestedOffsets();
+    private static final PlayerInventoryOffsets OFFSETS = GuiResource.GUI_BLANK_MAX.getSuggestedOffsets();
 
     public GuiContainerSpellCreation(GuiContainerSpellCreator containerSpellCreator) {
         this(containerSpellCreator.getPlayerInventory(), containerSpellCreator.getTileEntity());

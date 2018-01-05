@@ -2,7 +2,7 @@ package mt.mcmods.spellcraft.common.gui.instances;
 
 import mt.mcmods.spellcraft.common.gui.BaseGui;
 import mt.mcmods.spellcraft.common.gui.components.ImageButton;
-import mt.mcmods.spellcraft.common.gui.helper.GuiResources;
+import mt.mcmods.spellcraft.common.gui.helper.GuiResource;
 import mt.mcmods.spellcraft.common.tiles.TileEntitySpellCreator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -11,16 +11,16 @@ import java.io.IOException;
 
 import static mt.mcmods.spellcraft.common.LocaleKey.GUI_SPELL_CREATOR_EDIT;
 import static mt.mcmods.spellcraft.common.LocaleKey.GUI_SPELL_CREATOR_NO_SPELL;
-import static mt.mcmods.spellcraft.common.gui.helper.GuiResources.*;
+import static mt.mcmods.spellcraft.common.gui.helper.GuiResource.*;
 import static mt.mcmods.spellcraft.common.gui.instances.GuiContainerSpellCreator.*;
 
 public class GuiSpellCreator extends BaseGui {
     private static final int ID_EDIT = 0;
     private static final int ID_INSCRIBE = 1;
-    private static final GuiResources USED_BACKGROUND = GUI_BLANK;
-    private static final int X_SPELL_NAME = X_INPUT + OFFSETS.getSlotXSize() + 4;
-    private static final int Y_INSCRIBE = Y_OUTPUT - Math.round((BOOK_AND_QUILL.getImgYSize() - OFFSETS.getSlotYSize()) / 2);
-    private static final int Y_SPELL_NAME = 10;
+    private static final GuiResource USED_BACKGROUND = GUI_BLANK;
+    private static final int X_EDIT_SPELL = X_INPUT + OFFSETS.getSlotXSize() + 4;  //evaluates to 30
+    private static final int Y_EDIT_SPELL = 10;
+    private static final int Y_INSCRIBE_SPELL = Y_OUTPUT - Math.round((BOOK_AND_QUILL.getImgYSize() - OFFSETS.getSlotYSize()) / 2);  //evaluates to 34 - (20-(16/2)) = 22
     private GuiButton mButtonEditSpell;
     private GuiButton mButtonInscribeSpell;
     public GuiSpellCreator(GuiContainerSpellCreator inventorySlotsIn) {
@@ -42,10 +42,9 @@ public class GuiSpellCreator extends BaseGui {
     public void initGui() {
         super.initGui();
         String spellName = GUI_SPELL_CREATOR_NO_SPELL.get();
-        mButtonEditSpell = new GuiButton(ID_EDIT, getGuiLeft() + X_SPELL_NAME, getGuiTop() + Y_SPELL_NAME, GUI_SPELL_CREATOR_EDIT.get(spellName));
+        mButtonEditSpell = new GuiButton(ID_EDIT, getGuiLeft() + X_EDIT_SPELL, getGuiTop() + Y_EDIT_SPELL, GUI_SPELL_CREATOR_EDIT.get(spellName));
         mButtonEditSpell.width = getFontRenderer().getStringWidth(mButtonEditSpell.displayString) + 6;
-        mButtonInscribeSpell = new ImageButton(ID_INSCRIBE, getXSize(), Y_INSCRIBE, BOOK_AND_QUILL, getDelegate());
-        //Log.info("Coords: e{"+mButtonEditSpell.x+", "+mButtonEditSpell.y+", "+mButtonEditSpell.width+", "+mButtonEditSpell.height);
+        mButtonInscribeSpell = new ImageButton(ID_INSCRIBE, getXSize(), Y_INSCRIBE_SPELL, BOOK_AND_QUILL, getDelegate()); //does exactly the same as GuiButtonImage (I tried that too, same result)
         addButton(mButtonEditSpell);
         addButton(mButtonInscribeSpell);
     }

@@ -26,8 +26,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import java.awt.*;
 
-import static mt.mcmods.spellcraft.common.gui.helper.GuiResources.OVERLAY_SPELLPOWER_BACKGROUND;
-import static mt.mcmods.spellcraft.common.gui.helper.GuiResources.OVERLAY_SPELLPOWER_FOREGROUND;
+import static mt.mcmods.spellcraft.common.gui.helper.GuiResource.OVERLAY_SPELLPOWER_BACKGROUND;
+import static mt.mcmods.spellcraft.common.gui.helper.GuiResource.OVERLAY_SPELLPOWER_FOREGROUND;
 
 public class GameOverlayGui extends Gui implements
         IRenderPostGameOverlayListener, IRenderTextGameOverlayListener, ISizeChangedListener,

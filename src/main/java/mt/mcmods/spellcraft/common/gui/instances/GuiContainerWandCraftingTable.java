@@ -1,7 +1,7 @@
 package mt.mcmods.spellcraft.common.gui.instances;
 
 import mt.mcmods.spellcraft.common.gui.BaseGuiContainer;
-import mt.mcmods.spellcraft.common.gui.helper.GuiResources;
+import mt.mcmods.spellcraft.common.gui.helper.GuiResource;
 import mt.mcmods.spellcraft.common.gui.helper.PlayerInventoryOffsets;
 import mt.mcmods.spellcraft.common.gui.helper.slots.SingleElementSlot;
 import mt.mcmods.spellcraft.common.registry.WandRegistryHelper;
@@ -19,7 +19,7 @@ public class GuiContainerWandCraftingTable extends BaseGuiContainer {
     private static final int CRAFTING_Y_POS = 10;
     private static final int MIN_SLOT_DIS = 2;
     static final int CRAFTING_Y_0 = CRAFTING_Y_POS;
-    static final PlayerInventoryOffsets OFFSETS = GuiResources.GUI_BLANK.getSuggestedOffsets();
+    static final PlayerInventoryOffsets OFFSETS = GuiResource.GUI_BLANK.getSuggestedOffsets();
     private static final int CRAFTING_X_POS = OFFSETS.getInnerXInvOffset();
     private static final int CRAFTING_X_0 = CRAFTING_X_POS;
     private static final int CRAFTING_X_1 = CRAFTING_X_POS + Math.round(OFFSETS.getSlotXSize() * 0.5f) + MIN_SLOT_DIS;

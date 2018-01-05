@@ -16,7 +16,7 @@ import net.minecraftforge.items.SlotItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static mt.mcmods.spellcraft.common.gui.helper.GuiResources.GUI_BLANK;
+import static mt.mcmods.spellcraft.common.gui.helper.GuiResource.GUI_BLANK;
 import static mt.mcmods.spellcraft.common.tiles.TileEntitySpellCreator.INPUT_SLOT;
 import static mt.mcmods.spellcraft.common.tiles.TileEntitySpellCreator.OUTPUT_SLOT;
 
@@ -24,7 +24,7 @@ public class GuiContainerSpellCreator extends BaseGuiContainer {
     static final PlayerInventoryOffsets OFFSETS = GUI_BLANK.getSuggestedOffsets();
     static final int X_INPUT = 10;
     private static final int X_OUTPUT = GUI_BLANK.getImgXSize() - OFFSETS.getSlotXSize() - X_INPUT;
-    private static final int Y_INPUT = Math.round((float) OFFSETS.getInnerYInvOffset() / 2 - (float) OFFSETS.getSlotYSize() / 2);
+    private static final int Y_INPUT = Math.round((float) OFFSETS.getInnerYInvOffset() / 2 - (float) OFFSETS.getSlotYSize() / 2); //=34
     static final int Y_OUTPUT = Y_INPUT;
 
     public GuiContainerSpellCreator(GuiContainerSpellCreator containerSpellCreator) {

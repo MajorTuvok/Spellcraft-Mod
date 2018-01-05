@@ -7,7 +7,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
-public enum GuiResources implements ResourceInfo, ILoggable {
+public enum GuiResource implements ResourceInfo, ILoggable {
     SLOT(StringHelper.createResourceLocation(MODID, "textures", "gui", "elements", "slot.png"), 0, 0, 18, 18),
     SLOT_DARK(StringHelper.createResourceLocation(MODID, "textures", "gui", "elements", "slot_dark.png"), 0, 0, 18, 18),
     GUI_BLANK(StringHelper.createResourceLocation(MODID, "textures", "gui", "gui_blank.png"), 0, 0, 176, 166, new PlayerInventoryOffsets(8, 84, 8, 142)),
@@ -18,7 +18,7 @@ public enum GuiResources implements ResourceInfo, ILoggable {
     GUI_BLANK_BIG_WPI(StringHelper.createResourceLocation(MODID, "textures", "gui", "gui_blank_big_with_player_inv.png"), 0, 0, 176, 222),
     OVERLAY_SPELLPOWER_BACKGROUND(StringHelper.createResourceLocation(MODID, "textures", "gui", "overlay", "spellpower_background.png"), 0, 0, 19, 60),
     OVERLAY_SPELLPOWER_FOREGROUND(StringHelper.createResourceLocation(MODID, "textures", "gui", "overlay", "spellpower_foreground.png"), 0, 0, 19, 60),
-    BOOK_AND_QUILL(StringHelper.createResourceLocation(MODID, "textures", "gui", "book_and_quill.png"), 0, 0, 20, 20);
+    BOOK_AND_QUILL(StringHelper.createResourceLocation(MODID, "textures", "gui", "book_and_quill.png"), 0, 0, 21, 21);
     ResourceLocation location;
     private int imgXStart;
     private int imgYStart;
@@ -26,7 +26,7 @@ public enum GuiResources implements ResourceInfo, ILoggable {
     private int imgYSize;
     private PlayerInventoryOffsets suggestedOffsets;
 
-    GuiResources(@Nonnull ResourceLocation location, int imgXStart, int imgYStart, int imgXSize, int imgYSize, PlayerInventoryOffsets playerInventoryOffsets) {
+    GuiResource(@Nonnull ResourceLocation location, int imgXStart, int imgYStart, int imgXSize, int imgYSize, PlayerInventoryOffsets playerInventoryOffsets) {
         this.location = location;
         this.imgXStart = imgXStart;
         this.imgYStart = imgYStart;
@@ -35,15 +35,15 @@ public enum GuiResources implements ResourceInfo, ILoggable {
         this.suggestedOffsets = playerInventoryOffsets;
     }
 
-    GuiResources(ResourceLocation location, int imgXStart, int imgYStart, int imgXSize, int imgYSize) {
+    GuiResource(ResourceLocation location, int imgXStart, int imgYStart, int imgXSize, int imgYSize) {
         this(location, imgXStart, imgYStart, imgXSize, imgYSize, null);
     }
 
-    GuiResources(String location, int imgXStart, int imgYStart, int imgXSize, int imgYSize, PlayerInventoryOffsets playerInventoryOffsets) {
+    GuiResource(String location, int imgXStart, int imgYStart, int imgXSize, int imgYSize, PlayerInventoryOffsets playerInventoryOffsets) {
         this(new ResourceLocation(location), imgXStart, imgYStart, imgXSize, imgYSize, playerInventoryOffsets);
     }
 
-    GuiResources(String location, int imgXStart, int imgYStart, int imgXSize, int imgYSize) {
+    GuiResource(String location, int imgXStart, int imgYStart, int imgXSize, int imgYSize) {
         this(new ResourceLocation(location), imgXStart, imgYStart, imgXSize, imgYSize);
     }
 
@@ -80,7 +80,7 @@ public enum GuiResources implements ResourceInfo, ILoggable {
 
     @Override
     public String toString() {
-        return "GuiResources{" + "location=" + location +
+        return "GuiResource{" + "location=" + location +
                 ", imgXStart=" + imgXStart +
                 ", imgYStart=" + imgYStart +
                 ", imgXSize=" + imgXSize +

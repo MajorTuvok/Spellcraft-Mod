@@ -6,7 +6,7 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import static mt.mcmods.spellcraft.common.gui.helper.GuiResources.GUI_BLANK_MAX;
+import static mt.mcmods.spellcraft.common.gui.helper.GuiResource.GUI_BLANK_MAX;
 
 public class GuiSpellCreation extends BaseGui {
     public GuiSpellCreation(GuiContainerSpellCreator inventorySlotsIn) {

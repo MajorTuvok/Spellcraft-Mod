@@ -3,7 +3,7 @@ package mt.mcmods.spellcraft.common.gui.instances;
 import mt.mcmods.spellcraft.common.gui.BaseGui;
 import mt.mcmods.spellcraft.common.gui.BaseGuiContainer;
 
-import static mt.mcmods.spellcraft.common.gui.helper.GuiResources.GUI_BLANK_WPI;
+import static mt.mcmods.spellcraft.common.gui.helper.GuiResource.GUI_BLANK_WPI;
 
 public final class GuiVoid extends BaseGui {
 

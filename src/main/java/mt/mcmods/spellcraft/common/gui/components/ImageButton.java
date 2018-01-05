@@ -51,15 +51,19 @@ public class ImageButton extends GuiButton {
     public void drawButton(@Nonnull Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-            GlStateManager.disableDepth();
             int i = this.xTexStart;
             int j = this.yTexStart;
 
             if (this.hovered) {
                 j += this.yDiffText;
             }
-            mGuiDrawingDelegate.drawImage(resourceLocation, x, y, i, j, width, height);
-            GlStateManager.enableDepth();
+            GlStateManager.pushMatrix();
+            GlStateManager.scale(0.1f, 0.1f, 1);
+            GlStateManager.disableDepth();
+            //multiply with 5, because guiDrawing delegate already adds one more, so that in total it will result in multiplication of 6. Why 6 is what is needed here, no clue!!!
+            //(or those other strange values, they work, but I don't know why, which is pretty irritating)
+            mGuiDrawingDelegate.drawImage(resourceLocation, x * 10 + mGuiDrawingDelegate.getXSize() * 5 + 250, y * 10 + mGuiDrawingDelegate.getYSize() * 2, i, j, width * 10 + 50, height * 10 + 50);
+            GlStateManager.popMatrix();
         }
     }
 }
