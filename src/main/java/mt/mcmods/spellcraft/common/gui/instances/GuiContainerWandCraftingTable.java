@@ -10,12 +10,10 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class GuiContainerWandCraftingTable extends BaseGuiContainer {
     private static final int CRAFTING_Y_POS = 10;
@@ -31,8 +29,8 @@ public class GuiContainerWandCraftingTable extends BaseGuiContainer {
     static final int CRAFTING_X_2 = CRAFTING_X_POS + OFFSETS.getSlotXSize() + MIN_SLOT_DIS * 2;
     private static final int RESULT_X_POS = CRAFTING_X_POS + OFFSETS.getSlotXSize() * 8;
 
-    public GuiContainerWandCraftingTable(@Nonnull InventoryPlayer playerInv, @Nonnull TileEntityWandCraftingTable entity, @Nullable EnumFacing facing) {
-        super(playerInv, entity, OFFSETS, facing);
+    public GuiContainerWandCraftingTable(@Nonnull InventoryPlayer playerInv, @Nonnull TileEntityWandCraftingTable entity) {
+        super(playerInv, entity, OFFSETS, null);
     }
 
     @Override

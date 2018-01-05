@@ -13,9 +13,9 @@ import javax.annotation.Nonnull;
 
 public class GuiDrawingDelegate implements ILoggable, IGuiRenderProvider {
     private IGuiRenderProvider renderProvider;
-    private GUIMeasurements measurements;
+    private GuiMeasurements measurements;
 
-    public GuiDrawingDelegate(IGuiRenderProvider renderProvider, GUIMeasurements measurements) {
+    public GuiDrawingDelegate(IGuiRenderProvider renderProvider, GuiMeasurements measurements) {
         this.renderProvider = renderProvider;
         this.measurements = measurements;
     }
@@ -42,11 +42,11 @@ public class GuiDrawingDelegate implements ILoggable, IGuiRenderProvider {
         return renderProvider;
     }
 
-    public GUIMeasurements getMeasurements() {
+    public GuiMeasurements getMeasurements() {
         return measurements;
     }
 
-    public void setMeasurements(GUIMeasurements measurements) {
+    public void setMeasurements(GuiMeasurements measurements) {
         this.measurements = measurements;
     }
 

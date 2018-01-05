@@ -5,9 +5,9 @@ import mt.mcmods.spellcraft.common.gui.BaseGuiContainer;
 
 import static mt.mcmods.spellcraft.common.gui.helper.GuiResources.GUI_BLANK_WPI;
 
-public class VoidGui extends BaseGui {
+public final class GuiVoid extends BaseGui {
 
-    public VoidGui(BaseGuiContainer inventorySlotsIn) {
+    public GuiVoid(BaseGuiContainer inventorySlotsIn) {
         super(inventorySlotsIn, GUI_BLANK_WPI.getImgXSize(), GUI_BLANK_WPI.getImgYSize());
     }
 

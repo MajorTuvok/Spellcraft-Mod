@@ -25,6 +25,7 @@ public class SpellcraftItems extends BaseContainer<Item> {
     private static boolean instantiated = false;
     private static final SpellcraftItems INSTANCE = new SpellcraftItems();
     public static ItemWand WAND_IRON_IRON;
+    public static ItemSpellPaper SPELL_PAPER;
 
     public static SpellcraftItems getInstance() {
         return INSTANCE;
@@ -69,6 +70,7 @@ public class SpellcraftItems extends BaseContainer<Item> {
             createdItems = true;
             addWandParts();
             createWands();
+            SPELL_PAPER = new ItemSpellPaper();
         }
     }
 
@@ -80,8 +82,8 @@ public class SpellcraftItems extends BaseContainer<Item> {
         ILoggable.Log.info("Registering Items");
         CommonProxy.ITEM_REGISTRY = e.getRegistry();
         WandRegistry.INSTANCE.onRegister(getUtils());
-        ILoggable.Log.trace("Created Tools successfully. Registering");
-        ILoggable.Log.debug("Succeeded creating tools");
+        register(SPELL_PAPER);
+        ILoggable.Log.debug("Successfully registered Items");
     }
 
     private static void addWandParts() {

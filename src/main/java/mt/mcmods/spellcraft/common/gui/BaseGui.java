@@ -1,6 +1,6 @@
 package mt.mcmods.spellcraft.common.gui;
 
-import mt.mcmods.spellcraft.common.gui.helper.GUIMeasurements;
+import mt.mcmods.spellcraft.common.gui.helper.GuiMeasurements;
 import mt.mcmods.spellcraft.common.gui.helper.SlotDrawingDelegate;
 import mt.mcmods.spellcraft.common.interfaces.IGuiRenderProvider;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
@@ -11,6 +11,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.tileentity.TileEntity;
 
 import javax.annotation.Nonnull;
 
@@ -27,6 +28,10 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
             mScaledResolution = new ScaledResolution(mc);
         else
             mScaledResolution = new ScaledResolution(Minecraft.getMinecraft());
+    }
+
+    public TileEntity getTileEntity() {
+        return ((BaseGuiContainer) inventorySlots).getTileEntity();
     }
 
     public SlotDrawingDelegate getDelegate() {
@@ -100,8 +105,8 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
         return mc;
     }
 
-    public GUIMeasurements getGuiMeasurements() {
-        return new GUIMeasurements(xSize, ySize, guiLeft, guiTop);
+    public GuiMeasurements getGuiMeasurements() {
+        return new GuiMeasurements(xSize, ySize, guiLeft, guiTop);
     }
 
     public ScaledResolution getScaledResolution() {

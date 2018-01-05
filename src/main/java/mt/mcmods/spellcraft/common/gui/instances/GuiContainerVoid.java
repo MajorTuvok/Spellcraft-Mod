@@ -7,10 +7,10 @@ import net.minecraft.entity.player.InventoryPlayer;
 
 import javax.annotation.Nonnull;
 
-public class VoidGuiContainer extends BaseGuiContainer {
+public final class GuiContainerVoid extends BaseGuiContainer {
     private static final PlayerInventoryOffsets OFFSETS = GuiResources.GUI_BLANK_WPI.getSuggestedOffsets();
 
-    public VoidGuiContainer(@Nonnull InventoryPlayer playerInv) {
+    public GuiContainerVoid(@Nonnull InventoryPlayer playerInv) {
         super(playerInv, null, OFFSETS, null);
     }
 

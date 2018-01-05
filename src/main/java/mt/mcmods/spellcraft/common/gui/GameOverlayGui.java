@@ -5,8 +5,8 @@ import mt.mcmods.spellcraft.common.Capabilities.spellpower.ISpellPowerProvider;
 import mt.mcmods.spellcraft.common.Events.GameOverlayEventHandler.IRenderPostGameOverlayListener;
 import mt.mcmods.spellcraft.common.Events.GameOverlayEventHandler.IRenderTextGameOverlayListener;
 import mt.mcmods.spellcraft.common.Events.GameOverlayEventHandler.ISizeChangedListener;
-import mt.mcmods.spellcraft.common.gui.helper.GUIMeasurements;
 import mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate;
+import mt.mcmods.spellcraft.common.gui.helper.GuiMeasurements;
 import mt.mcmods.spellcraft.common.interfaces.IGuiRenderProvider;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import mt.mcmods.spellcraft.common.items.wand.ItemWand;
@@ -39,7 +39,7 @@ public class GameOverlayGui extends Gui implements
 
     public GameOverlayGui() {
         super();
-        delegate = new GuiDrawingDelegate(this, new GUIMeasurements(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, 0, 0));
+        delegate = new GuiDrawingDelegate(this, new GuiMeasurements(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, 0, 0));
         this.barRelXPos = 1f;
         this.barRelYPos = 0.5f;
     }
@@ -52,7 +52,7 @@ public class GameOverlayGui extends Gui implements
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void drawGameOverlay(RenderGameOverlayEvent.ElementType elementType, ScaledResolution resolution, GUIMeasurements measurements, float partialTicks) {
+    public void drawGameOverlay(RenderGameOverlayEvent.ElementType elementType, ScaledResolution resolution, GuiMeasurements measurements, float partialTicks) {
         float barXPos = getBarXPos(resolution);
         float barYPos = getBarYPos(resolution);
         EntityPlayerSP player = getMc().player;
@@ -67,7 +67,7 @@ public class GameOverlayGui extends Gui implements
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void drawTextOverlay(ScaledResolution resolution, GUIMeasurements measurements, float partialTicks) {
+    public void drawTextOverlay(ScaledResolution resolution, GuiMeasurements measurements, float partialTicks) {
         EntityPlayerSP player = getMc().player;
         if (isHoldingWand(player)) {
             ISpellPowerProvider provider = player.getCapability(SpellcraftCapabilities.SPELL_POWER_PROVIDER_CAPABILITY, null);
@@ -83,7 +83,7 @@ public class GameOverlayGui extends Gui implements
     }
 
     @Override
-    public void onSizeChanged(GUIMeasurements newScreenMeasurements) {
+    public void onSizeChanged(GuiMeasurements newScreenMeasurements) {
         delegate.setMeasurements(newScreenMeasurements);
     }
 
@@ -140,11 +140,11 @@ public class GameOverlayGui extends Gui implements
         this.barRelYPos = MathHelper.clamp(barRelYPos, 0.0f, 1.0f);
     }
 
-    private float getBarXPos(GUIMeasurements measurements) {
+    private float getBarXPos(GuiMeasurements measurements) {
         return MathHelper.clamp(getBarRelXPos() * measurements.getXSize() - OVERLAY_SPELLPOWER_BACKGROUND.getImgXSize() / 2, 0, measurements.getXSize());
     }
 
-    private float getBarYPos(GUIMeasurements measurements) {
+    private float getBarYPos(GuiMeasurements measurements) {
         return MathHelper.clamp(getBarRelYPos() * measurements.getYSize() - OVERLAY_SPELLPOWER_BACKGROUND.getImgYSize() / 2, 0, measurements.getYSize());
     }
 

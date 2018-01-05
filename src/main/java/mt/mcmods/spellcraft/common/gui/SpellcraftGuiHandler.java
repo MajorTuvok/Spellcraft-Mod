@@ -35,19 +35,19 @@ public class SpellcraftGuiHandler implements IGuiHandler {
                 case GUIWandCraftingTable: {
                     TileEntity entity = world.getTileEntity(new BlockPos(x, y, z));
                     if (entity != null && entity instanceof TileEntityWandCraftingTable) {
-                        return new GuiContainerWandCraftingTable(player.inventory, (TileEntityWandCraftingTable) entity, null);
+                        return new GuiContainerWandCraftingTable(player.inventory, (TileEntityWandCraftingTable) entity);
                     }
                     break;
                 }
                 case GUISpellCreator: {
                     TileEntity entity = world.getTileEntity(new BlockPos(x, y, z));
                     if (entity != null && entity instanceof TileEntitySpellCreator) {
-                        return new GUIContainerSpellCreator(player.inventory, (TileEntitySpellCreator) entity, null);
+                        return new GuiContainerSpellCreator(player.inventory, (TileEntitySpellCreator) entity);
                     }
                     break;
                 }
                 case GUIVoid: {
-                    return new VoidGuiContainer(player.inventory);
+                    return new GuiContainerVoid(player.inventory);
                 }
             }
         }
@@ -76,19 +76,19 @@ public class SpellcraftGuiHandler implements IGuiHandler {
                 case GUIWandCraftingTable: {
                     TileEntity entity = world.getTileEntity(new BlockPos(x, y, z));
                     if (entity != null && entity instanceof TileEntityWandCraftingTable) {
-                        return new GuiWandCraftingTable(new GuiContainerWandCraftingTable(player.inventory, (TileEntityWandCraftingTable) entity, null));
+                        return new GuiWandCraftingTable(new GuiContainerWandCraftingTable(player.inventory, (TileEntityWandCraftingTable) entity));
                     }
                     break;
                 }
                 case GUISpellCreator: {
                     TileEntity entity = world.getTileEntity(new BlockPos(x, y, z));
                     if (entity != null && entity instanceof TileEntitySpellCreator) {
-                        return new GUISpellCreator(new GUIContainerSpellCreator(player.inventory, (TileEntitySpellCreator) entity, null));
+                        return new GuiSpellCreator(new GuiContainerSpellCreator(player.inventory, (TileEntitySpellCreator) entity));
                     }
                     break;
                 }
                 case GUIVoid: {
-                    return new VoidGui(new VoidGuiContainer(player.inventory));
+                    return new GuiVoid(new GuiContainerVoid(player.inventory));
                 }
             }
         }

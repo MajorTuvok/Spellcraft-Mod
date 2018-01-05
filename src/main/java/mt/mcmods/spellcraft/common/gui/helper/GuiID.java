@@ -7,13 +7,15 @@ import java.util.Map;
 public enum GuiID {
     GUIVoid(0),
     GUIWandCraftingTable(1),
-    GUISpellCreator(2);
+    GUISpellCreator(2),
+    GUISpellCreation(3);
     private static final Map<Integer, GuiID> idMap = new HashMap<>();
     private Integer id;
 
     static {
         for (GuiID idObj :
                 values()) {
+            assert !idMap.containsKey(idObj.getId());
             idMap.put(idObj.getId(), idObj);
         }
     }

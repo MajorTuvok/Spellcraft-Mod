@@ -1,7 +1,7 @@
 package mt.mcmods.spellcraft.common.Events;
 
 import mt.mcmods.spellcraft.common.gui.GameOverlayGui;
-import mt.mcmods.spellcraft.common.gui.helper.GUIMeasurements;
+import mt.mcmods.spellcraft.common.gui.helper.GuiMeasurements;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -15,7 +15,7 @@ public class GameOverlayEventHandler {
     private static final LinkedHashSet<IRenderPostGameOverlayListener> postGameOverlayListeners = new LinkedHashSet<>();
     private static final LinkedHashSet<IRenderTextGameOverlayListener> textGameOverlayListeners = new LinkedHashSet<>();
     private static final LinkedHashSet<ISizeChangedListener> sizeChangedListeners = new LinkedHashSet<>();
-    private GUIMeasurements measurements;
+    private GuiMeasurements measurements;
 
     static {
         registerGameOverlayListener(GameOverlayGui.INSTANCE);
@@ -48,10 +48,10 @@ public class GameOverlayEventHandler {
     }
 
     public GameOverlayEventHandler() {
-        this(new GUIMeasurements(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, 0, 0));
+        this(new GuiMeasurements(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, 0, 0));
     }
 
-    private GameOverlayEventHandler(GUIMeasurements measurements) {
+    private GameOverlayEventHandler(GuiMeasurements measurements) {
         this.measurements = measurements;
         checkMeasurements();
     }
@@ -83,7 +83,7 @@ public class GameOverlayEventHandler {
 
     private void checkMeasurements() {
         if (!measurements.equals(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, 0, 0)) {
-            measurements = new GUIMeasurements(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, 0, 0);
+            measurements = new GuiMeasurements(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, 0, 0);
             for (ISizeChangedListener listener : sizeChangedListeners) {
                 listener.onSizeChanged(measurements);
             }
@@ -95,15 +95,15 @@ public class GameOverlayEventHandler {
         public boolean isDrawingAs(RenderGameOverlayEvent.ElementType elementType);
 
         @SideOnly(Side.CLIENT)
-        public void drawGameOverlay(RenderGameOverlayEvent.ElementType elementType, ScaledResolution resolution, GUIMeasurements measurements, float partialTicks);
+        public void drawGameOverlay(RenderGameOverlayEvent.ElementType elementType, ScaledResolution resolution, GuiMeasurements measurements, float partialTicks);
     }
 
     public interface IRenderTextGameOverlayListener {
         @SideOnly(Side.CLIENT)
-        public void drawTextOverlay(ScaledResolution resolution, GUIMeasurements measurements, float partialTicks);
+        public void drawTextOverlay(ScaledResolution resolution, GuiMeasurements measurements, float partialTicks);
     }
 
     public interface ISizeChangedListener {
-        public void onSizeChanged(GUIMeasurements newScreenMeasurements);
+        public void onSizeChanged(GuiMeasurements newScreenMeasurements);
     }
 }

@@ -16,7 +16,7 @@ public class SlotDrawingDelegate extends GuiDrawingDelegate {
     private Container container;
     private PlayerInventoryOffsets offsets;
 
-    public SlotDrawingDelegate(InventoryPlayer inventoryPlayer, IGuiRenderProvider renderProvider, Container container, PlayerInventoryOffsets offsets, GUIMeasurements measurements) {
+    public SlotDrawingDelegate(InventoryPlayer inventoryPlayer, IGuiRenderProvider renderProvider, Container container, PlayerInventoryOffsets offsets, GuiMeasurements measurements) {
         super(renderProvider, measurements);
         this.inventoryPlayer = inventoryPlayer;
         this.container = container;
