@@ -11,7 +11,6 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.entity.player.InventoryPlayer;
 
 import javax.annotation.Nonnull;
 
@@ -19,11 +18,11 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
     private SlotDrawingDelegate mDelegate;
     private ScaledResolution mScaledResolution;
 
-    public BaseGui(InventoryPlayer inventoryPlayer, BaseGuiContainer inventorySlotsIn, int xSize, int ySize) {
+    public BaseGui(BaseGuiContainer inventorySlotsIn, int xSize, int ySize) {
         super(inventorySlotsIn);
         this.xSize = xSize;
         this.ySize = ySize;
-        mDelegate = new SlotDrawingDelegate(inventoryPlayer, this, inventorySlotsIn);
+        mDelegate = new SlotDrawingDelegate(inventorySlotsIn.getPlayerInventory(), this, inventorySlotsIn);
         if (mc != null)
             mScaledResolution = new ScaledResolution(mc);
         else

@@ -103,11 +103,15 @@ public final class PlayerInventoryOffsets {
 
     @Override
     public int hashCode() {
-        int result = mmInvBarXOffset;
+        int result = mmInnerXInvOffset;
+        result = 31 * result + mmInnerYInvOffset;
+        result = 31 * result + mmInvBarXOffset;
         result = 31 * result + mmInvBarYOffset;
         result = 31 * result + mmInnerRowCount;
         result = 31 * result + mmInnerColumnCount;
         result = 31 * result + mmInvBarColumnCount;
+        result = 31 * result + mmSlotXSize;
+        result = 31 * result + mmSlotYSize;
         return result;
     }
 }

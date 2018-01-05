@@ -18,33 +18,29 @@ import javax.annotation.Nullable;
 
 public abstract class BaseGuiContainer extends Container implements ILoggable {
     private final PlayerInventoryOffsets mOffsets;
-    private TileEntity entity;
-
-    public BaseGuiContainer() {
-        mOffsets = null;
-    }
+    private InventoryPlayer mInventoryPlayer;
+    private TileEntity mTileEntity;
 
     public BaseGuiContainer(@Nonnull InventoryPlayer playerInv, @Nonnull final TileEntity entity, @Nonnull PlayerInventoryOffsets offsets, @Nullable EnumFacing facing) {
         super();
         mOffsets = offsets;
-        this.entity = entity;
+        this.mTileEntity = entity;
+        this.mInventoryPlayer = playerInv;
         if (entity.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing)) {
             IItemHandler itemHandler = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing);
             createInventoryFromCapability(itemHandler);
         } else if (entity instanceof IInventory) {
             createInventoryFromIInventory((IInventory) entity);
         }
-        for (int i = 0; i < offsets.getInnerRowCount(); i++) {
-            for (int j = 0; j < offsets.getInnerColumnCount(); j++) {
-                addSlotToContainer(new Slot(playerInv,
-                        j + i * offsets.getInnerColumnCount() + offsets.getInvBarColumnCount(),
-                        offsets.getInnerXInvOffset() + j * offsets.getSlotXSize(),
-                        offsets.getInnerYInvOffset() + i * offsets.getSlotYSize()));
-            }
-        }
-        for (int i = 0; i < offsets.getInvBarColumnCount(); i++) {
-            addSlotToContainer(new Slot(playerInv, i, offsets.getInvBarXOffset() + i * offsets.getSlotXSize(), offsets.getInvBarYOffset()));
-        }
+        createPlayerInventory(playerInv, offsets);
+    }
+
+    public InventoryPlayer getPlayerInventory() {
+        return mInventoryPlayer;
+    }
+
+    public TileEntity getTileEntity() {
+        return mTileEntity;
     }
 
     /**
@@ -109,7 +105,17 @@ public abstract class BaseGuiContainer extends Container implements ILoggable {
         Log.warn("Creating Inventory from IInventory is not supported in this GUI!");
     }
 
-    public TileEntity getEntity() {
-        return entity;
+    protected void createPlayerInventory(InventoryPlayer playerInv, PlayerInventoryOffsets offsets) {
+        for (int i = 0; i < offsets.getInnerRowCount(); i++) {
+            for (int j = 0; j < offsets.getInnerColumnCount(); j++) {
+                addSlotToContainer(new Slot(playerInv,
+                        j + i * offsets.getInnerColumnCount() + offsets.getInvBarColumnCount(),
+                        offsets.getInnerXInvOffset() + j * offsets.getSlotXSize(),
+                        offsets.getInnerYInvOffset() + i * offsets.getSlotYSize()));
+            }
+        }
+        for (int i = 0; i < offsets.getInvBarColumnCount(); i++) {
+            addSlotToContainer(new Slot(playerInv, i, offsets.getInvBarXOffset() + i * offsets.getSlotXSize(), offsets.getInvBarYOffset()));
+        }
     }
 }

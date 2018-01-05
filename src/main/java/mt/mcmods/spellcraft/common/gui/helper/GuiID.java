@@ -3,7 +3,12 @@ package mt.mcmods.spellcraft.common.gui.helper;
 import javax.annotation.Nullable;
 
 public enum GuiID {
-    GUIWandCraftingTable;
+    GUIWandCraftingTable,
+    GUISpellCreator;
+
+    public int getId() {
+        return ordinal();
+    }
 
     public static @Nullable
     GuiID getFromId(int id) {

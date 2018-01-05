@@ -5,7 +5,6 @@ import mt.mcmods.spellcraft.common.gui.BaseGui;
 import mt.mcmods.spellcraft.common.items.wand.ItemWand;
 import mt.mcmods.spellcraft.common.tiles.TileEntityWandCraftingTable;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
 
 import java.awt.*;
@@ -24,13 +23,12 @@ public class GuiWandCraftingTable extends BaseGui {
     private static final int TEXT_START_Y_1 = CRAFTING_Y_0;
     private static final int TEXT_START_Y_2 = CRAFTING_Y_1;
 
-    public GuiWandCraftingTable(InventoryPlayer inventoryPlayer, GuiContainerWandCraftingTable inventorySlotsIn) {
-        this(inventoryPlayer, inventorySlotsIn, inventorySlotsIn.getEntity());
+    public GuiWandCraftingTable(GuiContainerWandCraftingTable inventorySlotsIn) {
+        this(inventorySlotsIn, inventorySlotsIn.getTileEntity());
     }
 
-    public GuiWandCraftingTable(InventoryPlayer inventoryPlayer, GuiContainerWandCraftingTable inventorySlotsIn, TileEntityWandCraftingTable entity) {
-        super(inventoryPlayer, inventorySlotsIn, GUI_BLANK.getImgXSize(), GUI_BLANK.getImgYSize());
-        guiTop = 10;
+    private GuiWandCraftingTable(GuiContainerWandCraftingTable inventorySlotsIn, TileEntityWandCraftingTable entity) {
+        super(inventorySlotsIn, GUI_BLANK.getImgXSize(), GUI_BLANK.getImgYSize());
         entityWandCraftingTable = entity;
     }
 

@@ -2,8 +2,11 @@ package mt.mcmods.spellcraft.common.gui;
 
 
 import mt.mcmods.spellcraft.common.gui.helper.GuiID;
+import mt.mcmods.spellcraft.common.gui.instances.GUIContainerSpellCreator;
+import mt.mcmods.spellcraft.common.gui.instances.GUISpellCreator;
 import mt.mcmods.spellcraft.common.gui.instances.GuiContainerWandCraftingTable;
 import mt.mcmods.spellcraft.common.gui.instances.GuiWandCraftingTable;
+import mt.mcmods.spellcraft.common.tiles.TileEntitySpellCreator;
 import mt.mcmods.spellcraft.common.tiles.TileEntityWandCraftingTable;
 import mt.mcmods.spellcraft.common.util.NetworkUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -68,12 +71,26 @@ public class SpellcraftGuiHandler implements IGuiHandler {
                 case GUIWandCraftingTable: {
                     TileEntity entity = world.getTileEntity(new BlockPos(x, y, z));
                     if (entity != null && entity instanceof TileEntityWandCraftingTable) {
-                        GuiContainerWandCraftingTable container = player.openContainer != null && player.openContainer instanceof GuiContainerWandCraftingTable ? (GuiContainerWandCraftingTable) player.openContainer : new GuiContainerWandCraftingTable(player.inventory, (TileEntityWandCraftingTable) entity, null);
+                        GuiContainerWandCraftingTable container =
+                                player.openContainer != null && player.openContainer instanceof GuiContainerWandCraftingTable ? (GuiContainerWandCraftingTable) player.openContainer : new GuiContainerWandCraftingTable(player.inventory, (TileEntityWandCraftingTable) entity, null);
                         player.openContainer = container;
                         if (NetworkUtils.isServer(world))
                             return container;
                         else
-                            return new GuiWandCraftingTable(player.inventory, container);
+                            return new GuiWandCraftingTable(container);
+                    }
+                    break;
+                }
+                case GUISpellCreator: {
+                    TileEntity entity = world.getTileEntity(new BlockPos(x, y, z));
+                    if (entity != null && entity instanceof TileEntitySpellCreator) {
+                        GUIContainerSpellCreator container =
+                                player.openContainer != null && player.openContainer instanceof GUIContainerSpellCreator ? (GUIContainerSpellCreator) player.openContainer : new GUIContainerSpellCreator(player.inventory, (TileEntitySpellCreator) entity, null);
+                        player.openContainer = container;
+                        if (NetworkUtils.isServer(world))
+                            return container;
+                        else
+                            return new GUISpellCreator(container);
                     }
                     break;
                 }

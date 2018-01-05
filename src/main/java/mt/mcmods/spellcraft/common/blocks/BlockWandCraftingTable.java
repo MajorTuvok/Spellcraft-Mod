@@ -4,6 +4,7 @@ package mt.mcmods.spellcraft.common.blocks;
 import mt.mcmods.spellcraft.SpellcraftMod;
 import mt.mcmods.spellcraft.common.gui.helper.GuiID;
 import mt.mcmods.spellcraft.common.tiles.TileEntityWandCraftingTable;
+import mt.mcmods.spellcraft.common.util.NetworkUtils;
 import mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -53,7 +54,7 @@ public class BlockWandCraftingTable extends BaseTileEntityBlock<TileEntityWandCr
      */
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        playerIn.openGui(SpellcraftMod.instance, GuiID.GUIWandCraftingTable.ordinal(), worldIn, pos.getX(), pos.getY(), pos.getZ());
+        playerIn.openGui(SpellcraftMod.instance, GuiID.GUIWandCraftingTable.getId(), worldIn, pos.getX(), pos.getY(), pos.getZ());
         return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
     }
 
@@ -69,7 +70,11 @@ public class BlockWandCraftingTable extends BaseTileEntityBlock<TileEntityWandCr
     @Override
     public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
         super.onBlockHarvested(worldIn, pos, state, player);
-        TileEntityWandCraftingTable tileEntityWandCraftingTable = getTileEntity(worldIn, pos);
-        tileEntityWandCraftingTable.spawnItemDrops(worldIn, pos);
+        if (NetworkUtils.isServer(worldIn)) {
+            TileEntityWandCraftingTable wandCraftingTable = (TileEntityWandCraftingTable) worldIn.getTileEntity(pos);
+            if (wandCraftingTable != null) {
+                wandCraftingTable.spawnItemDrops(worldIn, pos);
+            }
+        }
     }
 }
