@@ -21,16 +21,18 @@ public abstract class BaseGuiContainer extends Container implements ILoggable {
     private InventoryPlayer mInventoryPlayer;
     private TileEntity mTileEntity;
 
-    public BaseGuiContainer(@Nonnull InventoryPlayer playerInv, @Nonnull final TileEntity entity, @Nonnull PlayerInventoryOffsets offsets, @Nullable EnumFacing facing) {
+    public BaseGuiContainer(@Nonnull InventoryPlayer playerInv, @Nullable final TileEntity entity, @Nonnull PlayerInventoryOffsets offsets, @Nullable EnumFacing facing) {
         super();
         mOffsets = offsets;
         this.mTileEntity = entity;
         this.mInventoryPlayer = playerInv;
-        if (entity.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing)) {
-            IItemHandler itemHandler = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing);
-            createInventoryFromCapability(itemHandler);
-        } else if (entity instanceof IInventory) {
-            createInventoryFromIInventory((IInventory) entity);
+        if (entity != null) {
+            if (entity.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing)) {
+                IItemHandler itemHandler = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing);
+                createInventoryFromCapability(itemHandler);
+            } else if (entity instanceof IInventory) {
+                createInventoryFromIInventory((IInventory) entity);
+            }
         }
         createPlayerInventory(playerInv, offsets);
     }
@@ -40,6 +42,7 @@ public abstract class BaseGuiContainer extends Container implements ILoggable {
     }
 
     public TileEntity getTileEntity() {
+        assert mTileEntity != null : "Cannot request TileEntity in class that doesn't provide a TileEntity";
         return mTileEntity;
     }
 

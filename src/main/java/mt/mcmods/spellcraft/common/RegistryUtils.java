@@ -1,10 +1,6 @@
 package mt.mcmods.spellcraft.common;
 
-import mt.mcmods.spellcraft.common.interfaces.ILoggable;
-import mt.mcmods.spellcraft.common.interfaces.IOreDictNamed;
-import mt.mcmods.spellcraft.common.interfaces.IRenderSubTabProvider;
-import mt.mcmods.spellcraft.common.interfaces.IRenderable;
-import mt.mcmods.spellcraft.common.tiles.TileEntityContainer;
+import mt.mcmods.spellcraft.common.interfaces.*;
 import mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -134,7 +130,7 @@ public class RegistryUtils<T extends IForgeRegistryEntry<T>> implements ILoggabl
         if (toRegister instanceof IOreDictNamed) {
             registerOreDict((IOreDictNamed) toRegister);
         }
-        if (toRegister instanceof TileEntityContainer) {
+        if (toRegister instanceof TileEntityContainer && !((TileEntityContainer) toRegister).doesSelfRegistration()) {
             GameRegistry.registerTileEntity(((TileEntityContainer<? extends TileEntity>) toRegister).getTileEntityClass(), MODID + getName(toRegister));
         }
         addToRenderable(toRegister);

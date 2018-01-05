@@ -1,25 +1,34 @@
 package mt.mcmods.spellcraft.common.gui.helper;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 
 public enum GuiID {
-    GUIWandCraftingTable,
-    GUISpellCreator;
+    GUIVoid(0),
+    GUIWandCraftingTable(1),
+    GUISpellCreator(2);
+    private static final Map<Integer, GuiID> idMap = new HashMap<>();
+    private Integer id;
 
-    public int getId() {
-        return ordinal();
+    static {
+        for (GuiID idObj :
+                values()) {
+            idMap.put(idObj.getId(), idObj);
+        }
+    }
+
+    GuiID(Integer id) {
+        this.id = id;
     }
 
     public static @Nullable
     GuiID getFromId(int id) {
-        if (hasGuiIDForId(id)) {
-            return values()[id];
-        }
-        return null;
+        return idMap.get(id);
     }
 
-    public static boolean hasGuiIDForId(int id) {
-        return id >= 0 && id < values().length;
+    public Integer getId() {
+        return id;
     }
 }
 

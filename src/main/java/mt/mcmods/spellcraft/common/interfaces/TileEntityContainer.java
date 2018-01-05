@@ -1,4 +1,4 @@
-package mt.mcmods.spellcraft.common.tiles;
+package mt.mcmods.spellcraft.common.interfaces;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
@@ -15,4 +15,6 @@ public interface TileEntityContainer<T extends TileEntity> {
 
     public @Nullable
     T createTileEntity(World world, IBlockState state);
+
+    public boolean doesSelfRegistration();
 }

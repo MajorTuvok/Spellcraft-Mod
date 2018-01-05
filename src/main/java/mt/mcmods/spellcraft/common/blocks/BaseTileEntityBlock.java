@@ -1,6 +1,6 @@
 package mt.mcmods.spellcraft.common.blocks;
 
-import mt.mcmods.spellcraft.common.tiles.TileEntityContainer;
+import mt.mcmods.spellcraft.common.interfaces.TileEntityContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
@@ -34,5 +34,10 @@ public abstract class BaseTileEntityBlock<T extends TileEntity> extends BaseBloc
     @Override
     public abstract @Nullable
     T createTileEntity(World world, IBlockState state);
+
+    @Override
+    public boolean doesSelfRegistration() {
+        return false;
+    }
 }
 

@@ -1,9 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
-  "group": "spellcraft:wand_crafting_table",
+  "group": "spellcraft:spell_creator",
   "pattern": [
     "W W",
-    "ICG",
+    "IPF",
     "W W"
   ],
   "key": {
@@ -13,22 +13,22 @@
     },
     "I": [
       {
-        "item": "minecraft:iron_ingot"
+        "item": "minecraft:ink_sac"
       }
     ],
-    "C": [
+    "P": [
       {
-        "item": "minecraft:crafting_table"
+        "item": "minecraft:paper"
       }
     ],
-    "G": [
+    "F": [
       {
-        "item": "minecraft:gold_ingot"
+        "item": "minecraft:feather"
       }
     ]
   },
   "result": {
-    "item": "spellcraft:wand_crafting_table",
+    "item": "spellcraft:spell_creator",
     "data": 0
   }
 }

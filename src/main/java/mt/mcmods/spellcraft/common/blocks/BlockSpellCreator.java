@@ -3,6 +3,7 @@ package mt.mcmods.spellcraft.common.blocks;
 import mt.mcmods.spellcraft.SpellcraftMod;
 import mt.mcmods.spellcraft.common.gui.helper.GuiID;
 import mt.mcmods.spellcraft.common.tiles.TileEntitySpellCreator;
+import mt.mcmods.spellcraft.common.util.NetworkUtils;
 import mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -54,5 +55,25 @@ public class BlockSpellCreator extends BaseTileEntityBlock<TileEntitySpellCreato
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         playerIn.openGui(SpellcraftMod.instance, GuiID.GUISpellCreator.getId(), worldIn, pos.getX(), pos.getY(), pos.getZ());
         return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
+    }
+
+    /**
+     * Called before the Block is set to air in the world. Called regardless of if the player's tool can actually
+     * collect this block
+     *
+     * @param worldIn
+     * @param pos
+     * @param state
+     * @param player
+     */
+    @Override
+    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
+        super.onBlockHarvested(worldIn, pos, state, player);
+        if (NetworkUtils.isServer(worldIn)) {
+            TileEntitySpellCreator spellCreator = (TileEntitySpellCreator) worldIn.getTileEntity(pos);
+            if (spellCreator != null) {
+                spellCreator.spawnItemDrops(worldIn, pos);
+            }
+        }
     }
 }
