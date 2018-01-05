@@ -14,13 +14,12 @@ public enum LocaleKey {
     TOOLTIP_WAND_EFFICIENCY("tooltips.wand.efficiency", 3),
     GUI_WAND_CRAFTING_TABLE_WAND_PROPS_TITLE("tile.wand_crafting_table.gui.wand_properties_title", 1),
     GUI_WAND_CRAFTING_TABLE_WAND_PROPS_INFO_STANDARD_0("tile.wand_crafting_table.gui.wand_properties_standard_info_0", 2),
-    GUI_WAND_CRAFTING_TABLE_WAND_PROPS_INFO_STANDARD_1("tile.wand_crafting_table.gui.wand_properties_standard_info_1", 2);
-    private final int mArgCount;
+    GUI_WAND_CRAFTING_TABLE_WAND_PROPS_INFO_STANDARD_1("tile.wand_crafting_table.gui.wand_properties_standard_info_1", 2),
+    GUI_SPELL_CREATOR_INSCRIBE("tile.spell_creator.gui.inscribe", 0),
+    GUI_SPELL_CREATOR_EDIT("tile.spell_creator.gui.edit", 1),
+    GUI_SPELL_CREATOR_NO_SPELL("tile.spell_creator.gui.no_spell", 0);
+    private final int mArgCount;  //Helper variable for testing purposes...
     private final String mLangKey;
-
-    LocaleKey(String s) {
-        this(s, -1);
-    }
 
     LocaleKey(String s, int argCount) {
         mLangKey = s;

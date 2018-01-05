@@ -1,12 +1,13 @@
 package mt.mcmods.spellcraft.common.gui.helper;
 
+import mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate.ResourceInfo;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
-public enum GuiResources implements GuiDrawingDelegate.ResourceProvider, GuiDrawingDelegate.ResourceImgMeasurements, ILoggable {
+public enum GuiResources implements ResourceInfo, ILoggable {
     SLOT(StringHelper.createResourceLocation(MODID, "textures", "gui", "elements", "slot.png"), 0, 0, 18, 18),
     SLOT_DARK(StringHelper.createResourceLocation(MODID, "textures", "gui", "elements", "slot_dark.png"), 0, 0, 18, 18),
     GUI_BLANK(StringHelper.createResourceLocation(MODID, "textures", "gui", "gui_blank.png"), 0, 0, 176, 166, new PlayerInventoryOffsets(8, 84, 8, 142)),
@@ -16,7 +17,8 @@ public enum GuiResources implements GuiDrawingDelegate.ResourceProvider, GuiDraw
     GUI_BLANK_MAX(StringHelper.createResourceLocation(MODID, "textures", "gui", "gui_blank_max.png"), 0, 0, 256, 256, new PlayerInventoryOffsets(44, 172, 44, 230)),
     GUI_BLANK_BIG_WPI(StringHelper.createResourceLocation(MODID, "textures", "gui", "gui_blank_big_with_player_inv.png"), 0, 0, 176, 222),
     OVERLAY_SPELLPOWER_BACKGROUND(StringHelper.createResourceLocation(MODID, "textures", "gui", "overlay", "spellpower_background.png"), 0, 0, 19, 60),
-    OVERLAY_SPELLPOWER_FOREGROUND(StringHelper.createResourceLocation(MODID, "textures", "gui", "overlay", "spellpower_foreground.png"), 0, 0, 19, 60);
+    OVERLAY_SPELLPOWER_FOREGROUND(StringHelper.createResourceLocation(MODID, "textures", "gui", "overlay", "spellpower_foreground.png"), 0, 0, 19, 60),
+    BOOK_AND_QUILL(StringHelper.createResourceLocation(MODID, "textures", "gui", "book_and_quill.png"), 0, 0, 20, 20);
     ResourceLocation location;
     private int imgXStart;
     private int imgYStart;

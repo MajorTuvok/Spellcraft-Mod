@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum GuiID {
-    GUIVoid(0),
-    GUIWandCraftingTable(1),
-    GUISpellCreator(2),
-    GUISpellCreation(3);
+    GUI_VOID(0),
+    GUI_WAND_CRAFTING_TABLE(1),
+    GUI_SPELL_CREATOR(2),
+    GUI_SPELL_CREATION(3);
     private static final Map<Integer, GuiID> idMap = new HashMap<>();
     private Integer id;
 

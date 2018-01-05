@@ -1,7 +1,6 @@
 package mt.mcmods.spellcraft.common.gui.instances;
 
 import mt.mcmods.spellcraft.common.gui.BaseGuiContainer;
-import mt.mcmods.spellcraft.common.gui.helper.GuiResources;
 import mt.mcmods.spellcraft.common.gui.helper.PlayerInventoryOffsets;
 import mt.mcmods.spellcraft.common.gui.helper.slots.SingleElementSlot;
 import mt.mcmods.spellcraft.common.items.ItemSpellPaper;
@@ -17,15 +16,16 @@ import net.minecraftforge.items.SlotItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static mt.mcmods.spellcraft.common.gui.helper.GuiResources.GUI_BLANK;
 import static mt.mcmods.spellcraft.common.tiles.TileEntitySpellCreator.INPUT_SLOT;
 import static mt.mcmods.spellcraft.common.tiles.TileEntitySpellCreator.OUTPUT_SLOT;
 
 public class GuiContainerSpellCreator extends BaseGuiContainer {
-    private static final PlayerInventoryOffsets OFFSETS = GuiResources.GUI_BLANK.getSuggestedOffsets();
-    private static final int X_INPUT = 10;
-    private static final int X_OUTPUT = 26;
-    private static final int Y_INPUT = 10;
-    private static final int Y_OUTPUT = 10;
+    static final PlayerInventoryOffsets OFFSETS = GUI_BLANK.getSuggestedOffsets();
+    static final int X_INPUT = 10;
+    private static final int X_OUTPUT = GUI_BLANK.getImgXSize() - OFFSETS.getSlotXSize() - X_INPUT;
+    private static final int Y_INPUT = Math.round((float) OFFSETS.getInnerYInvOffset() / 2 - (float) OFFSETS.getSlotYSize() / 2);
+    static final int Y_OUTPUT = Y_INPUT;
 
     public GuiContainerSpellCreator(GuiContainerSpellCreator containerSpellCreator) {
         this(containerSpellCreator.getPlayerInventory(), containerSpellCreator.getTileEntity());

@@ -2,17 +2,20 @@ package mt.mcmods.spellcraft.common.spell.components;
 
 import mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate;
 import mt.mcmods.spellcraft.common.spell.SpellBuilder;
+import mt.mcmods.spellcraft.common.spell.access.IAttributeProvider;
 import mt.mcmods.spellcraft.common.spell.access.IAttributeSet;
 import mt.mcmods.spellcraft.common.spell.types.ISpellType;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 public interface ISpellComponent<T extends ISpellComponent<T>> extends IForgeRegistryEntry<T> {
     /**
@@ -30,10 +33,20 @@ public interface ISpellComponent<T extends ISpellComponent<T>> extends IForgeReg
     IAttributeSet getAttributes();
 
     /**
+     * @param attributeProvider The AttributeProvider to query for attributes
      * @return The localized name of this component.
      */
     public @Nonnull
-    String getLocalizedName();
+    String getLocalizedName(IAttributeProvider attributeProvider);
+
+    /**
+     * @param toolTips            The list to which toolTips should be added.
+     * @param attributeProvider   Attribute Provider which enables access to this Components attributes
+     * @param extendedInformation Whether or not only all Information available or only a brief summary should be shown.
+     * @return Void Optional if some Error prevented showing all Tooltips.  True if extended Information was shown, false if not.
+     */
+    public @Nonnull
+    Optional<Boolean> addTooltipInformation(NonNullList<String> toolTips, IAttributeProvider attributeProvider, boolean extendedInformation);
 
     /**
      * Draws the 16*16 wide Icon Image for this SpellComponent.

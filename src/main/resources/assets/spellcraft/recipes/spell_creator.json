@@ -13,7 +13,8 @@
     },
     "I": [
       {
-        "item": "minecraft:ink_sac"
+        "item": "minecraft:dye",
+        "data": 0
       }
     ],
     "P": [

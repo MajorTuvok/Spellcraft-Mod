@@ -22,3 +22,6 @@ tile.wand_crafting_table.gui.wand_properties_title=%s:
 tile.wand_crafting_table.gui.wand_properties_standard_info_0=Efficiency: %d%%-%d%%
 tile.wand_crafting_table.gui.wand_properties_standard_info_1=Spellpower: %d-%d
 tile.spell_creator.name=Spell Creator
+tile.spell_creator.gui.inscribe=Inscribe
+tile.spell_creator.gui.edit=Edit %s
+tile.spell_creator.gui.no_spell=Some Spell

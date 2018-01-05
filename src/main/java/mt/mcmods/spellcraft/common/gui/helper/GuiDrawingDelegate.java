@@ -398,4 +398,8 @@ public class GuiDrawingDelegate implements ILoggable, IGuiRenderProvider {
 
         int getImgYSize();
     }
+
+    public interface ResourceInfo extends ResourceProvider, ResourceImgMeasurements {
+
+    }
 }

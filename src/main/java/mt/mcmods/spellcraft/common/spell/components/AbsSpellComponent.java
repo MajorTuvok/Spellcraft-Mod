@@ -12,6 +12,7 @@ import mt.mcmods.spellcraft.common.spell.types.SpellTypes;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.Validate;
@@ -19,6 +20,7 @@ import org.apache.commons.lang3.Validate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class AbsSpellComponent<T extends ISpellComponent<T>> extends IForgeRegistryEntry.Impl<T> implements ISpellComponent<T>, Comparable<IForgeRegistryEntry<T>> {
     /**
@@ -59,8 +61,20 @@ public abstract class AbsSpellComponent<T extends ISpellComponent<T>> extends IF
      */
     @Nonnull
     @Override
-    public String getLocalizedName() {
+    public String getLocalizedName(IAttributeProvider provider) {
         return "Missing Name";
+    }
+
+    /**
+     * @param toolTips            The list to which toolTips should be added.
+     * @param attributeProvider   Attribute Provider which enables access to this Components attributes
+     * @param extendedInformation Whether or not only all Information available or only a brief summary should be shown.
+     * @return Void Optional if some Error prevented showing all Tooltips.  True if extended Information was shown, false if not.
+     */
+    @Nonnull
+    @Override
+    public Optional<Boolean> addTooltipInformation(NonNullList<String> toolTips, IAttributeProvider attributeProvider, boolean extendedInformation) {
+        return Optional.of(extendedInformation);
     }
 
     /**
