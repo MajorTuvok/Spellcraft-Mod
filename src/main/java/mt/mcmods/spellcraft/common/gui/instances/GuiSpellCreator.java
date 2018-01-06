@@ -18,9 +18,10 @@ public class GuiSpellCreator extends BaseGui {
     private static final int ID_EDIT = 0;
     private static final int ID_INSCRIBE = 1;
     private static final GuiResource USED_BACKGROUND = GUI_BLANK;
-    private static final int X_EDIT_SPELL = X_INPUT + OFFSETS.getSlotXSize() + 4;  //evaluates to 30
+    private static final int X_EDIT_SPELL = X_INPUT + OFFSETS.getSlotXSize() + 4;  
     private static final int Y_EDIT_SPELL = 10;
-    private static final int Y_INSCRIBE_SPELL = Y_OUTPUT - Math.round((BOOK_AND_QUILL.getImgYSize() - OFFSETS.getSlotYSize()) / 2);  //evaluates to 34 - (20-(16/2)) = 22
+    private static final int Y_EDIT_SPELL_ADD = 6;
+    private static final int Y_INSCRIBE_SPELL = Y_OUTPUT - Math.round((BOOK_AND_QUILL.getImgYSize() - OFFSETS.getSlotYSize()) / 2);
     private GuiButton mButtonEditSpell;
     private GuiButton mButtonInscribeSpell;
     public GuiSpellCreator(GuiContainerSpellCreator inventorySlotsIn) {
@@ -43,8 +44,8 @@ public class GuiSpellCreator extends BaseGui {
         super.initGui();
         String spellName = GUI_SPELL_CREATOR_NO_SPELL.get();
         mButtonEditSpell = new GuiButton(ID_EDIT, getGuiLeft() + X_EDIT_SPELL, getGuiTop() + Y_EDIT_SPELL, GUI_SPELL_CREATOR_EDIT.get(spellName));
-        mButtonEditSpell.width = getFontRenderer().getStringWidth(mButtonEditSpell.displayString) + 6;
-        mButtonInscribeSpell = new ImageButton(ID_INSCRIBE, getXSize(), Y_INSCRIBE_SPELL, BOOK_AND_QUILL, getDelegate()); //does exactly the same as GuiButtonImage (I tried that too, same result)
+        mButtonEditSpell.width = getFontRenderer().getStringWidth(mButtonEditSpell.displayString) + Y_EDIT_SPELL_ADD;
+        mButtonInscribeSpell = new ImageButton(ID_INSCRIBE, getXSize(), Y_INSCRIBE_SPELL, BOOK_AND_QUILL, getDelegate());
         addButton(mButtonEditSpell);
         addButton(mButtonInscribeSpell);
     }

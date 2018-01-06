@@ -1,48 +1,33 @@
 package mt.mcmods.spellcraft.common.gui.components;
 
 import mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate;
-import mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate.ResourceImgMeasurements;
 import mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate.ResourceInfo;
-import mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate.ResourceProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class ImageButton extends GuiButton {
     private GuiDrawingDelegate mGuiDrawingDelegate;
-    private ResourceLocation resourceLocation;
-    private int xTexStart;
-    private int yDiffText;
-    private int yTexStart;
+    private ResourceInfo mPrimaryTexture;
+    private ResourceInfo mSecondaryTexture;
 
-    public ImageButton(int buttonId, int x, int y, ResourceInfo info, GuiDrawingDelegate delegate) {
-        this(buttonId, x, y, info.getImgXStart(), info.getImgYStart(), info.getImgXSize(), info.getImgYSize(), info.getResource(), delegate);
+    public ImageButton(int buttonId, int x, int y, @Nonnull ResourceInfo infoPrimary, @Nonnull GuiDrawingDelegate delegate) {
+        this(buttonId, x, y, infoPrimary, null, delegate);
     }
 
-    public ImageButton(int buttonId, int x, int y, ResourceImgMeasurements measurements, ResourceProvider location, GuiDrawingDelegate delegate) {
-        this(buttonId, x, y, measurements.getImgXStart(), measurements.getImgYStart(), measurements.getImgXSize(), measurements.getImgYSize(), location.getResource(), delegate);
+    public ImageButton(int buttonId, int x, int y, @Nonnull ResourceInfo infoPrimary, @Nullable ResourceInfo infoSecondary, @Nonnull GuiDrawingDelegate delegate) {
+        super(buttonId, x, y, infoPrimary.getImgXSize(), infoPrimary.getImgYSize(), "");
+        mPrimaryTexture = infoPrimary;
+        mSecondaryTexture = infoSecondary;
+        mGuiDrawingDelegate = delegate;
+        assert infoSecondary == null || (infoPrimary.getImgXSize() == infoSecondary.getImgXSize() && infoPrimary.getImgYSize() == infoSecondary.getImgYSize()) : "Images must have same size to prevent unexpected behaviour";
     }
 
-    public ImageButton(int buttonId, int x, int y, int xTexStart, int yTexStart, int widthIn, int heightIn, ResourceLocation location, GuiDrawingDelegate delegate) {
-        this(buttonId, x, y, xTexStart, yTexStart, widthIn, heightIn, 0, location, delegate);
-    }
-
-    public ImageButton(int buttonId, int x, int y, int xTexStart, int yTexStart, int widthIn, int heightIn, int yDiffText, ResourceLocation location, GuiDrawingDelegate delegate) {
-        super(buttonId, x, y, widthIn, heightIn, "");
-        this.xTexStart = xTexStart;
-        this.yTexStart = yTexStart;
-        this.mGuiDrawingDelegate = delegate;
-        this.resourceLocation = location;
-        this.yDiffText = yDiffText;
-    }
-
-
-    public void setPosition(int p_191746_1_, int p_191746_2_) {
-        this.x = p_191746_1_;
-        this.y = p_191746_2_;
+    private boolean isHovering() {
+        return this.hovered;
     }
 
     /**
@@ -50,20 +35,45 @@ public class ImageButton extends GuiButton {
      */
     public void drawButton(@Nonnull Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
-            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-            int i = this.xTexStart;
-            int j = this.yTexStart;
-
-            if (this.hovered) {
-                j += this.yDiffText;
-            }
+            updateHoveredState(mouseX, mouseY);
             GlStateManager.pushMatrix();
-            GlStateManager.scale(0.1f, 0.1f, 1);
+            GlStateManager.color(1, 1, 1, 1);
             GlStateManager.disableDepth();
-            //multiply with 5, because guiDrawing delegate already adds one more, so that in total it will result in multiplication of 6. Why 6 is what is needed here, no clue!!!
-            //(or those other strange values, they work, but I don't know why, which is pretty irritating)
-            mGuiDrawingDelegate.drawImage(resourceLocation, x * 10 + mGuiDrawingDelegate.getXSize() * 5 + 250, y * 10 + mGuiDrawingDelegate.getYSize() * 2, i, j, width * 10 + 50, height * 10 + 50);
+            if (isHovering() && mSecondaryTexture != null) {
+                mGuiDrawingDelegate.drawImage(x, y, mSecondaryTexture);
+            } else {
+                mGuiDrawingDelegate.drawImage(x, y, mPrimaryTexture);
+            }
             GlStateManager.popMatrix();
         }
+    }
+
+    /**
+     * Returns true if the mouse has been pressed on this control. Equivalent of MouseListener.mousePressed(MouseEvent
+     * e).
+     *
+     * @param mc
+     * @param mouseX
+     * @param mouseY
+     */
+    @Override
+    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+        return isHovering(mouseX, mouseY);
+    }
+
+    @Override
+    public void drawButtonForegroundLayer(int mouseX, int mouseY) {
+        super.drawButtonForegroundLayer(mouseX, mouseY);
+    }
+
+    private void updateHoveredState(int x, int y) {
+        x -= mGuiDrawingDelegate.getGuiLeft();
+        y -= mGuiDrawingDelegate.getGuiTop();
+        this.hovered = x >= this.x && y >= this.y && x <= this.x + this.width && y <= this.y + this.height;
+    }
+
+    private boolean isHovering(int x, int y) {
+        updateHoveredState(x, y);
+        return this.hovered;
     }
 }

@@ -156,6 +156,10 @@ public class GuiDrawingDelegate implements ILoggable, IGuiRenderProvider {
         drawImage(location, xRel, yRel, measurements.getImgXStart(), measurements.getImgYStart(), measurements.getImgXSize(), measurements.getImgYSize());
     }
 
+    public void drawImage(float xRel, float yRel, ResourceInfo info) {
+        drawImage(info, xRel, yRel, info);
+    }
+
     public void drawImage(ResourceProvider provider, float xRel, float yRel, ResourceImgMeasurements measurements) {
         drawImage(provider, xRel, yRel, measurements.getImgXStart(), measurements.getImgYStart(), measurements.getImgXSize(), measurements.getImgYSize());
     }
