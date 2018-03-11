@@ -1,15 +1,13 @@
 package mt.mcmods.spellcraft.common.gui.components;
 
 import mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 
-@SideOnly(Side.CLIENT)
+
 public class ViewComponentGroup extends ViewComponent {
     private boolean mDragGroup;
     private boolean mDraggable;
@@ -22,6 +20,12 @@ public class ViewComponentGroup extends ViewComponent {
         mDragGroup = false;
         setFocusable(true); //In order to allow subclasses to be focused and clicked
         setClickable(true);
+    }
+
+    @Nullable
+    @Override
+    protected ViewComponentGroupDragController createDragController() {
+        return new ViewComponentGroupDragController();
     }
 
     public ViewComponentGroup setDragGroup(boolean dragGroup) {
@@ -187,18 +191,12 @@ public class ViewComponentGroup extends ViewComponent {
         return mouseButton == MOUSE_BUTTON_LEFT;
     }
 
-    protected class ViewComponentGroupDragController implements IDragController {
+    protected class ViewComponentGroupDragController extends DragControllerAdapter {
         private ViewComponent mmDraggedComponent;
-        private boolean mmIsDragging;
 
         public ViewComponentGroupDragController() {
-            mmIsDragging = false;
+            super();
             mmDraggedComponent = null;
-        }
-
-        @Override
-        public boolean isDragging() {
-            return mmIsDragging;
         }
 
         @Override
@@ -209,25 +207,25 @@ public class ViewComponentGroup extends ViewComponent {
                             mSubComponents) {
                         if (c.isClickable() && c.getDragController() != null && c.liesWithinComponentRegion(mouseX, mouseY)) {
                             c.getDragController().onDragStart(mouseX, mouseY, dPosX, dPosY);
-                            mmIsDragging = c.getDragController().isDragging();
-                            if (mmIsDragging) {
+                            setDragging(c.getDragController().isDragging());
+                            if (isDragging()) {
                                 mmDraggedComponent = c;
                                 return;
                             }
                         }
                     }
                 } else {
-                    mmIsDragging = true;
+                    setDragging(true);
                 }
             }
         }
 
         @Override
-        public void onDragUpdateDraw(int mouseX, int mouseY, int dPosX, int dPosY, GuiDrawingDelegate drawingDelegate, DrawLayer layer) {
+        public void onDragUpdateDraw(int mouseX, int mouseY, int dToStartX, int dToSTartY, GuiDrawingDelegate drawingDelegate, DrawLayer layer) {
             for (ViewComponent c :
                     mSubComponents) {
                 if (c == mmDraggedComponent && c.getDragController() != null) {
-                    mmDraggedComponent.getDragController().onDragUpdateDraw(mouseX, mouseY, dPosX, dPosY, drawingDelegate, layer);
+                    mmDraggedComponent.getDragController().onDragUpdateDraw(mouseX, mouseY, dToStartX, dToSTartY, drawingDelegate, layer);
                 } else {
                     c.drawLayer(drawingDelegate, mouseX, mouseY, layer);
                 }
@@ -236,14 +234,13 @@ public class ViewComponentGroup extends ViewComponent {
         }
 
         @Override
-        public void onDragMove(int mouseX, int mouseY, int dPosX, int dPosY) {
+        public void onDragMove(int mouseX, int mouseY, int dToStartX, int dToStartY) {
             if (!isDraggingGroup()) {
                 if (mmDraggedComponent != null && mmDraggedComponent.getDragController() != null) {
-                    mmDraggedComponent.getDragController().onDragMove(mouseX, mouseY, dPosX, dPosY);
+                    mmDraggedComponent.getDragController().onDragMove(mouseX, mouseY, dToStartX, dToStartY);
                 }
             } else {
-                setXPos(getXPos() + dPosX);
-                setYPos(getYPos() + dPosY);
+                super.onDragMove(mouseX, mouseY, dToStartX, dToStartY);
             }
         }
 
@@ -255,7 +252,7 @@ public class ViewComponentGroup extends ViewComponent {
                     mmDraggedComponent = null;
                 }
             }
-            mmIsDragging = false;
+            setDragging(false);
         }
 
         @Override
@@ -270,6 +267,12 @@ public class ViewComponentGroup extends ViewComponent {
                 return isDraggingGroup() && isDragMouseButton(mouseButton);
             }
             return false;
+        }
+
+        @Override
+        protected void handleSuggestedPosition(int evaluatedX, int evaluatedY) {
+            setXPos(evaluatedX);
+            setYPos(evaluatedY);
         }
     }
 }

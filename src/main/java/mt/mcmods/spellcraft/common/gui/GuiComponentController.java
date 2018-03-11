@@ -4,25 +4,27 @@ import mt.mcmods.spellcraft.common.gui.components.*;
 import mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Comparator;
 
-@SideOnly(Side.CLIENT) final class GuiComponentController implements ILoggable, Constants {
+
+final class GuiComponentController implements ILoggable, Constants {
     private GuiDrawingDelegate mDrawingDelegate;
-    private GuiContainer mGui;
+    private boolean mDragAccepted;
+    private BaseGui mGui;
     private int mLastMouseX;
     private int mLastMouseY;
     private long mMaxId;
     private int mMouseDx;
     private int mMouseDy;
+    private float mLastPartialTicks;
+    private int mStartMouseX;
     private ViewComponentGroup mRoot;
+    private int mStartMouseY;
 
-    GuiComponentController(GuiContainer gui, GuiDrawingDelegate drawingDelegate) {
+    GuiComponentController(@Nonnull BaseGui gui, @Nonnull GuiDrawingDelegate drawingDelegate) {
         mGui = gui;
         mDrawingDelegate = drawingDelegate;
         ComponentCallback componentCallback = new ComponentCallback();
@@ -31,13 +33,18 @@ import java.util.Comparator;
         mRoot.onAddToParent(componentCallback, null);
         mLastMouseX = -1;
         mLastMouseY = -1;
+        mLastPartialTicks = 0f;
+        mDragAccepted = true;
     }
 
     ViewComponentGroup getRoot() {
         return mRoot;
     }
 
-    void drawLayer(int mouseX, int mouseY, DrawLayer layer) {
+    void drawLayer(int mouseX, int mouseY, float partialTicks, DrawLayer layer) {
+        if (partialTicks >= 0) {
+            mLastPartialTicks = partialTicks;
+        }
         if (mLastMouseX < 0 || mLastMouseY < 0) {
             updateLastMousePos(mouseX, mouseY);
         }
@@ -80,16 +87,21 @@ import java.util.Comparator;
 
     void onClick(int mouseX, int mouseY, int mouseButton) {
         mRoot.handleClick(mouseX, mouseY, mouseButton);
+        mDragAccepted = true;
     }
 
     void onClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-        updateMouseMovement(mouseX, mouseY);
-        IDragController dragController = mRoot.getDragController();
-        if (dragController != null && dragController.isDragMouseButton(clickedMouseButton)) {
-            if (dragController.isDragging()) {
-                dragController.onDragMove(mouseX, mouseY, mMouseDx, mMouseDy);
-            } else {
-                dragController.onDragStart(mouseX, mouseY, mMouseDx, mMouseDy);
+        if (mDragAccepted) {
+            updateMouseMovement(mouseX, mouseY);
+            IDragController dragController = mRoot.getDragController();
+            if (dragController != null && dragController.isDragMouseButton(clickedMouseButton)) {
+                if (dragController.isDragging()) {
+                    dragController.onDragMove(mouseX, mouseY, mMouseDx, mMouseDy);
+                } else {
+                    dragController.onDragStart(mouseX, mouseY, mMouseDx, mMouseDy);
+                    mDragAccepted = dragController.isDragging();
+                    updateStartMousePos(mouseX, mouseY);
+                }
             }
         }
     }
@@ -112,13 +124,31 @@ import java.util.Comparator;
     }
 
     private void updateMouseMovement(int mouseX, int mouseY) {
-        mMouseDx = mouseX - mLastMouseX;
-        mMouseDy = mouseY - mLastMouseY;
+        if (mDragAccepted) {
+            mMouseDx = mouseX - mStartMouseX;
+        } else {
+            mMouseDx = -1;
+        }
+        if (mDragAccepted) {
+            mMouseDy = mouseY - mStartMouseY;
+        } else {
+            mMouseDy = -1;
+        }
     }
 
     private void updateLastMousePos(int mouseX, int mouseY) {
         mLastMouseX = mouseX;
         mLastMouseY = mouseY;
+    }
+
+    private void updateStartMousePos(int mouseX, int mouseY) {
+        if (mDragAccepted) {
+            mStartMouseX = mouseX;
+            mStartMouseY = mouseY;
+        } else {
+            mStartMouseX = -1;
+            mStartMouseY = -1;
+        }
     }
 
     private final class ComponentCallback implements IComponentCallback {
@@ -140,6 +170,11 @@ import java.util.Comparator;
         @Override
         public int getGuiLeft() {
             return mGui.getGuiLeft();
+        }
+
+        @Override
+        public float getLastPartialTicks() {
+            return mLastPartialTicks;
         }
 
         @Override
@@ -177,6 +212,12 @@ import java.util.Comparator;
         public @Nullable
         ViewComponent findViewById(long id) {
             return GuiComponentController.this.findViewById(id);
+        }
+
+        @Override
+        public @Nonnull
+        BaseGui getGui() {
+            return mGui;
         }
     }
 }

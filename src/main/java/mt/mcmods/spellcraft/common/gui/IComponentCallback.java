@@ -16,6 +16,8 @@ public interface IComponentCallback {
 
     public int getGuiLeft();
 
+    public float getLastPartialTicks();
+
     public int getLastMouseX();
 
     public int getLastMouseY();
@@ -31,5 +33,8 @@ public interface IComponentCallback {
 
     public @Nullable
     ViewComponent findViewById(long id);
+
+    public @Nonnull
+    BaseGui getGui();
 
 }

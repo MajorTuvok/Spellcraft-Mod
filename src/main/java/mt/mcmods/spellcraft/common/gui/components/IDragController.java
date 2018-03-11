@@ -8,9 +8,9 @@ public interface IDragController extends Constants {
 
     public void onDragStart(int mouseX, int mouseY, int dPosX, int dPosY);
 
-    public void onDragUpdateDraw(int mouseX, int mouseY, int dPosX, int dPosY, GuiDrawingDelegate drawingDelegate, DrawLayer layer);
+    public void onDragUpdateDraw(int mouseX, int mouseY, int dToStartX, int dToSTartY, GuiDrawingDelegate drawingDelegate, DrawLayer layer);
 
-    public void onDragMove(int mouseX, int mouseY, int dPosX, int dPosY);
+    public void onDragMove(int mouseX, int mouseY, int dToStartX, int dToStartY);
 
     public void onDragFinished(int mouseX, int mouseY, int dPosX, int dPosY);
 

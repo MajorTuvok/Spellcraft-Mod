@@ -2,21 +2,21 @@ package mt.mcmods.spellcraft.common.gui.components;
 
 import mt.mcmods.spellcraft.common.gui.IComponentCallback;
 import mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate;
+import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.init.SoundEvents;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.LinkedList;
 import java.util.List;
 
-@SideOnly(Side.CLIENT)
-public class ViewComponent implements Constants {
+
+public class ViewComponent implements Constants, ILoggable {
     private boolean mClickable;
     private IComponentCallback mComponentCallback;
+    private IDragController mDragController;
     private boolean mFocusable;
     private boolean mFocused;
     private long mId;
@@ -41,6 +41,13 @@ public class ViewComponent implements Constants {
         this.mComponentCallback = null;
         this.mParent = null;
         this.mOnClickListeners = new LinkedList<>();
+        mDragController = null;
+    }
+
+    public @Nullable
+    IDragController getDragController() {
+        if (mDragController == null) mDragController = createDragController();
+        return mDragController;
     }
 
     protected static boolean isBetween(int a, int a0, int a1) {
@@ -69,8 +76,8 @@ public class ViewComponent implements Constants {
         return this;
     }
 
-    public @Nullable
-    IDragController getDragController() {
+    protected @Nullable
+    IDragController createDragController() {
         return null;
     }
 

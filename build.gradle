@@ -165,6 +165,17 @@ compileJava.doFirst {
     }
 }
 
+compileJava.doLast {
+    copy {
+        from(tempFile)
+        into(classesDir)
+    }
+    copy {
+        from(tempFile)
+        into(buildDir)
+    }
+}
+
 
 processResources {
     // this will ensure that this task is redone when the versions change.

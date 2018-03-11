@@ -12,19 +12,18 @@ import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 
-@SideOnly(Side.CLIENT)
+
 public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvider {
     private GuiComponentController mComponentController;
     private SlotDrawingDelegate mDelegate;
@@ -44,6 +43,12 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
         createInventoryViews(inventorySlotsIn);
     }
 
+    @Override
+    @Nonnull
+    public FontRenderer getFontRenderer() {
+        return fontRenderer;
+    }
+
     public TileEntity getTileEntity() {
         return ((BaseGuiContainer) inventorySlots).getTileEntity();
     }
@@ -57,23 +62,24 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
     }
 
     @Override
-    public @Nonnull
-    Minecraft getMc() {
-        return mc == null ? Minecraft.getMinecraft() : mc;
+    @Nonnull
+    public RenderItem getRenderItem() {
+        return itemRender;
     }
 
-    protected @Nullable
-    ViewComponentGroup getInnerInventory() {
-        return mInnerInventory;
+    @Override
+    @Nonnull
+    public Minecraft getMc() {
+        return mc == null ? Minecraft.getMinecraft() : mc;
     }
 
     protected void setInnerInventory(@Nullable ViewComponentGroup innerInventory) {
         mInnerInventory = innerInventory;
     }
 
-    protected @Nullable
-    ViewComponentGroup getInventoryBar() {
-        return mInventoryBar;
+    @Nullable
+    protected ViewComponentGroup getInnerInventory() {
+        return mInnerInventory;
     }
 
     protected void setInventoryBar(@Nullable ViewComponentGroup inventoryBar) {
@@ -104,16 +110,22 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
         Gui.drawRect(left, top, right, bottom, color);
     }
 
-    @Override
-    public @Nonnull
-    FontRenderer getFontRenderer() {
-        return fontRenderer;
+    @Nullable
+    protected ViewComponentGroup getInventoryBar() {
+        return mInventoryBar;
     }
 
-    @Nonnull
+    /**
+     * Adds a control to this GUI's button list. Any type that subclasses button may be added (particularly, GuiSlider,
+     * but not text fields).
+     *
+     * @param buttonIn The control to add
+     * @return The control passed in.
+     */
     @Override
-    public RenderItem getRenderItem() {
-        return itemRender;
+    @Nonnull
+    public <T extends GuiButton> T addButton(T buttonIn) {
+        return super.addButton(buttonIn);
     }
 
     protected float getScaleFactor() {
@@ -141,9 +153,9 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
      */
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        mComponentController.drawLayer(mouseX, mouseY, DrawLayer.FIRST);
+        mComponentController.drawLayer(mouseX, mouseY, partialTicks, DrawLayer.FIRST);
         super.drawScreen(mouseX, mouseY, partialTicks);
-        mComponentController.drawLayer(mouseX, mouseY, DrawLayer.LAST);
+        mComponentController.drawLayer(mouseX, mouseY, partialTicks, DrawLayer.LAST);
     }
 
     /**
@@ -154,7 +166,7 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
      */
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        mComponentController.drawLayer(mouseX, mouseY, DrawLayer.FOREGROUND);
+        mComponentController.drawLayer(mouseX, mouseY, -1, DrawLayer.FOREGROUND);
         DrawLayer.FOREGROUND.normalizeGLState(getXSize(), getYSize());
         this.renderHoveredToolTip(mouseX, mouseY);
         DrawLayer.FOREGROUND.resetGLState();
@@ -170,7 +182,7 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         this.drawDefaultBackground(); //=>done by drawScreen method
-        mComponentController.drawLayer(mouseX, mouseY, DrawLayer.BACKGROUND);
+        mComponentController.drawLayer(mouseX, mouseY, partialTicks, DrawLayer.BACKGROUND);
     }
 
     /**

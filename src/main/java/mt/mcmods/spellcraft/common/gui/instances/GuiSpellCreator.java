@@ -1,6 +1,7 @@
 package mt.mcmods.spellcraft.common.gui.instances;
 
 import mt.mcmods.spellcraft.common.gui.BaseGui;
+import mt.mcmods.spellcraft.common.gui.components.ButtonAdapterComponent;
 import mt.mcmods.spellcraft.common.gui.components.ImageButton;
 import mt.mcmods.spellcraft.common.gui.helper.GuiResource;
 import mt.mcmods.spellcraft.common.tiles.TileEntitySpellCreator;
@@ -43,6 +44,21 @@ public class GuiSpellCreator extends BaseGui {
         return GUI_SPELL_CREATOR_NO_SPELL_NAME.get();
     }
 
+    /**
+     * Draws the background layer of this container (behind the items).
+     *
+     * @param partialTicks
+     * @param mouseX
+     * @param mouseY
+     */
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+        super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
+        getDelegate().drawGuiBackground(USED_BACKGROUND);
+        getDelegate().drawAllSlotsWithResource(SLOT);
+        showOverallSpellInformation();
+    }
+
     private String getMaxPowerInfo() {
         return GUI_SPELL_CREATOR_MAX_POWER.get(GUI_SPELL_CREATOR_NO_SPELL.get());
     }
@@ -62,23 +78,10 @@ public class GuiSpellCreator extends BaseGui {
         mButtonEditSpell = new GuiButton(ID_EDIT, getGuiLeft() + X_EDIT_SPELL, getGuiTop() + Y_EDIT_SPELL, GUI_SPELL_CREATOR_EDIT.get(spellName));
         mButtonEditSpell.width = getFontRenderer().getStringWidth(mButtonEditSpell.displayString) + Y_EDIT_SPELL_ADD;
         mButtonInscribeSpell = new ImageButton(ID_INSCRIBE, getXSize(), Y_INSCRIBE_SPELL, BOOK_AND_QUILL, getDelegate());
-        addButton(mButtonEditSpell);
-        addButton(mButtonInscribeSpell);
-    }
-
-    /**
-     * Draws the background layer of this container (behind the items).
-     *
-     * @param partialTicks
-     * @param mouseX
-     * @param mouseY
-     */
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
-        getDelegate().drawGuiBackground(USED_BACKGROUND);
-        getDelegate().drawAllSlotsWithResource(SLOT);
-        showOverallSpellInformation();
+        ButtonAdapterComponent editSpellAdapter = new ButtonAdapterComponent(mButtonEditSpell);
+        ButtonAdapterComponent inscribeSpellAdapter = new ButtonAdapterComponent(mButtonInscribeSpell);
+        addComponent(editSpellAdapter);
+        addComponent(inscribeSpellAdapter);
     }
 
     /**
