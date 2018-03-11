@@ -3,14 +3,14 @@ package mt.mcmods.spellcraft.common.Capabilities.wandproperties;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 
 public class WandPropertyDefinition implements IWandPropertyDefinition {
-    public static final float DEFAULT_MIN_EFFICIENCY = 85;
     public static final float DEFAULT_MAX_EFFICIENCY = 95;
-    public static final float DEFAULT_MIN_MAX_POWER = 45;
     public static final float DEFAULT_MAX_MAX_POWER = 55;
+    public static final float DEFAULT_MIN_EFFICIENCY = 85;
+    public static final float DEFAULT_MIN_MAX_POWER = 45;
     public static final float DEFAULT_PERFECT_BORDER_PERCENTAGE = 90;
     private final float maxEfficiency;
-    private final float minEfficiency;
     private final float maxMaxPower;
+    private final float minEfficiency;
     private final float minMaxPower;
     private final float perfectEfficiencyBorder;
     private final float perfectMaxPowerBorder;
@@ -79,6 +79,17 @@ public class WandPropertyDefinition implements IWandPropertyDefinition {
     }
 
     @Override
+    public int hashCode() {
+        int result = (getMaxEfficiency() != +0.0f ? Float.floatToIntBits(getMaxEfficiency()) : 0);
+        result = 31 * result + (getMinEfficiency() != +0.0f ? Float.floatToIntBits(getMinEfficiency()) : 0);
+        result = 31 * result + (getMaxMaxPower() != +0.0f ? Float.floatToIntBits(getMaxMaxPower()) : 0);
+        result = 31 * result + (getMinMaxPower() != +0.0f ? Float.floatToIntBits(getMinMaxPower()) : 0);
+        result = 31 * result + (getPerfectEfficiencyBorder() != +0.0f ? Float.floatToIntBits(getPerfectEfficiencyBorder()) : 0);
+        result = 31 * result + (getPerfectMaxPowerBorder() != +0.0f ? Float.floatToIntBits(getPerfectMaxPowerBorder()) : 0);
+        return result;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof WandPropertyDefinition)) return false;
@@ -91,16 +102,5 @@ public class WandPropertyDefinition implements IWandPropertyDefinition {
         if (Float.compare(that.getMinMaxPower(), getMinMaxPower()) != 0) return false;
         if (Float.compare(that.getPerfectEfficiencyBorder(), getPerfectEfficiencyBorder()) != 0) return false;
         return Float.compare(that.getPerfectMaxPowerBorder(), getPerfectMaxPowerBorder()) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = (getMaxEfficiency() != +0.0f ? Float.floatToIntBits(getMaxEfficiency()) : 0);
-        result = 31 * result + (getMinEfficiency() != +0.0f ? Float.floatToIntBits(getMinEfficiency()) : 0);
-        result = 31 * result + (getMaxMaxPower() != +0.0f ? Float.floatToIntBits(getMaxMaxPower()) : 0);
-        result = 31 * result + (getMinMaxPower() != +0.0f ? Float.floatToIntBits(getMinMaxPower()) : 0);
-        result = 31 * result + (getPerfectEfficiencyBorder() != +0.0f ? Float.floatToIntBits(getPerfectEfficiencyBorder()) : 0);
-        result = 31 * result + (getPerfectMaxPowerBorder() != +0.0f ? Float.floatToIntBits(getPerfectMaxPowerBorder()) : 0);
-        return result;
     }
 }

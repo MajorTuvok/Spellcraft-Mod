@@ -24,6 +24,14 @@ public class WandRegistry {
         wandRecipeMap = new RegistryAdvanced<>();
     }
 
+    public Set<Map.Entry<WandRecipe, ItemWand>> getRecipeWandEntries() {
+        return recipeWandMap.getEntrySet();
+    }
+
+    public Set<Map.Entry<ItemWand, WandRecipe>> getWandRecipeEntries() {
+        return wandRecipeMap.getEntrySet();
+    }
+
     public void onRegister(RegistryUtils<Item> utils) {
         for (ItemWand wand :
                 wandRecipeMap.getKeySet()) {
@@ -66,18 +74,10 @@ public class WandRegistry {
         return wandRecipeMap.getObject(wand);
     }
 
-    public Set<Map.Entry<WandRecipe, ItemWand>> getRecipeWandEntries() {
-        return recipeWandMap.getEntrySet();
-    }
-
-    public Set<Map.Entry<ItemWand, WandRecipe>> getWandRecipeEntries() {
-        return wandRecipeMap.getEntrySet();
-    }
-
     public static class WandRecipe {
-        private final ItemStack head;
         private final ItemStack core;
         private final String coreName;
+        private final ItemStack head;
         private final String headName;
 
         private WandRecipe(@Nonnull ItemStack head, @Nonnull ItemStack core) {
@@ -93,16 +93,16 @@ public class WandRegistry {
             }
         }
 
-        protected String getHeadName() {
-            return headName;
-        }
-
         public ItemStack getHead() {
             return head;
         }
 
         public ItemStack getCore() {
             return core;
+        }
+
+        protected String getHeadName() {
+            return headName;
         }
 
         protected String getCoreName() {

@@ -1,6 +1,11 @@
 package mt.mcmods.spellcraft.common.gui;
 
+import mt.mcmods.spellcraft.common.gui.components.DrawLayer;
+import mt.mcmods.spellcraft.common.gui.components.SlotComponent;
+import mt.mcmods.spellcraft.common.gui.components.ViewComponent;
+import mt.mcmods.spellcraft.common.gui.components.ViewComponentGroup;
 import mt.mcmods.spellcraft.common.gui.helper.GuiMeasurements;
+import mt.mcmods.spellcraft.common.gui.helper.PlayerInventoryOffsets;
 import mt.mcmods.spellcraft.common.gui.helper.SlotDrawingDelegate;
 import mt.mcmods.spellcraft.common.interfaces.IGuiRenderProvider;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
@@ -12,11 +17,19 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.IOException;
 
+@SideOnly(Side.CLIENT)
 public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvider {
+    private GuiComponentController mComponentController;
     private SlotDrawingDelegate mDelegate;
+    private ViewComponentGroup mInnerInventory;
+    private ViewComponentGroup mInventoryBar;
     private ScaledResolution mScaledResolution;
 
     public BaseGui(BaseGuiContainer inventorySlotsIn, int xSize, int ySize) {
@@ -24,10 +37,11 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
         this.xSize = xSize;
         this.ySize = ySize;
         mDelegate = new SlotDrawingDelegate(inventorySlotsIn.getPlayerInventory(), this, inventorySlotsIn);
-        if (mc != null)
-            mScaledResolution = new ScaledResolution(mc);
-        else
-            mScaledResolution = new ScaledResolution(Minecraft.getMinecraft());
+        mComponentController = new GuiComponentController(this, mDelegate);
+        mScaledResolution = new ScaledResolution(getMc());
+        mInnerInventory = null;
+        mInventoryBar = null;
+        createInventoryViews(inventorySlotsIn);
     }
 
     public TileEntity getTileEntity() {
@@ -38,34 +52,36 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
         return mDelegate;
     }
 
-    /**
-     * Draws the background layer of this container (behind the items).
-     *
-     * @param partialTicks
-     * @param mouseX
-     * @param mouseY
-     */
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        this.drawDefaultBackground(); //=>done by drawScreen method
-    }
-
-    /**
-     * Draw the foreground layer for the GuiContainer (everything in front of the items)
-     *
-     * @param mouseX
-     * @param mouseY
-     */
-    @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        translateForeground();
-        this.renderHoveredToolTip(mouseX, mouseY);
-        revertTranslateForeground();
+    public GuiMeasurements getGuiMeasurements() {
+        return new GuiMeasurements(xSize, ySize, guiLeft, guiTop);
     }
 
     @Override
-    protected void renderHoveredToolTip(int mouseX, int mouseY) {
-        super.renderHoveredToolTip(mouseX, mouseY);
+    public @Nonnull
+    Minecraft getMc() {
+        return mc == null ? Minecraft.getMinecraft() : mc;
+    }
+
+    protected @Nullable
+    ViewComponentGroup getInnerInventory() {
+        return mInnerInventory;
+    }
+
+    protected void setInnerInventory(@Nullable ViewComponentGroup innerInventory) {
+        mInnerInventory = innerInventory;
+    }
+
+    protected @Nullable
+    ViewComponentGroup getInventoryBar() {
+        return mInventoryBar;
+    }
+
+    protected void setInventoryBar(@Nullable ViewComponentGroup inventoryBar) {
+        mInventoryBar = inventoryBar;
+    }
+
+    protected ScaledResolution getScaledResolution() {
+        return mScaledResolution;
     }
 
     @Override
@@ -100,17 +116,8 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
         return itemRender;
     }
 
-    @Override
-    public Minecraft getMc() {
-        return mc;
-    }
-
-    public GuiMeasurements getGuiMeasurements() {
-        return new GuiMeasurements(xSize, ySize, guiLeft, guiTop);
-    }
-
-    public ScaledResolution getScaledResolution() {
-        return mScaledResolution;
+    protected float getScaleFactor() {
+        return getScaledResolution().getScaleFactor();
     }
 
     /**
@@ -122,6 +129,125 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
         super.initGui();
         mDelegate.setMeasurements(getGuiMeasurements());
         mScaledResolution = new ScaledResolution(mc);
+        mComponentController.onResize();
+    }
+
+    /**
+     * Draws the screen and all the components in it.
+     *
+     * @param mouseX
+     * @param mouseY
+     * @param partialTicks
+     */
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        mComponentController.drawLayer(mouseX, mouseY, DrawLayer.FIRST);
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        mComponentController.drawLayer(mouseX, mouseY, DrawLayer.LAST);
+    }
+
+    /**
+     * Draw the foreground layer for the GuiContainer (everything in front of the items)
+     *
+     * @param mouseX
+     * @param mouseY
+     */
+    @Override
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        mComponentController.drawLayer(mouseX, mouseY, DrawLayer.FOREGROUND);
+        DrawLayer.FOREGROUND.normalizeGLState(getXSize(), getYSize());
+        this.renderHoveredToolTip(mouseX, mouseY);
+        DrawLayer.FOREGROUND.resetGLState();
+    }
+
+    /**
+     * Draws the background layer of this container (behind the items).
+     *
+     * @param partialTicks
+     * @param mouseX
+     * @param mouseY
+     */
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+        this.drawDefaultBackground(); //=>done by drawScreen method
+        mComponentController.drawLayer(mouseX, mouseY, DrawLayer.BACKGROUND);
+    }
+
+    /**
+     * Called when the mouse is clicked. Args : mouseX, mouseY, clickedButton
+     *
+     * @param mouseX
+     * @param mouseY
+     * @param mouseButton
+     */
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+        mComponentController.onClick(mouseX, mouseY, mouseButton);
+    }
+
+    /**
+     * Called when a mouse button is pressed and the mouse is moved around. Parameters are : mouseX, mouseY,
+     * lastButtonClicked & timeSinceMouseClick.
+     *
+     * @param mouseX
+     * @param mouseY
+     * @param clickedMouseButton
+     * @param timeSinceLastClick
+     */
+    @Override
+    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
+        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+        mComponentController.onClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+    }
+
+    /**
+     * Called when a mouse button is released.
+     *
+     * @param mouseX
+     * @param mouseY
+     * @param state
+     */
+    @Override
+    protected void mouseReleased(int mouseX, int mouseY, int state) {
+        super.mouseReleased(mouseX, mouseY, state);
+        mComponentController.onClickReleased(mouseX, mouseY, state);
+    }
+
+    /**
+     * Fired when a key is typed (except F11 which toggles full screen). This is the equivalent of
+     * KeyListener.keyTyped(KeyEvent e). Args : character (character on the key), keyCode (lwjgl Keyboard key code)
+     *
+     * @param typedChar
+     * @param keyCode
+     */
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        super.keyTyped(typedChar, keyCode);
+        mComponentController.onKeyTyped(typedChar, keyCode);
+    }
+
+    /**
+     * Called from the main game loop to update the screen.
+     */
+    @Override
+    public void updateScreen() {
+        super.updateScreen();
+        mComponentController.onUpdate();
+    }
+
+    protected void createInventoryViews(BaseGuiContainer inventorySlotsIn) {
+        createInnerInventoryView(inventorySlotsIn);
+        createInvBarView(inventorySlotsIn);
+    }
+
+    protected @Nullable
+    ViewComponent findViewById(long id) {
+        return mComponentController.findViewById(id);
+    }
+
+    protected long addComponent(ViewComponent component) {
+        return mComponentController.onAdd(component);
     }
 
     protected void translateForeground() {
@@ -130,6 +256,34 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
 
     protected void revertTranslateForeground() {
         GlStateManager.translate(guiLeft, guiTop, 0);//drawScreen somehow translates the Foreground by guiLeft and GuiTop...
+    }
+
+    private void createInnerInventoryView(BaseGuiContainer inventorySlotsIn) {
+        PlayerInventoryOffsets offsets = inventorySlotsIn.getInventoryOffsets();
+        ViewComponentGroup innerInventory =
+                new ViewComponentGroup(offsets.getInnerXInvOffset(), offsets.getInnerYInvOffset(), offsets.getInnerColumnCount() * offsets.getSlotXSize(), offsets.getInnerRowCount() * offsets.getSlotYSize())
+                        .setPriority(-100)
+                        .setDraggable(false);
+        addComponent(innerInventory);
+        for (int i = 0; i < offsets.getInnerColumnCount() * offsets.getInnerRowCount(); ++i) {
+            ViewComponent component = new SlotComponent(inventorySlotsIn.inventorySlots.get(i)).setPriority(i - 100);
+            innerInventory.addSubComponent(component);
+        }
+        setInnerInventory(innerInventory);
+    }
+
+    private void createInvBarView(BaseGuiContainer inventorySlotsIn) {
+        PlayerInventoryOffsets offsets = inventorySlotsIn.getInventoryOffsets();
+        ViewComponentGroup invBar =
+                new ViewComponentGroup(offsets.getInvBarXOffset(), offsets.getInvBarYOffset(), offsets.getInvBarColumnCount() * offsets.getSlotXSize(), offsets.getSlotYSize())
+                        .setPriority(-99)
+                        .setDraggable(false);
+        addComponent(invBar);
+        for (int i = offsets.getInnerColumnCount() * offsets.getInnerRowCount(); i < inventorySlotsIn.inventorySlots.size(); ++i) {
+            ViewComponent component = new SlotComponent(inventorySlotsIn.inventorySlots.get(i)).setPriority(i - 100);
+            invBar.addSubComponent(component);
+        }
+        setInventoryBar(invBar);
     }
 
 }

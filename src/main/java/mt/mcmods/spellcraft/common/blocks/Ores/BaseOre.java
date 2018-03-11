@@ -17,14 +17,14 @@ import java.util.Random;
 
 abstract class BaseOre extends BaseBlock implements IWorldGenerator {
     protected static final String TOOL_PICKAXE = "pickaxe";
-    private static final SoundType SOUND_TYPE = SoundType.STONE;
+    private static final boolean DEFAULT_GENERATE_SURFACE = true;
     private static final float LIGHT_DEFAULT = 0;
     private static final int OPACITY = 0;
+    private static final SoundType SOUND_TYPE = SoundType.STONE;
     private static final int VEIN_SIZE_DEFAULT = 8;
-    private static final boolean DEFAULT_GENERATE_SURFACE = true;
     private WorldGenHelper mGenHelper;
-    private int mMaxVeinSize;
     private boolean mGenerateOnOverworld;
+    private int mMaxVeinSize;
 
     protected BaseOre(Material material, @Nonnull String displayName, int harvestLevel, int oresPerChunk, int lowerGenBound, int upperGenBound) {
         super(material, displayName);
@@ -73,20 +73,6 @@ abstract class BaseOre extends BaseBlock implements IWorldGenerator {
         return mGenHelper;
     }
 
-    protected void generateSurface(World world, java.util.Random rand, int chunkX, int chunkZ) {
-        Log.info("Generating surface!");
-        generateHelper(world, rand, chunkX, chunkZ);
-    }
-
-    protected void generateHelper(World world, java.util.Random rand, int chunkX, int chunkZ) {
-        WorldGenerator generator = new WorldGenMinable(this.getDefaultState(), mMaxVeinSize);
-        generateHelper(world, rand, generator, chunkX, chunkZ);
-    }
-
-    protected void generateHelper(World world, java.util.Random rand, WorldGenerator generator, int chunkX, int chunkZ) {
-        getGenHelper().generate(world, rand, generator, chunkX, chunkZ);
-    }
-
     /**
      * Generate some world
      *
@@ -119,6 +105,20 @@ abstract class BaseOre extends BaseBlock implements IWorldGenerator {
         }
     }
 
+    protected void generateSurface(World world, java.util.Random rand, int chunkX, int chunkZ) {
+        Log.info("Generating surface!");
+        generateHelper(world, rand, chunkX, chunkZ);
+    }
+
+    protected void generateHelper(World world, java.util.Random rand, int chunkX, int chunkZ) {
+        WorldGenerator generator = new WorldGenMinable(this.getDefaultState(), mMaxVeinSize);
+        generateHelper(world, rand, generator, chunkX, chunkZ);
+    }
+
+    protected void generateHelper(World world, java.util.Random rand, WorldGenerator generator, int chunkX, int chunkZ) {
+        getGenHelper().generate(world, rand, generator, chunkX, chunkZ);
+    }
+
     protected void generateOverWorld(World world, java.util.Random rand, int chunkX, int chunkZ) {
         if (mGenerateOnOverworld) {
             generateSurface(world, rand, chunkX, chunkZ);
@@ -135,29 +135,13 @@ abstract class BaseOre extends BaseBlock implements IWorldGenerator {
 
     public static class WorldGenHelper {
         private int mLowerGenBound;
-        private int mUpperGenBound;
         private int mOresPerChunk;
+        private int mUpperGenBound;
 
         public WorldGenHelper(int oresPerChunk, int lowerGenBound, int upperGenBound) {
             this.mLowerGenBound = lowerGenBound;
             this.mUpperGenBound = upperGenBound;
             this.mOresPerChunk = oresPerChunk;
-        }
-
-        /**
-         * @param world     The world to generate in
-         * @param rand      The random to use
-         * @param generator the World generator to use
-         * @param chunkX    The 'real' X of the Chunk (chunkX*16)
-         * @param chunkZ    The 'real' Y of the Chunk (chunkY*16)
-         */
-        public void generate(World world, java.util.Random rand, WorldGenerator generator, int chunkX, int chunkZ) {
-            for (int i = 0; i < mOresPerChunk; i++) {
-                int randPosX = chunkX + rand.nextInt(16);
-                int randPosY = rand.nextInt(mUpperGenBound - mLowerGenBound) + mLowerGenBound;
-                int randPosZ = chunkZ + rand.nextInt(16);
-                generator.generate(world, rand, new BlockPos(randPosX, randPosY, randPosZ));
-            }
         }
 
         public int getOresPerChunk() {
@@ -182,6 +166,22 @@ abstract class BaseOre extends BaseBlock implements IWorldGenerator {
 
         public void setUpperGenBound(int upperGenBound) {
             this.mUpperGenBound = upperGenBound;
+        }
+
+        /**
+         * @param world     The world to generate in
+         * @param rand      The random to use
+         * @param generator the World generator to use
+         * @param chunkX    The 'real' X of the Chunk (chunkX*16)
+         * @param chunkZ    The 'real' Y of the Chunk (chunkY*16)
+         */
+        public void generate(World world, java.util.Random rand, WorldGenerator generator, int chunkX, int chunkZ) {
+            for (int i = 0; i < mOresPerChunk; i++) {
+                int randPosX = chunkX + rand.nextInt(16);
+                int randPosY = rand.nextInt(mUpperGenBound - mLowerGenBound) + mLowerGenBound;
+                int randPosZ = chunkZ + rand.nextInt(16);
+                generator.generate(world, rand, new BlockPos(randPosX, randPosY, randPosZ));
+            }
         }
     }
 }

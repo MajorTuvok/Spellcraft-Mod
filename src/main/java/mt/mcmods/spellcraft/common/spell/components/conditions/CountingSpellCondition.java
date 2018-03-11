@@ -1,7 +1,6 @@
 package mt.mcmods.spellcraft.common.spell.components.conditions;
 
 import mt.mcmods.spellcraft.SpellcraftMod;
-import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import mt.mcmods.spellcraft.common.spell.access.AbsAttributeSet;
 import mt.mcmods.spellcraft.common.spell.access.AccessType;
 import mt.mcmods.spellcraft.common.spell.access.IAttributeProvider;
@@ -14,18 +13,16 @@ import java.util.EnumSet;
 import java.util.Set;
 
 public final class CountingSpellCondition extends AbsSpellCondition {
-    private static final String KEY_COUNT = "CountingSpellCondition_count";
-    private static final String KEY_BORDER = "CountingSpellCondition_count";
-    private static final String KEY_UPWARDS = "CountingSpellCondition_upwards";
     private static final CountingSpellCondition GLOBAL_INSTANCE =
             new CountingSpellCondition(StringHelper.createResourceLocation(SpellcraftMod.MODID, "spell_condition", "counting_global"), AccessType.GLOBAL);
     private static final CountingSpellCondition LOCAL_INSTANCE =
             new CountingSpellCondition(StringHelper.createResourceLocation(SpellcraftMod.MODID, "spell_condition", "counting_local"), AccessType.LOCAL);
     private static final CountingSpellCondition STATE_INSTANCE =
             new CountingSpellCondition(StringHelper.createResourceLocation(SpellcraftMod.MODID, "spell_condition", "counting_state"), AccessType.STATE);
-    private AccessType mAccessType;
+    private final AccessType mAccessType;
 
     private CountingSpellCondition(String location, AccessType supportedType) {
+        super();
         setRegistryName(location);
         mAccessType = supportedType;
     }
@@ -51,22 +48,29 @@ public final class CountingSpellCondition extends AbsSpellCondition {
      */
     @Override
     public boolean holdsTrue(ISpellConditionCallback conditionCallback, IAttributeProvider attributeProvider) {
-        CountingAttributeSet attributeSet = getAttributes(attributeProvider);
-        ILoggable.Log.info("Checking Counting SpellCondition! value=" + attributeSet.getCount());
+        CountingAttributeSet attributeSet = getOrCreateAttributes(attributeProvider);
+        //ILoggable.Log.info("Checking "+this+"! value=" + attributeSet.getCount());
         return attributeSet.count();
     }
 
     @Nonnull
     @Override
-    public CountingAttributeSet getAttributes() {
+    public CountingAttributeSet createAttributes() {
         return createAttributes(0, 10);
     }
 
-    public CountingAttributeSet getAttributes(IAttributeProvider attributeProvider) {
-        return (CountingAttributeSet) super.getAttributes(attributeProvider, mAccessType);
+    @Override
+    public String toString() {
+        return "CountingSpellCondition{" +
+                "mAccessType=" + mAccessType +
+                (getRegistryName() != null ? "registryName=" + getRegistryName() + '}' : '}');
     }
 
-    public CountingAttributeSet createAttributes(int count, int border) {
+    private CountingAttributeSet getOrCreateAttributes(IAttributeProvider attributeProvider) {
+        return (CountingAttributeSet) super.getOrCreateAttributes(attributeProvider, mAccessType);
+    }
+
+    private CountingAttributeSet createAttributes(int count, int border) {
         return new CountingAttributeSet(getRegistryName(), EnumSet.of(mAccessType), count, border);
     }
 
@@ -120,15 +124,6 @@ public final class CountingSpellCondition extends AbsSpellCondition {
                 this.upwards = nbt.getBoolean(KEY_UPWARDS);
         }
 
-        @Override
-        public String toString() {
-            final StringBuilder sb = new StringBuilder("CountingAttributeSet{");
-            sb.append("count=").append(count);
-            sb.append(", border=").append(border);
-            sb.append('}');
-            return sb.toString();
-        }
-
         public boolean count() {
             boolean res;
             if (upwards) {
@@ -141,8 +136,18 @@ public final class CountingSpellCondition extends AbsSpellCondition {
             return res;
         }
 
+        @Override
+        public String toString() {
+            return "CountingAttributeSet{" +
+                    "border=" + border +
+                    ", count=" + count +
+                    '}';
+        }
+
         private void setUpwards() {
             this.upwards = this.count < this.border;
         }
+
+
     }
 }

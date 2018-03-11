@@ -16,9 +16,9 @@ public class BURecipeHandler {
 
     public static enum Recipe {
         ;
+        private Class<? extends ProcessingInput> inputClass;
         private HashMap<ProcessingInput, ProcessingRecipe> inputRecipeMap;
         private String name;
-        private Class<? extends ProcessingInput> inputClass;
         private Class<? extends ProcessingOutput> outputClass;
         private Class<? extends ProcessingRecipe> recipeClass;
 

@@ -14,6 +14,7 @@ import mt.mcmods.spellcraft.common.items.ItemBase;
 import mt.mcmods.spellcraft.common.spell.components.conditions.CountingSpellCondition;
 import mt.mcmods.spellcraft.common.spell.components.executables.VoidSpellExecutable;
 import mt.mcmods.spellcraft.common.spell.entity.PlayerSpellBuilder;
+import mt.mcmods.spellcraft.common.util.NetworkUtils;
 import mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
@@ -41,8 +42,8 @@ import static org.lwjgl.input.Keyboard.isKeyDown;
 
 public class ItemWand extends ItemBase implements IClickListener {
     public static final ResourceLocation DEFAULT_WAND_TEXTURE = new ResourceLocation(StringHelper.createResourceLocation(SpellcraftMod.MODID, "items", "wands", "wand"));
-    private WandPropertyDefinition definition;
     private ResourceLocation customLocation;
+    private WandPropertyDefinition definition;
 
     public ItemWand(@Nonnull String itemName, WandPropertyDefinition definition) {
         super(itemName);
@@ -59,12 +60,6 @@ public class ItemWand extends ItemBase implements IClickListener {
         this.customLocation = customLocation;
     }
 
-    @Nullable
-    @Override
-    public IItemPropertyGetter getPropertyGetter(@Nonnull ResourceLocation key) {
-        return super.getPropertyGetter(key);
-    }
-
     public @Nonnull
     WandPropertyDefinition getDefinition() {
         return definition;
@@ -72,6 +67,45 @@ public class ItemWand extends ItemBase implements IClickListener {
 
     public void setDefinition(WandPropertyDefinition definition) {
         this.definition = definition;
+    }
+
+    @Override
+    public @Nonnull
+    ResourceLocation getLocation() {
+        if (customLocation != null) {
+            return customLocation;
+        } else {
+            return new ResourceLocation(StringHelper.createResourceLocation(ILoggable.MODID, "wands", getName()));
+        }
+    }
+
+    @Override
+    public boolean registerRenderer() {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public IItemPropertyGetter getPropertyGetter(@Nonnull ResourceLocation key) {
+        return super.getPropertyGetter(key);
+    }
+
+    /**
+     * Called when the equipped item is right clicked.
+     *
+     * @param worldIn
+     * @param playerIn
+     * @param handIn
+     */
+    @Override
+    public @Nonnull
+    ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
+        return super.onItemRightClick(worldIn, playerIn, handIn);
+    }
+
+    @Override
+    public boolean isDamageable() {
+        return false;
     }
 
     /**
@@ -101,72 +135,38 @@ public class ItemWand extends ItemBase implements IClickListener {
         }*/
     }
 
-    private Optional<Boolean> addWandPropertiesInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        boolean extended = false;
-        if (worldIn != null && worldIn.isRemote) {
-            extended = isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode());
-        }
-        return getProperties(stack).addPropertyTooltip(tooltip, extended);
-    }
-
     /**
-     * Retrieves the WandProperty Object from the given ItemStack. Subclasses should override this if they provide their own Property Object.
+     * Called from ItemStack.setItem, will hold extra data for the life of this ItemStack.
+     * Can be retrieved from stack.getCapabilities()
+     * The NBT can be null if this is not called from readNBT or if the item the stack is
+     * changing FROM is different then this item, or the previous item had no capabilities.
+     * <p>
+     * This is called BEFORE the stacks item is set so you can use stack.getItem() to see the OLD item.
+     * Remember that getItem CAN return null.
      *
-     * @param stack The ItemStack from which the Properties should be retrieved
-     * @return The retrieved or created WandProperty Object
+     * @param stack The ItemStack
+     * @param nbt   NBT of this item serialized, or null.
+     * @return A holder instance associated with this ItemStack where you can hold capabilities for the life of this item.
      */
-    protected @Nonnull
-    IWandProperties getProperties(ItemStack stack) {
-        IWandProperties properties = null;
-        if (stack.hasCapability(SpellcraftCapabilities.WAND_PROPERTIES_CAPABILITY, null)) {
-            properties = stack.getCapability(SpellcraftCapabilities.WAND_PROPERTIES_CAPABILITY, null);
-        }
-        if (properties == null) {
-            properties = new WandProperties(getDefinition());
-        }
-        properties.getOrCreate(stack);
-        return properties;
-    }
-
+    @Nullable
     @Override
-    public boolean isDamageable() {
-        return false;
+    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable NBTTagCompound nbt) {
+        WandProperties properties = new WandProperties(getDefinition());
+        properties.getOrCreate(stack);
+        return new WandCapabilityProvider(properties);
     }
 
     @Override
     public @Nonnull
     ItemStack getDefaultInstance() {
-        ItemStack stack = super.getDefaultInstance();
+        ItemStack stack;
+        if (NetworkUtils.physicalClient()) {
+            stack = super.getDefaultInstance();
+        } else {
+            stack = new ItemStack(this);
+        }
         getProperties(stack);
         return stack;
-    }
-
-    @Override
-    public @Nonnull
-    ResourceLocation getLocation() {
-        if (customLocation != null) {
-            return customLocation;
-        } else {
-            return new ResourceLocation(StringHelper.createResourceLocation(ILoggable.MODID, "wands", getName()));
-        }
-    }
-
-    @Override
-    public boolean registerRenderer() {
-        return true;
-    }
-
-    /**
-     * Called when the equipped item is right clicked.
-     *
-     * @param worldIn
-     * @param playerIn
-     * @param handIn
-     */
-    @Override
-    public @Nonnull
-    ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
-        return super.onItemRightClick(worldIn, playerIn, handIn);
     }
 
     @Override
@@ -211,24 +211,30 @@ public class ItemWand extends ItemBase implements IClickListener {
     }
 
     /**
-     * Called from ItemStack.setItem, will hold extra data for the life of this ItemStack.
-     * Can be retrieved from stack.getCapabilities()
-     * The NBT can be null if this is not called from readNBT or if the item the stack is
-     * changing FROM is different then this item, or the previous item had no capabilities.
-     * <p>
-     * This is called BEFORE the stacks item is set so you can use stack.getItem() to see the OLD item.
-     * Remember that getItem CAN return null.
+     * Retrieves the WandProperty Object from the given ItemStack. Subclasses should override this if they provide their own Property Object.
      *
-     * @param stack The ItemStack
-     * @param nbt   NBT of this item serialized, or null.
-     * @return A holder instance associated with this ItemStack where you can hold capabilities for the life of this item.
+     * @param stack The ItemStack from which the Properties should be retrieved
+     * @return The retrieved or created WandProperty Object
      */
-    @Nullable
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable NBTTagCompound nbt) {
-        WandProperties properties = new WandProperties(getDefinition());
+    protected @Nonnull
+    IWandProperties getProperties(ItemStack stack) {
+        IWandProperties properties = null;
+        if (stack.hasCapability(SpellcraftCapabilities.WAND_PROPERTIES_CAPABILITY, null)) {
+            properties = stack.getCapability(SpellcraftCapabilities.WAND_PROPERTIES_CAPABILITY, null);
+        }
+        if (properties == null) {
+            properties = new WandProperties(getDefinition());
+        }
         properties.getOrCreate(stack);
-        return new WandCapabilityProvider(properties);
+        return properties;
+    }
+
+    private Optional<Boolean> addWandPropertiesInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        boolean extended = false;
+        if (worldIn != null && worldIn.isRemote) {
+            extended = isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode());
+        }
+        return getProperties(stack).addPropertyTooltip(tooltip, extended);
     }
 
     public class ActivePropertyGetter implements IItemPropertyGetter {

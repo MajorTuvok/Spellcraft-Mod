@@ -8,6 +8,14 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import javax.annotation.Nonnull;
 
 public interface IGuiRenderProvider {
+    public @Nonnull
+    FontRenderer getFontRenderer();
+
+    public @Nonnull
+    RenderItem getRenderItem();
+
+    public Minecraft getMc();
+
     public void drawTexturedModalRect(int xPos, int yPos, int textureX, int textureY, int width, int height);
 
     public void drawTexturedModalRect(float xPos, float yPos, int minU, int minV, int maxU, int maxV);
@@ -25,12 +33,4 @@ public interface IGuiRenderProvider {
     public void drawRectangle(int left, int top, int right, int bottom, int color);
 
     public void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor);
-
-    public @Nonnull
-    FontRenderer getFontRenderer();
-
-    public @Nonnull
-    RenderItem getRenderItem();
-
-    public Minecraft getMc();
 }

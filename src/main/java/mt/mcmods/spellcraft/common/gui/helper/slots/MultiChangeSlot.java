@@ -42,6 +42,16 @@ public class MultiChangeSlot extends SlotItemHandler {
         return super.decrStackSize(amount);
     }
 
+    public void addListener(ISlotChangedListener listener) {
+        if (listener == null) throw new NullPointerException("Cannot have a null Callback");
+        mListeners.add(listener);
+    }
+
+    public void removeListener(ISlotChangedListener listener) {
+        if (listener == null) throw new NullPointerException("Cannot remove a null Callback");
+        mListeners.remove(listener);
+    }
+
     /**
      * the itemStack passed in is the output - ie, iron ingots, and pickaxes, not ore and wood. Typically increases an
      * internal count then calls onCrafting(item).
@@ -81,15 +91,5 @@ public class MultiChangeSlot extends SlotItemHandler {
         for (ISlotChangedListener listener : mListeners) {
             listener.onSlotChanged();
         }
-    }
-
-    public void addListener(ISlotChangedListener listener) {
-        if (listener == null) throw new NullPointerException("Cannot have a null Callback");
-        mListeners.add(listener);
-    }
-
-    public void removeListener(ISlotChangedListener listener) {
-        if (listener == null) throw new NullPointerException("Cannot remove a null Callback");
-        mListeners.remove(listener);
     }
 }

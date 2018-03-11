@@ -92,7 +92,7 @@ class AttributeProviderImpl implements IAttributeProvider {
     public <T extends ISpellComponent<T>> boolean addCorrespondingToTypes(ISpellComponent<T> component) {
         checkState();
         try {
-            IAttributeSet set = component.getAttributes();
+            IAttributeSet set = component.createAttributes();
             if (set == null) return false;
             Set<AccessType> types = set.getSupportedAccessTypes();
             if (types.isEmpty()) return false;
@@ -101,7 +101,7 @@ class AttributeProviderImpl implements IAttributeProvider {
                     types) {
                 getAccess(type).putAttributes(set);
                 if (++count < types.size()) {
-                    set = component.getAttributes();
+                    set = component.createAttributes();
                 }
             }
             return true;
@@ -157,6 +157,15 @@ class AttributeProviderImpl implements IAttributeProvider {
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
 
+    }
+
+    @Override
+    public String toString() {
+        return "AttributeProviderImpl{" +
+                "mGlobalAccess=" + mGlobalAccess +
+                ", mStateAccess=" + mStateAccess +
+                ", mLocalAccess=" + mLocalAccess +
+                '}';
     }
 
     AttributeProviderImpl with(IAttributeAccess globalAccess, IAttributeAccess stateAccess, IAttributeAccess localAccess) {

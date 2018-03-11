@@ -19,8 +19,8 @@ import java.util.Collection;
 import java.util.UUID;
 
 public class NBTHelper {
-    public static final String UUID_MOST_SIG_BITS = "mostSigBits";
     public static final String UUID_LEAST_SIG_BITS = "leastSigBits";
+    public static final String UUID_MOST_SIG_BITS = "mostSigBits";
 
     /*
      * I didn't think of this incredibly good system myself... :(

@@ -26,14 +26,14 @@ import java.util.*;
 
 @NotThreadSafe
 public final class SpellState implements INBTSerializable<NBTTagCompound>, ILoggable {
+    private static final String KEY_ACCESS_LOCAL = "SpellState_set_attribute_access";
+    private static final String KEY_ACCESS_STATE = "SpellState_attribute_access";
     private static final String KEY_COMPONENTS = "SpellState_set_components";
     private static final String KEY_CONDITIONS = "SpellState_set_conditions";
     private static final String KEY_CONDITION_VALUES = "SpellState_set_condition_values";
-    private static final String KEY_ACCESS_LOCAL = "SpellState_set_attribute_access";
-    private static final String KEY_STATES = "SpellState_set_next_states";
-    private static final String KEY_ACCESS_STATE = "SpellState_attribute_access";
     private static final String KEY_CUR_INDEX = "SpellState_current_index";
     private static final String KEY_NAME = "SpellState_name";
+    private static final String KEY_STATES = "SpellState_set_next_states";
     private AttributeProviderImpl mAttributeProvider;
     private ArrayList<StateList> mCommands;
     private int mCurIndex;
@@ -179,13 +179,22 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
         return nextState(index);
     }
 
-    void checkCommandIndex(int index) {
-        if (!hasCommandIndex(index))
-            throw new SpellStateIndexOutOfBoundsException("Attempted to access SpellState mCommands with Illegal Index of " + index + " (size is " + mCommands.size() + ")!");
+    @Override
+    public String toString() {
+        return "SpellState{" +
+                "mCurIndex=" + mCurIndex +
+                ", mName='" + mName + '\'' +
+                '}';
     }
 
     boolean hasCommandIndex(int index) {
         return index <= mCommands.size() && index >= 0;
+    }
+
+    void checkCommandIndex(int index) {
+        if (!hasCommandIndex(index)) {
+            throw new SpellStateIndexOutOfBoundsException(mName, index, mCommands.size());
+        }
     }
 
     private boolean testConditions(int index, ISpellConditionCallback conditionCallback, IAttributeAccess globalAccess) {
@@ -249,7 +258,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
             Log.warn("Could not fully deserialize SpellState NBT because ConditionValue NBT-Data doesn't fit together. Note that this might lead to errors further down the line!");
         }
         if (componentList.hasNext()) {
-            Log.warn("Could not fully deserialize SpellState NBT because Component NBT-Data doesn't fit together. Note that this might lead to errors further down the line!");
+            Log.warn("Could not fully deserialize SpellState NBT because ViewComponent NBT-Data doesn't fit together. Note that this might lead to errors further down the line!");
         }
         if (stateList.hasNext()) {
             Log.warn("Could not fully deserialize SpellState NBT because NextState NBT-Data doesn't fit together. Note that this might lead to errors further down the line!");
@@ -349,7 +358,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
                 if (component.getRegistryName() != null) {
                     locations.appendTag(NBTHelper.serializeResourceLocation(component.getRegistryName()));
                 } else {
-                    Log.error("SpellState noticed an unregistered Component! This is illegal and therefore may not be serialized!");
+                    Log.error("SpellState noticed an unregistered ViewComponent! This is illegal and therefore may not be serialized!");
                 }
             }
             return locations;
@@ -391,7 +400,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
             for (ISpellExecutable component :
                     mExecutables) {
                 if (!component.execute(callback, provider)) {
-                    Log.trace("Component exited. Execution failed!");
+                    Log.trace("ViewComponent exited. Execution failed!");
                     return false;
                 }
             }
@@ -400,6 +409,15 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
 
         private String nextState() {
             return mNextState;
+        }
+
+        @Override
+        public String toString() {
+            return "StateList{" +
+                    "mConditionsCount=" + mConditions.size() +
+                    ", mExecutablesCount=" + mExecutables.size() +
+                    ", mNextState='" + mNextState + '\'' +
+                    '}';
         }
     }
 }

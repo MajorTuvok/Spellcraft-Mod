@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "spellcraft:spell_creator",
+  "ingredients": [
+    {
+      "item": "minecraft:log",
+      "data": 0
+    },
+    {
+      "item": "minecraft:dye",
+      "data": 0
+    },
+    {
+      "item": "minecraft:paper"
+    }
+  ],
+  "result": {
+    "item": "spellcraft:spell_creator",
+    "data": 0
+  }
+}

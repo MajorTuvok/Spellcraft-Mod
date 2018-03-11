@@ -49,13 +49,6 @@ public class ItemStackInput extends BasicProcessingInput<ItemStackInput> {
     }
 
     @Override
-    public void write(NBTTagCompound compound) {
-        if (mainInput != null && !mainInput.isEmpty()) {
-            compound.setTag("Main Input", mainInput.serializeNBT());
-        }
-    }
-
-    @Override
     public boolean testEquality(ItemStackInput other) {
         if (!this.isValid()) {
             return !other.isValid();
@@ -66,17 +59,24 @@ public class ItemStackInput extends BasicProcessingInput<ItemStackInput> {
     }
 
     @Override
+    public boolean isInstance(Object other) {
+        return other instanceof ItemStackInput;
+    }
+
+    @Override
+    public void write(NBTTagCompound compound) {
+        if (mainInput != null && !mainInput.isEmpty()) {
+            compound.setTag("Main Input", mainInput.serializeNBT());
+        }
+    }
+
+    @Override
     public int hashCode() {
         if (isValid()) {
             String mainName = mainInput.getUnlocalizedName();
             return mainName.hashCode();
         }
         return -1;
-    }
-
-    @Override
-    public boolean isInstance(Object other) {
-        return other instanceof ItemStackInput;
     }
 
     public boolean process(List<ItemStack> stacks, int mainIndex, int secondaryIndex, boolean simulate) {

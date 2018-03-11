@@ -3,6 +3,8 @@ package mt.mcmods.spellcraft.common.spell.access;
 import mt.mcmods.spellcraft.common.spell.types.ISpellType;
 
 public interface ISpellCallback {
+    public ISpellType getSpellType();
+
     /**
      * Extracts Power from this Spells powerProvider
      *
@@ -10,8 +12,6 @@ public interface ISpellCallback {
      * @return The actual amount of power consumed
      */
     public float extractPower(float amount);
-
-    public ISpellType getSpellType();
 
     public void onIllegalCallbackDetected();
 }

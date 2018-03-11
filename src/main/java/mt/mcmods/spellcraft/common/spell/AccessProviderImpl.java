@@ -33,6 +33,14 @@ class AccessProviderImpl implements IAttributeAccess {
     }
 
     /**
+     * @return The AccessType of which this AttributeAccess is
+     */
+    @Override
+    public AccessType getType() {
+        return mAccessType;
+    }
+
+    /**
      * Get the Attributes for the given ResourceLocation
      *
      * @param key The ResourceLocation to look for
@@ -72,7 +80,7 @@ class AccessProviderImpl implements IAttributeAccess {
     public boolean putAttributes(IAttributeSet set) {
         if (set == null) throw new NullPointerException("Cannot add null Attributes");
         Set<AccessType> types = set.getSupportedAccessTypes();
-        ResourceLocation key = set.getComponentRegistryName();
+        ResourceLocation key = set.getComponentKey();
         if (mUnderlyingMap.containsKey(key)) return false;
         if (!types.contains(getType())) return false;
         mUnderlyingMap.put(key, set);
@@ -90,14 +98,6 @@ class AccessProviderImpl implements IAttributeAccess {
     public IAttributeSet removeAttributes(ResourceLocation key) {
         if (key == null) throw new NullPointerException("Cannot remove attributes for null key");
         return mUnderlyingMap.containsKey(key) ? mUnderlyingMap.remove(key) : null;
-    }
-
-    /**
-     * @return The AccessType of which this AttributeAccess is
-     */
-    @Override
-    public AccessType getType() {
-        return mAccessType;
     }
 
     @Override
@@ -132,7 +132,7 @@ class AccessProviderImpl implements IAttributeAccess {
                 Log.warn("Could not deserialize Attributes associated with " + key + " because there is no corresponding SpellComponent registered!");
                 continue;
             }
-            IAttributeSet attributes = component.getAttributes();
+            IAttributeSet attributes = component.createAttributes();
             if (attributes == null) {
                 Log.warn("Could not deserialize Attributes associated with " + key +
                         " because the corresponding SpellComponent does not provide any Attributes! This might be a compatibility issue related to updating the " + key.getResourceDomain() + " version.");
@@ -143,4 +143,10 @@ class AccessProviderImpl implements IAttributeAccess {
         }
     }
 
+    @Override
+    public String toString() {
+        return "AccessProviderImpl{" +
+                "mAccessType=" + mAccessType +
+                '}';
+    }
 }

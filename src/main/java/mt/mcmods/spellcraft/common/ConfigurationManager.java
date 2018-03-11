@@ -13,10 +13,14 @@ public class ConfigurationManager implements ILoggable {
     private static final String MAIN_CONFIG_NAME = "main.cfg";
     private static final String TOOLS_CONFIG_NAME = "tools.cfg";
     private Configuration mMainConfig;
-    private Configuration mToolsConfig;
     private ToolsConfig mTools;
+    private Configuration mToolsConfig;
 
     public ConfigurationManager() {
+    }
+
+    public ToolsConfig getToolsConfig() {
+        return mTools;
     }
 
     public void register(FMLPreInitializationEvent e) {
@@ -32,10 +36,6 @@ public class ConfigurationManager implements ILoggable {
         mToolsConfig = new Configuration(new File(path, TOOLS_CONFIG_NAME));
         syncConfig();
         Log.debug("Finished initialising configuration");
-    }
-
-    public ToolsConfig getToolsConfig() {
-        return mTools;
     }
 
     private void syncConfig() {
@@ -80,39 +80,37 @@ public class ConfigurationManager implements ILoggable {
     }
 
     public static class ToolsConfig {
-        static final String COMMENT_HARVEST_LEVEL = "This is the Harvest Level, determining the type of blocks which can be mined with this. 0=wood level, 3=diamond level";
-        static final String COMMENT_BASE_USES = "This is how often a Tool can be used until it breaks.";
-        static final String COMMENT_ENCHANTABILITY = "Enchantability Factor determines the number (amd how good they are) of Enchantments, which can be put on this item";
-        static final String COMMENT_EFFICIENCY = "The Efficiency value for this Tool. Diamond has a value of 8.";
+        static final String CATEGORY_ENERGIZED_OSMIUM = "energized_osmium";
         static final String COMMENT_BASE_DAMAGE = "Remember, this is just the Base Damage. Swords will add 3 additional Damage to this(axes 5). Diamond has value of 3.";
-        static final String COMMENT_DAMAGE_REDUCTION = "Damage Reduction as ints in order:  boots, leggings, chestplate, helmet. For example Diamond has values of 3,6,8,3.";
         static final String COMMENT_BASE_DURABILITY = "The Basic Durability value for armor of this Type. Exact Values are calculated as: \n" +
                 "durability * 11 for the helmet \n" +
                 "durability * 16 for the chestplate \n" +
                 "durability * 15 for the leggings \n" +
                 "durability * 13 for the boots. \nAs a Reference: Diamond has a value of 33, iron of 15.";
+        static final String COMMENT_BASE_USES = "This is how often a Tool can be used until it breaks.";
+        static final String COMMENT_DAMAGE_REDUCTION = "Damage Reduction as ints in order:  boots, leggings, chestplate, helmet. For example Diamond has values of 3,6,8,3.";
+        static final String COMMENT_EFFICIENCY = "The Efficiency value for this Tool. Diamond has a value of 8.";
+        static final String COMMENT_ENCHANTABILITY = "Enchantability Factor determines the number (amd how good they are) of Enchantments, which can be put on this item";
+        static final String COMMENT_HARVEST_LEVEL = "This is the Harvest Level, determining the type of blocks which can be mined with this. 0=wood level, 3=diamond level";
         static final String COMMENT_TOUGHNESS = "Armor Toughness determines a resistance factor which influences how well it shields against armor bypassing attacks";
-        static final String CATEGORY_ENERGIZED_OSMIUM = "energized_osmium";
-        static final String VALUE_HARVEST_LEVEL = "harvest level";
-        static final String VALUE_BASE_USES = "base uses";
-        static final String VALUE_ENCHANTABILITY = "enchantability";
-        static final String VALUE_BASE_DAMAGE = "base damage";
-        static final String VALUE_EFFICIENCY = "efficiency";
-        static final String VALUE_ARMOR_ENCHANTABILITY = "armor enchantability";
-        static final String VALUE_ARMOR_DAMAGE_REDUCTION = "armor damage reduction";
         static final String VALUE_ARMOR_BASE_DURABILITY = "armor base durability";
+        static final String VALUE_ARMOR_DAMAGE_REDUCTION = "armor damage reduction";
+        static final String VALUE_ARMOR_ENCHANTABILITY = "armor enchantability";
         static final String VALUE_ARMOR_TOUGHNESS = "armor toughness";
-
-        private int mmEnergizedOsmiumHarvestLevel;
-        private int mmEnergizedOsmiumBaseUses;
-        private int mmEnergizedOsmiumEnchantability;
-        private float mmEnergizedOsmiumBaseDamage;
-        private float mmEnergizedOsmiumEfficiency;
-
-        private int mmEnergizedOsmiumArmorEnchantability;
-        private int mmEnergizedOsmiumArmorBaseDurability;
+        static final String VALUE_BASE_DAMAGE = "base damage";
+        static final String VALUE_BASE_USES = "base uses";
+        static final String VALUE_EFFICIENCY = "efficiency";
+        static final String VALUE_ENCHANTABILITY = "enchantability";
+        static final String VALUE_HARVEST_LEVEL = "harvest level";
         private int[] mmEnergizedOsmiumArmorBaseDamageReduction;
+        private int mmEnergizedOsmiumArmorBaseDurability;
+        private int mmEnergizedOsmiumArmorEnchantability;
         private float mmEnergizedOsmiumArmorToughness;
+        private float mmEnergizedOsmiumBaseDamage;
+        private int mmEnergizedOsmiumBaseUses;
+        private float mmEnergizedOsmiumEfficiency;
+        private int mmEnergizedOsmiumEnchantability;
+        private int mmEnergizedOsmiumHarvestLevel;
 
         public ToolsConfig() {
         }

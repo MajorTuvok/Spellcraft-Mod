@@ -16,8 +16,12 @@ import java.util.Random;
 import static mt.mcmods.spellcraft.Client.Particles.ParticleHandler.ParticleName.PARTICLE_ENERGIZED_OSMIUM_ORE;
 
 public class ParticleHandler {
-    public static final HashMap<ParticleName, Integer> PARTICLE_ID_MAP = new HashMap<>();
+    public enum ParticleName {
+        PARTICLE_ENERGIZED_OSMIUM_ORE
+    }
+
     public static final HashMap<Integer, ParticleName> ID_PARTICLE_MAP = new HashMap<>();
+    public static final HashMap<ParticleName, Integer> PARTICLE_ID_MAP = new HashMap<>();
 
     static {
         PARTICLE_ID_MAP.put(PARTICLE_ENERGIZED_OSMIUM_ORE, 0);
@@ -88,9 +92,5 @@ public class ParticleHandler {
                 world.spawnParticle(name, x, y, z, vx, vy, vz);
             }
         }
-    }
-
-    public enum ParticleName {
-        PARTICLE_ENERGIZED_OSMIUM_ORE
     }
 }

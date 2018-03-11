@@ -27,6 +27,11 @@ public abstract class BaseTileEntityBlock<T extends TileEntity> extends BaseBloc
     }
 
     @Override
+    public boolean doesSelfRegistration() {
+        return false;
+    }
+
+    @Override
     public boolean hasTileEntity(IBlockState state) {
         return true;
     }
@@ -34,10 +39,5 @@ public abstract class BaseTileEntityBlock<T extends TileEntity> extends BaseBloc
     @Override
     public abstract @Nullable
     T createTileEntity(World world, IBlockState state);
-
-    @Override
-    public boolean doesSelfRegistration() {
-        return false;
-    }
 }
 

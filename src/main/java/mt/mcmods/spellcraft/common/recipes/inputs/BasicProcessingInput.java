@@ -15,10 +15,13 @@ public abstract class BasicProcessingInput<INPUT extends BasicProcessingInput<IN
     public abstract void load(NBTTagCompound compound);
 
     @Override
-    public abstract void write(NBTTagCompound compound);
+    public abstract boolean testEquality(INPUT var1);
 
     @Override
-    public abstract boolean testEquality(INPUT var1);
+    public abstract boolean isInstance(Object var1);
+
+    @Override
+    public abstract void write(NBTTagCompound compound);
 
     @Override
     public abstract int hashCode();
@@ -27,9 +30,6 @@ public abstract class BasicProcessingInput<INPUT extends BasicProcessingInput<IN
     public boolean equals(Object other) {
         return this.isInstance(other) && this.testEquality((INPUT) other);
     }
-
-    @Override
-    public abstract boolean isInstance(Object var1);
 
     /**
      * Creates and returns a copy of this object.  The precise meaning

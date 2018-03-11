@@ -1,6 +1,8 @@
 package mt.mcmods.spellcraft.common.util;
 
 import io.netty.buffer.ByteBuf;
+import mt.mcmods.spellcraft.ServerProxy;
+import mt.mcmods.spellcraft.SpellcraftMod;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -20,17 +22,19 @@ public class ChannelHolder {
         idCount = 0;
     }
 
-    public <REQ extends IMessage, REPLY extends IMessage> void registerMessage(Class<? extends IMessageHandler<REQ, REPLY>> messageHandler, Class<REQ> requestMessageType, Side side) {
-        int count = getIdCount();
-        //ILoggable.Log.info("Id count before registration: " + count);
-        mChannel.registerMessage(messageHandler, requestMessageType, count, side);
-    }
-
     private int getIdCount() {
         if (idCount < 255) {
             return idCount++;
         } else {
             throw new RuntimeException("Attempted to registerGameOverlayListener more than 255 Messages on a single Channel!");
+        }
+    }
+
+    public <REQ extends IMessage, REPLY extends IMessage> void registerMessage(Class<? extends IMessageHandler<REQ, REPLY>> messageHandler, Class<REQ> requestMessageType, Side side) {
+        int count = getIdCount();
+        //ILoggable.Log.info("Id count before registration: " + count);
+        if (!(SpellcraftMod.proxy instanceof ServerProxy) || side == Side.SERVER) {
+            mChannel.registerMessage(messageHandler, requestMessageType, count, side);
         }
     }
 

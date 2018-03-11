@@ -11,16 +11,26 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.LinkedHashSet;
 
+@SideOnly(Side.CLIENT)
 public class GameOverlayEventHandler {
     private static final LinkedHashSet<IRenderPostGameOverlayListener> postGameOverlayListeners = new LinkedHashSet<>();
-    private static final LinkedHashSet<IRenderTextGameOverlayListener> textGameOverlayListeners = new LinkedHashSet<>();
     private static final LinkedHashSet<ISizeChangedListener> sizeChangedListeners = new LinkedHashSet<>();
+    private static final LinkedHashSet<IRenderTextGameOverlayListener> textGameOverlayListeners = new LinkedHashSet<>();
     private GuiMeasurements measurements;
 
     static {
         registerGameOverlayListener(GameOverlayGui.INSTANCE);
         registerTextOverlayListener(GameOverlayGui.INSTANCE);
         registerSizeChangedListener(GameOverlayGui.INSTANCE);
+    }
+
+    public GameOverlayEventHandler() {
+        this(new GuiMeasurements(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, 0, 0));
+    }
+
+    private GameOverlayEventHandler(GuiMeasurements measurements) {
+        this.measurements = measurements;
+        checkMeasurements();
     }
 
     public static void registerGameOverlayListener(IRenderPostGameOverlayListener listener) {
@@ -45,15 +55,6 @@ public class GameOverlayEventHandler {
 
     public static void deregisterSizeChangedListener(ISizeChangedListener listener) {
         sizeChangedListeners.remove(listener);
-    }
-
-    public GameOverlayEventHandler() {
-        this(new GuiMeasurements(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, 0, 0));
-    }
-
-    private GameOverlayEventHandler(GuiMeasurements measurements) {
-        this.measurements = measurements;
-        checkMeasurements();
     }
 
     @SubscribeEvent

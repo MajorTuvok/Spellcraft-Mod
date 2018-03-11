@@ -2,7 +2,6 @@ package mt.mcmods.spellcraft.common.util.item;
 
 import mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nullable;
 
@@ -110,12 +109,6 @@ public class OreIdentityItemStackWrapper extends ItemStackWrapper {
         return obj instanceof OreIdentityItemStackWrapper ?
                 (getIdentityName() != null ? getIdentityName().equals(obj) : ((OreIdentityItemStackWrapper) obj).getIdentityName() == null)
                 : super.equals(obj);
-    }
-
-    @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
-        super.deserializeNBT(nbt);
-        set(get());
     }
 
     public @Nullable

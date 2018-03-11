@@ -15,6 +15,7 @@ public interface ISpellCondition extends ISpellComponent<ISpellCondition> {
      * @param conditionCallback The ConditionCallback representing outside circumstances. Will probably be a Spell who's ISpellType is one of getSupportedTypes(), although this is not guaranteed.
      * @return Whether or not this Condition holds true against given circumstances. Return false and call IllegalCallbackDetected if the ISpellConditionCallback is not the required Type.
      */
-    public abstract boolean holdsTrue(ISpellConditionCallback conditionCallback, IAttributeProvider attributeProvider);
+
+    public boolean holdsTrue(ISpellConditionCallback conditionCallback, IAttributeProvider attributeProvider);
 
 }

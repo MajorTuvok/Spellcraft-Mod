@@ -32,16 +32,32 @@ import static mt.mcmods.spellcraft.common.gui.helper.GuiResource.OVERLAY_SPELLPO
 public class GameOverlayGui extends Gui implements
         IRenderPostGameOverlayListener, IRenderTextGameOverlayListener, ISizeChangedListener,
         IGuiRenderProvider, ILoggable {
-    private GuiDrawingDelegate delegate;
+    public static final GameOverlayGui INSTANCE = new GameOverlayGui();
     private float barRelXPos;
     private float barRelYPos;
-    public static final GameOverlayGui INSTANCE = new GameOverlayGui();
+    private GuiDrawingDelegate delegate;
 
     public GameOverlayGui() {
         super();
         delegate = new GuiDrawingDelegate(this, new GuiMeasurements(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, 0, 0));
         this.barRelXPos = 1f;
         this.barRelYPos = 0.5f;
+    }
+
+    public float getBarRelXPos() {
+        return barRelXPos;
+    }
+
+    public void setBarRelXPos(float barRelXPos) {
+        this.barRelXPos = MathHelper.clamp(barRelXPos, 0.0f, 1.0f);
+    }
+
+    public float getBarRelYPos() {
+        return barRelYPos;
+    }
+
+    public void setBarRelYPos(float barRelYPos) {
+        this.barRelYPos = MathHelper.clamp(barRelYPos, 0.0f, 1.0f);
     }
 
     @Override
@@ -122,22 +138,6 @@ public class GameOverlayGui extends Gui implements
     @Override
     public Minecraft getMc() {
         return Minecraft.getMinecraft();
-    }
-
-    public float getBarRelXPos() {
-        return barRelXPos;
-    }
-
-    public void setBarRelXPos(float barRelXPos) {
-        this.barRelXPos = MathHelper.clamp(barRelXPos, 0.0f, 1.0f);
-    }
-
-    public float getBarRelYPos() {
-        return barRelYPos;
-    }
-
-    public void setBarRelYPos(float barRelYPos) {
-        this.barRelYPos = MathHelper.clamp(barRelYPos, 0.0f, 1.0f);
     }
 
     private float getBarXPos(GuiMeasurements measurements) {

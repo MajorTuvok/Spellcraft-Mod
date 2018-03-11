@@ -22,30 +22,30 @@ import java.util.Map;
 public class SpellcraftConditions extends BaseContainer<ISpellCondition>
         implements IForgeRegistry.AddCallback<ISpellCondition>, IForgeRegistry.ClearCallback<ISpellCondition>,
         IForgeRegistry.CreateCallback<ISpellCondition>, IForgeRegistry.DummyFactory<ISpellCondition>, IForgeRegistry.MissingFactory<ISpellCondition> {
-    private boolean instantiated = false;
-    private static final SpellcraftConditions INSTANCE = new SpellcraftConditions();
-    private static final ResourceLocation DEFAULT_KEY = new ResourceLocation(StringHelper.createResourceLocation(ILoggable.MODID, "Spell_Condition", "Unidentified"));
     public static final ResourceLocation TYPE_CONDITION_ACCESS = new ResourceLocation(StringHelper.createResourceLocation(ILoggable.MODID, "Type", "Condition", "Registry"));
+    private static final ResourceLocation DEFAULT_KEY = new ResourceLocation(StringHelper.createResourceLocation(ILoggable.MODID, "Spell_Condition", "Unidentified"));
+    private static final SpellcraftConditions INSTANCE = new SpellcraftConditions();
     //Registry Managing fields
     private static final ResourceLocation NAME = new ResourceLocation(StringHelper.createResourceLocation(ILoggable.MODID, "Spell_Conditions"));
-    private static IForgeRegistry<ISpellCondition> registry;
-    private static RegistryAdvanced<ISpellType, List<ISpellCondition>> typeConditions;
+    //Container fields
     public static ISpellCondition ALWAYS_FALSE;
     public static ISpellCondition ALWAYS_TRUE;
-    //Container fields
     public static ISpellCondition COUNTING_GLOBAL;
     public static ISpellCondition COUNTING_LOCAL;
     public static ISpellCondition COUNTING_STATE;
+    private static IForgeRegistry<ISpellCondition> registry;
+    private static RegistryAdvanced<ISpellType, List<ISpellCondition>> typeConditions;
+    private boolean instantiated = false;
 
-
-    public static SpellcraftConditions getInstance(){
-        return INSTANCE;
-    }
 
     private SpellcraftConditions() {
         super();
         if (instantiated) throw new AssertionError();
         instantiated = true;
+    }
+
+    public static SpellcraftConditions getInstance() {
+        return INSTANCE;
     }
 
     @Override
@@ -56,8 +56,8 @@ public class SpellcraftConditions extends BaseContainer<ISpellCondition>
         COUNTING_GLOBAL = register(CountingSpellCondition.getGlobalInstance());
         COUNTING_LOCAL = register(CountingSpellCondition.getStateInstance());
         COUNTING_STATE = register(CountingSpellCondition.getLocalInstance());
-        ALWAYS_TRUE = register(TrueCondition.getINSTANCE());
-        ALWAYS_FALSE = register(FalseCondition.getINSTANCE());
+        ALWAYS_TRUE = register(TrueCondition.getInstance());
+        ALWAYS_FALSE = register(FalseCondition.getInstance());
         Log.info("Successfully Registered SpellConditions!");
     }
 

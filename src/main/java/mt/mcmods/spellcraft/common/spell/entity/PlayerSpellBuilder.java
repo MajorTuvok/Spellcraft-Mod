@@ -9,6 +9,19 @@ import javax.annotation.Nullable;
 
 public class PlayerSpellBuilder extends SpellBuilder {
 
+    public PlayerSpellBuilder() throws InstantiationException {
+        super(SpellTypes.PLAYER_SPELL_TYPE);
+    }
+
+    /**
+     * Creates a new SpellBuilder with the predefined NBTTagCompound and with the given ISpellType
+     *
+     * @param compound The NBTTacCompound to use
+     */
+    public PlayerSpellBuilder(NBTTagCompound compound) throws InstantiationException {
+        super(SpellTypes.PLAYER_SPELL_TYPE, compound);
+    }
+
     public static @Nullable
     PlayerSpellBuilder getUncheckedInstance() {
         try {
@@ -17,10 +30,6 @@ public class PlayerSpellBuilder extends SpellBuilder {
             Log.error("Failed to instantiate PlayerSpellBuilder!", e);
         }
         return null;
-    }
-
-    public PlayerSpellBuilder() throws InstantiationException {
-        super(SpellTypes.PLAYER_SPELL_TYPE);
     }
 
     public static @Nullable
@@ -34,25 +43,16 @@ public class PlayerSpellBuilder extends SpellBuilder {
     }
 
     /**
-     * Creates a new SpellBuilder with the predefined NBTTagCompound and with the given ISpellType
-     *
-     * @param compound The NBTTacCompound to use
+     * @return This SpellConstructors spell without rendering it invalid. <b>DO NOT RETURN THIS REFERENCE TO OUTSIDE CLASSES!</b>
      */
-    public PlayerSpellBuilder(NBTTagCompound compound) throws InstantiationException {
-        super(SpellTypes.PLAYER_SPELL_TYPE, compound);
+    @Override
+    protected PlayerSpell getSpellUnchecked() {
+        return (PlayerSpell) super.getSpellUnchecked();
     }
 
     public boolean associateWithPlayer(EntityPlayer player) {
         if (player == null) return false;
         getSpellUnchecked().setEntity(player);
         return true;
-    }
-
-    /**
-     * @return This SpellConstructors spell without rendering it invalid. <b>DO NOT RETURN THIS REFERENCE TO OUTSIDE CLASSES!</b>
-     */
-    @Override
-    protected PlayerSpell getSpellUnchecked() {
-        return (PlayerSpell) super.getSpellUnchecked();
     }
 }

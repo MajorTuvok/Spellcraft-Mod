@@ -1,11 +1,12 @@
 package mt.mcmods.spellcraft.common.tiles;
 
 import mt.mcmods.spellcraft.CommonProxy;
-import mt.mcmods.spellcraft.common.interfaces.ICompatStackHandler;
+import mt.mcmods.spellcraft.common.interfaces.ICompatStackHandlerModifiable;
 import mt.mcmods.spellcraft.common.items.wand.ItemWand;
 import mt.mcmods.spellcraft.common.registry.WandRegistry;
 import mt.mcmods.spellcraft.common.util.NBTHelper;
 import mt.mcmods.spellcraft.common.util.item.ItemHelper;
+import mt.mcmods.spellcraft.common.util.item.StackHandlers;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -85,6 +86,11 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
     }
 
     @Override
+    protected ICompatStackHandlerModifiable getInventory() {
+        return (WandCraftingStackHandler) super.getInventory();
+    }
+
+    @Override
     public void readFromNBT(NBTTagCompound compound) {
         if (compound.hasKey(KEY_WANDS) && compound.hasKey(KEY_COMPOUNDS)) {
             Iterator<NBTBase> wands = ((NBTTagList) compound.getTag(KEY_WANDS)).iterator();
@@ -139,16 +145,6 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
         return super.getCapability(capability, facing);
     }
 
-    @Override
-    protected ICompatStackHandler createInventory(int size) {
-        return new WandCraftingStackHandler(size);
-    }
-
-    @Override
-    protected WandCraftingStackHandler getInventory() {
-        return (WandCraftingStackHandler) super.getInventory();
-    }
-
     /**
      * Like the old updateEntity(), except more generic.
      * Called every Tick.
@@ -157,6 +153,11 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
     public void update() {
         super.update();
         showCraftableWand();
+    }
+
+    @Override
+    protected ICompatStackHandlerModifiable createInventory(int size) {
+        return new WandCraftingStackHandler(size);
     }
 
     private boolean hasCraftableWand() {
@@ -211,15 +212,15 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
         } else {
             switch (facing) {
                 case NORTH:
-                    return new CompatStackHandler(getInventory().getSubStack(INVENTORY_STACK_TIP));
+                    return StackHandlers.asModifiableHandlerOnSpecificSlots(getInventory(), INVENTORY_STACK_TIP, INVENTORY_STACK_TIP);
                 case EAST:
-                    return new CompatStackHandler(getInventory().getSubStack(INVENTORY_STACK_CORE));
+                    return StackHandlers.asModifiableHandlerOnSpecificSlots(getInventory(), INVENTORY_STACK_CORE, INVENTORY_STACK_CORE);
                 case SOUTH:
-                    return new CompatStackHandler(getInventory().getSubStack(INVENTORY_STACK_CRYSTAL));
+                    return StackHandlers.asModifiableHandlerOnSpecificSlots(getInventory(), INVENTORY_STACK_CRYSTAL, INVENTORY_STACK_CRYSTAL);
                 case WEST:
-                    return new CompatStackHandler(getInventory().getSubStack(INVENTORY_STACK_WOOD));
+                    return StackHandlers.asModifiableHandlerOnSpecificSlots(getInventory(), INVENTORY_STACK_WOOD, INVENTORY_STACK_WOOD);
                 default: {
-                    return new CompatStackHandler(getInventory().getSubStack(INVENTORY_STACK_WAND));
+                    return StackHandlers.asModifiableHandlerOnSpecificSlots(getInventory(), INVENTORY_STACK_WAND, INVENTORY_STACK_WAND);
                 }
             }
         }
@@ -242,27 +243,6 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
 
         public WandCraftingStackHandler(NonNullList<ItemStack> stacks) {
             super(stacks);
-        }
-
-        @Override
-        public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
-            ItemStack before = getStackInSlot(slot);
-            super.setStackInSlot(slot, stack);
-            if (slot == INVENTORY_STACK_WAND
-                    && ItemHelper.isWand(before)
-                    && stack.isEmpty())
-                craftWand((ItemWand) before.getItem());
-        }
-
-        @Nonnull
-        @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            ItemStack before = getStackInSlot(slot);
-            ItemStack result = super.extractItem(slot, amount, simulate);
-            if (slot == INVENTORY_STACK_WAND
-                    && ItemHelper.isWand(before))
-                craftWand((ItemWand) before.getItem());
-            return result;
         }
 
         /**
@@ -291,6 +271,29 @@ public class TileEntityWandCraftingTable extends BaseTileEntityWithInventory {
             if (index == INVENTORY_STACK_WAND && ItemHelper.isWand(getStackInSlot(index)))
                 craftWand((ItemWand) getStackInSlot(index).getItem());
             return super.removeStackFromSlot(index);
+        }
+
+        @Override
+        public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+            ItemStack before = getStackInSlot(slot);
+            super.setStackInSlot(slot, stack);
+            if (slot == INVENTORY_STACK_WAND
+                    && ItemHelper.isWand(before)
+                    && stack.isEmpty()) {
+                craftWand((ItemWand) before.getItem());
+            }
+        }
+
+        @Nonnull
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            ItemStack before = getStackInSlot(slot);
+            ItemStack result = super.extractItem(slot, amount, simulate);
+            if (slot == INVENTORY_STACK_WAND
+                    && ItemHelper.isWand(before)) {
+                craftWand((ItemWand) before.getItem());
+            }
+            return result;
         }
     }
 }

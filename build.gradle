@@ -8,11 +8,37 @@ buildscript {
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'java'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+if (    !project.hasProperty('mod_pgroup') ||
+        !project.hasProperty('mod_id') ) {
+    throw new Exception("Missing Mod-Properties!");
+}
+if (    !project.hasProperty('ver_forge') ||
+        !project.hasProperty('ver_mc')) {
+    println "missing Minecraft Version!"
+}
+if (    !project.hasProperty('ver_mappings') ) {
+    println "missing Mappings Version!"
+}
+if (    !project.hasProperty('ver_major_mod') ||
+        !project.hasProperty('ver_major_api') ||
+        !project.hasProperty('ver_minor_api') ||
+        (System.getenv('BUILD_NUMBER')==null && !project.hasProperty('ver_build'))) {
+    println "missing Project Version!"
+} else if (System.getenv('BUILD_NUMBER')==null) {
+    println "Cannot access Build Number!"
+}
+
 
 
 minecraft {
-    version = "1.12.2-14.23.0.2546"
+
+    version = "1.12.2-14.23.2.2611"
+    if (project.hasProperty('ver_mc') && project.hasProperty('ver_forge')) {
+        version = "${ver_mc}-${ver_forge}"
+    }
+    println "using Minecraft version "+version
     runDir = "run"
 
     // the mappings can be changed at any time, and must be in the following format.
@@ -20,41 +46,75 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20171003"
+    mappings = "snapshot_20180201"
+    if (project.hasProperty('ver_mappings')) {
+        mappings = "${ver_mappings}"
+    }
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
 String getVersion() {
-    File versionPropsFile = file('cversion.properties')
-
-    if (versionPropsFile.canRead()) {
-        Properties versionProps = new Properties()
-
-        versionProps.load(new FileInputStream(versionPropsFile))
-
-        int patch = versionProps['PATCH'].toInteger() + 1
-        String minor = versionProps['MINOR']
-        String majorMod = versionProps['MAJORMOD']
-        String majorApi = versionProps['MAJORAPI']
-        String versionCode = project.minecraft.version+'-'+majorMod+'.'+majorApi+'.'+minor+'.'+patch.toString()
-        sprintf("Using Version "+versionCode,"")
-        versionProps['PATCH']=patch.toString()
-        versionProps['VERSION_CODE']= versionCode
-        versionProps.store(versionPropsFile.newWriter(), null)
-        return versionCode
+    if (    !project.hasProperty('ver_major_mod') ||
+            !project.hasProperty('ver_major_api') ||
+            !project.hasProperty('ver_minor_api') ||
+            (System.getenv('BUILD_NUMBER')==null && !project.hasProperty('ver_build'))) {
+        return "CUSTOM_BUILD";
     }
-    else {
-        throw new Exception("Could not read version.properties!")
+    String res = "${ver_major_mod}.${ver_major_api}.${ver_minor_api}."
+    setBuildNumber()
+    res+=ver_build
+    ver_code = res;
+    updateProperties()
+    return res;
+}
+
+class OrderedProperties extends Properties {
+    private final LinkedHashSet<Object> keyOrder = new LinkedHashSet<>();
+
+    @Override
+    public synchronized Enumeration<Object> keys() {
+        return Collections.enumeration(keyOrder);
+    }
+
+    @Override
+    public synchronized Object put(Object key, Object value) {
+        keyOrder.add(key);
+        return super.put(key, value);
     }
 }
 
-version = getVersion()
-group= "com.mt.mcmods.spellcraft" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "spellcraft"
+void setBuildNumber() {
+    if (System.getenv('BUIlD_NUMBER')!=null) {
+        ver_build = System.getenv('BUIlD_NUMBER')
+    } else {
+        ver_build = (ver_build.toInteger()+1).toString()
+    }
+}
 
-sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
+void updateProperties() {
+    File file = new File('gradle.properties')
+    if (!file.exists()) {
+        println "gradle.properties file does not exist. Please create in order to update build number!"
+        return
+    }
+    if (!file.canWrite()) {
+        println "gradle.properties file cannot be written to. Please allow write access in order to update build number!"
+        return
+    }
+    OrderedProperties properties = new OrderedProperties();
+    properties.load(new FileInputStream(file))
+    properties.setProperty('ver_build',ver_build)
+    properties.setProperty('ver_code',ver_code)
+    properties.store(new FileOutputStream(file),"")
+}
+
+version = getVersion()
+group="${mod_pgroup}.${mod_id}" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "${mod_id}"
+
+sourceCompatibility = targetCompatibility = ver_java // Need this here so eclipse task generates correctly.
 compileJava {
-    sourceCompatibility = targetCompatibility = "1.8"
+    sourceCompatibility = targetCompatibility = ver_java
 }
 
 dependencies {
@@ -80,7 +140,32 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
 }
-processResources
+
+def modinfoFile = 'src/main/resources/mcmod.info'
+def tempDir = 'build/tmp/modifiedSources'
+def classesDir = 'classes/production/Spellcraft_-_MC_14.23.2.2611_main'
+def buildDir = 'build/resources/main'
+def versionFileName = 'mcmod.info'
+def tempFile = tempDir+'/'+versionFileName
+
+compileJava.doFirst {
+    copy {
+        from(modinfoFile)
+        into(tempDir)
+    }
+    ant.replace(file: tempFile, token: '${version}', value: project.version)
+    ant.replace(file: tempFile, token: '${mcversion}', value: project.minecraft.version)
+    copy {
+        from(tempFile)
+        into(classesDir)
+    }
+    copy {
+        from(tempFile)
+        into(buildDir)
+    }
+}
+
+
 processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
@@ -98,4 +183,17 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+jar {
+    classifier = ''
+    from sourceSets.main.output
+    from sourceSets.api.output
+    manifest.mainAttributes(
+            "Built-By": System.getProperty('user.name'),
+            "Created-By": "${System.getProperty('java.vm.version')} + (${System.getProperty('java.vm.vendor')})",
+            "Implementation-Title": project.name,
+            "Implementation-Version": project.version,
+            "Built-On": "${ver_mc}-${ver_forge}"
+    )
 }

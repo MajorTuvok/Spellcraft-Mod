@@ -1,10 +1,10 @@
 package mt.mcmods.spellcraft.common.gui.helper;
 
 public class GuiMeasurements {
-    private final int xSize;
-    private final int ySize;
     private final int guiLeft;
     private final int guiTop;
+    private final int xSize;
+    private final int ySize;
 
     public GuiMeasurements(int xSize, int ySize, int guiLeft, int guiTop) {
         this.xSize = xSize;
@@ -29,6 +29,23 @@ public class GuiMeasurements {
         return guiTop;
     }
 
+    public boolean equals(int xSize, int ySize, int guiLeft, int guiTop) {
+
+        if (getXSize() != xSize) return false;
+        if (getYSize() != ySize) return false;
+        if (getGuiLeft() != guiLeft) return false;
+        return getGuiTop() == guiTop;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = xSize;
+        result = 31 * result + ySize;
+        result = 31 * result + getGuiLeft();
+        result = 31 * result + getGuiTop();
+        return result;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -49,23 +66,5 @@ public class GuiMeasurements {
                 ", guiLeft=" + guiLeft +
                 ", guiTop=" + guiTop +
                 '}';
-    }
-
-
-    public boolean equals(int xSize, int ySize, int guiLeft, int guiTop) {
-
-        if (getXSize() != xSize) return false;
-        if (getYSize() != ySize) return false;
-        if (getGuiLeft() != guiLeft) return false;
-        return getGuiTop() == guiTop;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = xSize;
-        result = 31 * result + ySize;
-        result = 31 * result + getGuiLeft();
-        result = 31 * result + getGuiTop();
-        return result;
     }
 }

@@ -18,6 +18,10 @@ public class ParticleActivated extends ShowParticle {
         this.targetPoint = targetPoint;
     }
 
+    public NetworkRegistry.TargetPoint getTargetPoint() {
+        return targetPoint;
+    }
+
     /**
      * Convert from the supplied buffer into your specific message type
      *
@@ -47,9 +51,5 @@ public class ParticleActivated extends ShowParticle {
         buf.writeDouble(targetPoint.y);
         buf.writeDouble(targetPoint.z);
         buf.writeDouble(targetPoint.range);
-    }
-
-    public NetworkRegistry.TargetPoint getTargetPoint() {
-        return targetPoint;
     }
 }

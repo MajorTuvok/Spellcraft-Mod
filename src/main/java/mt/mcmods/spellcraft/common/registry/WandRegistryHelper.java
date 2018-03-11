@@ -14,10 +14,10 @@ import java.util.HashMap;
 
 @NotThreadSafe
 public class WandRegistryHelper {
+    public static final WandRegistryHelper INSTANCE = new WandRegistryHelper();
+    private WandPropertyDefinition boundDef;
     private HashMap<ItemStackWrapper, WandPropertyDefinition> coreMap;
     private HashMap<ItemStackWrapper, WandPropertyDefinition> tipMap;
-    private WandPropertyDefinition boundDef;
-    public static final WandRegistryHelper INSTANCE = new WandRegistryHelper();
 
     public WandRegistryHelper() {
         this.coreMap = new HashMap<>();
@@ -54,11 +54,11 @@ public class WandRegistryHelper {
     }
 
     public void addCorePart(@Nonnull Item coreCraftingItem, @Nonnull WandPropertyDefinition definition) {
-        addCorePart(coreCraftingItem.getDefaultInstance(), definition);
+        addCorePart(new ItemStack(coreCraftingItem), definition);
     }
 
     public void addTipPart(@Nonnull Item tipCraftingItem, @Nonnull WandPropertyDefinition definition) {
-        addTipPart(tipCraftingItem.getDefaultInstance(), definition);
+        addTipPart(new ItemStack(tipCraftingItem), definition);
     }
 
     public void addCorePart(@Nonnull ItemStack coreCraftingItem, @Nonnull WandPropertyDefinition definition) {
@@ -92,7 +92,7 @@ public class WandRegistryHelper {
     }
 
     public ItemWand getWand(@Nonnull String name, @Nonnull Item tipCraftingItem, @Nonnull Item coreCraftingItem) {
-        return getWand(name, tipCraftingItem.getDefaultInstance(), coreCraftingItem.getDefaultInstance());
+        return getWand(name, new ItemStack(tipCraftingItem), new ItemStack(coreCraftingItem));
     }
 
     public ItemWand getWand(@Nonnull String name, @Nonnull ItemStack tipCraftingItem, @Nonnull ItemStack coreCraftingItem) {

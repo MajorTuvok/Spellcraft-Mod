@@ -24,6 +24,10 @@ public class ItemStackOutput extends BasicProcessingOutput<ItemStackOutput> {
         this.outputStack = outputStack;
     }
 
+    public ItemStack getProcessResult() {
+        return getOutputStack().copy();
+    }
+
     @Override
     public ItemStackOutput copy() {
         return new ItemStackOutput(outputStack);
@@ -39,21 +43,17 @@ public class ItemStackOutput extends BasicProcessingOutput<ItemStackOutput> {
     }
 
     @Override
+    public boolean isValid() {
+        return outputStack != null;
+    }
+
+    @Override
     public void write(NBTTagCompound compound) {
         if (outputStack != null && !outputStack.isEmpty()) {
             NBTTagCompound stackCompound = new NBTTagCompound();
             outputStack.writeToNBT(stackCompound);
             compound.setTag("outputStack", stackCompound);
         }
-    }
-
-    @Override
-    public boolean isValid() {
-        return outputStack != null;
-    }
-
-    public ItemStack getProcessResult() {
-        return getOutputStack().copy();
     }
 
     public boolean applyProcessResult(List<ItemStack> stacks, int index, boolean simulate) {

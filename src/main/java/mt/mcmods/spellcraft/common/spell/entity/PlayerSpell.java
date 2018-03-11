@@ -1,7 +1,5 @@
 package mt.mcmods.spellcraft.common.spell.entity;
 
-import mt.mcmods.spellcraft.common.spell.access.IPlayerSpellConditionCallback;
-import mt.mcmods.spellcraft.common.spell.access.IPlayerSpellExecutableCallback;
 import mt.mcmods.spellcraft.common.spell.access.ISpellCallback;
 import mt.mcmods.spellcraft.common.spell.types.ISpellType;
 import mt.mcmods.spellcraft.common.spell.types.SpellTypes;
@@ -16,27 +14,22 @@ public class PlayerSpell extends EntitySpell {
     private static final String KEY_SLOT = "PlayerSpell_slot";
     private int slot;
 
-    /**
-     * This constructor should only be used with deserializeNBT(NBTTagCompound)
-     */
-    PlayerSpell() {
-        super();
-        this.slot = -1;
-    }
-
     public PlayerSpell(EntityPlayer entity, int wandSlot) throws IllegalArgumentException {
         super(entity);
         this.slot = wandSlot;
     }
 
+    /**
+     * This constructor should only be used with deserializeNBT(NBTTagCompound)
+     */
+    protected PlayerSpell() {
+        super();
+        this.slot = -1;
+    }
+
     @Override
     public EntityPlayer getEntity() {
         return (EntityPlayer) super.getEntity();
-    }
-
-    public @Nonnull
-    ISpellType getSpellType() {
-        return PLAYER_SPELL_TYPE;
     }
 
     @Override
@@ -51,6 +44,11 @@ public class PlayerSpell extends EntitySpell {
         super.deserializeNBT(nbt);
         if (nbt.hasKey(KEY_SLOT))
             slot = nbt.getInteger(KEY_SLOT);
+    }
+
+    public @Nonnull
+    ISpellType getSpellType() {
+        return PLAYER_SPELL_TYPE;
     }
 
     /**

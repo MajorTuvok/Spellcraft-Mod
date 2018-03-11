@@ -1,6 +1,7 @@
 package mt.mcmods.spellcraft.common.gui.instances;
 
 import mt.mcmods.spellcraft.common.gui.BaseGui;
+import mt.mcmods.spellcraft.common.gui.BaseGuiContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -41,5 +42,10 @@ public class GuiSpellCreation extends BaseGui {
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
         getDelegate().drawGuiBackground(GUI_BLANK_MAX);
+    }
+
+    @Override
+    protected void createInventoryViews(BaseGuiContainer inventorySlotsIn) {
+
     }
 }

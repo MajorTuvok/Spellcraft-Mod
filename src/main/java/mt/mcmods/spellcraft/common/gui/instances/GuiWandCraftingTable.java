@@ -15,13 +15,13 @@ import static mt.mcmods.spellcraft.common.gui.helper.GuiResource.SLOT;
 import static mt.mcmods.spellcraft.common.gui.instances.GuiContainerWandCraftingTable.*;
 
 public class GuiWandCraftingTable extends BaseGui {
-    private TileEntityWandCraftingTable entityWandCraftingTable;
     private static final int CRAFTING_OFFSET = 4;
     private static final int INFO_OFFSET = Math.round((float) (CRAFTING_Y_2 - CRAFTING_Y_1) / 2);
     private static final float TEXT_SCALE = 0.4f;
     private static final int TEXT_START_X = CRAFTING_X_2 + OFFSETS.getSlotXSize() + CRAFTING_OFFSET;
     private static final int TEXT_START_Y_1 = CRAFTING_Y_0;
     private static final int TEXT_START_Y_2 = CRAFTING_Y_1;
+    private TileEntityWandCraftingTable entityWandCraftingTable;
 
     public GuiWandCraftingTable(GuiContainerWandCraftingTable inventorySlotsIn) {
         this(inventorySlotsIn, inventorySlotsIn.getTileEntity());

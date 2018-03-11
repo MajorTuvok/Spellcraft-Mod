@@ -10,12 +10,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class SpellTypes {
+    public static final ISpellType PLAYER_SPELL_TYPE = PlayerSpellType.INSTANCE;
     private static final ArrayList<ISpellType> types = new ArrayList<>(1);
 
-    public static final ISpellType PLAYER_SPELL_TYPE = PlayerSpellType.INSTANCE;
-
-    public static void addType(ISpellType type) {
-        types.add(type);
+    static {
+        addType(PLAYER_SPELL_TYPE);
     }
 
     /**
@@ -25,8 +24,12 @@ public class SpellTypes {
 
     }
 
+    public static void addType(ISpellType type) {
+        types.add(type);
+    }
+
     public static @Nullable
-    Spell instantiate(NBTTagCompound compound) throws InstantiationException{
+    Spell instantiate(NBTTagCompound compound) throws InstantiationException {
         for (ISpellType type :
                 types) {
             if (type.matches(compound)) {
@@ -47,11 +50,10 @@ public class SpellTypes {
         return null;
     }
 
+    /**
+     * @return An immutable List containing all registered SpellTypes
+     */
     public static List<ISpellType> getAll() {
         return Collections.unmodifiableList(types);
-    }
-
-    static {
-        addType(PLAYER_SPELL_TYPE);
     }
 }

@@ -46,14 +46,12 @@ public abstract class BaseGuiContainer extends Container implements ILoggable {
         return mTileEntity;
     }
 
-    /**
-     * Determines whether supplied player can use this container
-     *
-     * @param playerIn ignored by default
-     */
-    @Override
-    public boolean canInteractWith(@Nonnull EntityPlayer playerIn) {
-        return true;
+    public int getSlotCount() {
+        return this.inventorySlots.size();
+    }
+
+    public PlayerInventoryOffsets getInventoryOffsets() {
+        return mOffsets;
     }
 
     @Override
@@ -92,12 +90,14 @@ public abstract class BaseGuiContainer extends Container implements ILoggable {
         return copyStack;
     }
 
-    public int getSlotCount() {
-        return this.inventorySlots.size();
-    }
-
-    public PlayerInventoryOffsets getInventoryOffsets() {
-        return mOffsets;
+    /**
+     * Determines whether supplied player can use this container
+     *
+     * @param playerIn ignored by default
+     */
+    @Override
+    public boolean canInteractWith(@Nonnull EntityPlayer playerIn) {
+        return true;
     }
 
     protected void createInventoryFromCapability(IItemHandler handler) {

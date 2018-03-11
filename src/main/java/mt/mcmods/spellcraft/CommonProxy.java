@@ -35,9 +35,9 @@ public abstract class CommonProxy implements ILoggable {
     public static ConfigurationManager CONFIG = new ConfigurationManager();
     public static IForgeRegistry<Item> ITEM_REGISTRY = null;
     public final SpellcraftBlocks blocks;
-    public final SpellcraftItems items;
     public final SpellcraftConditions conditions;
     public final SpellcraftExecutables executables;
+    public final SpellcraftItems items;
     private final Materials materials;
 
     public CommonProxy() {
@@ -47,6 +47,8 @@ public abstract class CommonProxy implements ILoggable {
         conditions = SpellcraftConditions.getInstance();
         executables = SpellcraftExecutables.getInstance();
     }
+
+    public abstract boolean isClient();
 
     public void preInit(FMLPreInitializationEvent e) {
         CONFIG.register(e);
@@ -83,8 +85,9 @@ public abstract class CommonProxy implements ILoggable {
 
     }
 
-    public abstract boolean isClient();
+    public void registerTemplateSprites() {
 
+    }
 
     protected void registerMessages() {
         CHANNEL_HOLDER.registerMessage(ParticleActivatedHandler.class, ParticleActivated.class, Side.SERVER);
@@ -92,9 +95,5 @@ public abstract class CommonProxy implements ILoggable {
         CHANNEL_HOLDER.registerMessage(RequestSyncEntitySpellpowerHandler.class, RequestSyncEntitySpellpower.class, Side.SERVER);
         CHANNEL_HOLDER.registerMessage(SyncEntitySpellpowerHandler.class, SyncEntitySpellpower.class, Side.CLIENT);
         CHANNEL_HOLDER.registerMessage(RequestAddPlayerSpellHandler.class, RequestNewPlayerSpell.class, Side.SERVER);
-    }
-
-    public void registerTemplateSprites() {
-
     }
 }

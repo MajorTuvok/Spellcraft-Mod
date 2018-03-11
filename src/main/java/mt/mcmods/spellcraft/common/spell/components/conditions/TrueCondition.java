@@ -11,7 +11,7 @@ public final class TrueCondition extends AbsSpellCondition {
         setRegistryName(location);
     }
 
-    public static TrueCondition getINSTANCE() {
+    public static TrueCondition getInstance() {
         return INSTANCE;
     }
 
@@ -25,5 +25,11 @@ public final class TrueCondition extends AbsSpellCondition {
     @Override
     public boolean holdsTrue(ISpellConditionCallback conditionCallback, IAttributeProvider attributeProvider) {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "TrueCondition{" +
+                (getRegistryName() != null ? "registryName=" + getRegistryName() + "}" : "}");
     }
 }

@@ -1,16 +1,21 @@
 package mt.mcmods.spellcraft.common.spell.entity;
 
+
 import mt.mcmods.spellcraft.common.exceptions.SpellInstantiationException;
 import mt.mcmods.spellcraft.common.spell.Spell;
 import mt.mcmods.spellcraft.common.spell.types.ISpellType;
 import mt.mcmods.spellcraft.common.util.NBTHelper;
 import net.minecraft.nbt.NBTTagCompound;
 
+import javax.annotation.Nullable;
+
+
 public enum PlayerSpellType implements ISpellType {
     INSTANCE;
 
     @Override
-    public PlayerSpell instantiate(NBTTagCompound compound) throws InstantiationException {
+    public @Nullable
+    PlayerSpell instantiate(NBTTagCompound compound) throws InstantiationException {
         try {
             if (!matches(compound))
                 return null;
@@ -34,16 +39,16 @@ public enum PlayerSpellType implements ISpellType {
         compound.setBoolean("PLAYER_SPELL_TYPE", true);
     }
 
-    public boolean isPlayerOnServer(NBTTagCompound compound) {
-        return NBTHelper.isSpellEntityInstantiated(compound);
-    }
-
     /**
      * @return A Spell who can be used in a SpellBuilder
      */
     @Override
     public Spell constructableInstance() {
         return new PlayerSpell();
+    }
+
+    public boolean isPlayerOnServer(NBTTagCompound compound) {
+        return NBTHelper.isSpellEntityInstantiated(compound);
     }
 
 

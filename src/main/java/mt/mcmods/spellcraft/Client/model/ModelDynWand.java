@@ -47,15 +47,34 @@ import static net.minecraft.client.renderer.block.model.ItemCameraTransforms.Tra
 
 @SideOnly(Side.CLIENT)
 public class ModelDynWand implements IModel, ILoggable {
-    public static final ModelResourceLocation LOCATION = new ModelResourceLocation(SpellcraftMod.MODID + ":block_armor", "inventory");
+    public enum LoaderDynBlockArmor implements ICustomModelLoader {
+        INSTANCE;
 
+        @Override
+        public boolean accepts(ResourceLocation modelLocation) {
+            return (modelLocation.getResourceDomain().equals(SpellcraftMod.MODID) && (modelLocation.getResourcePath().contains("helmet")
+                    || modelLocation.getResourcePath().contains("chestplate") || modelLocation.getResourcePath().contains("leggings") ||
+                    modelLocation.getResourcePath().contains("boots")));
+        }
+
+        @Override
+        public IModel loadModel(ResourceLocation modelLocation) {
+            return MODEL;
+        }
+
+        @Override
+        public void onResourceManagerReload(IResourceManager resourceManager) {
+
+        }
+    }
+
+    public static final ModelResourceLocation LOCATION = new ModelResourceLocation(SpellcraftMod.MODID + ":block_armor", "inventory");
+    public static final ModelDynWand MODEL = new ModelDynWand();
     // minimal Z offset to prevent depth-fighting
     private static final float NORTH_Z_BASE = 7.496f / 16f;
-    private static final float SOUTH_Z_BASE = 8.503f / 16f;
     private static final float NORTH_Z_FLUID = 7.498f / 16f;
+    private static final float SOUTH_Z_BASE = 8.503f / 16f;
     private static final float SOUTH_Z_FLUID = 8.502f / 16f;
-
-    public static final ModelDynWand MODEL = new ModelDynWand();
 
     public ModelDynWand() {
     }
@@ -92,31 +111,9 @@ public class ModelDynWand implements IModel, ILoggable {
         return new ModelDynWand();
     }
 
-    public enum LoaderDynBlockArmor implements ICustomModelLoader {
-        INSTANCE;
-
-        @Override
-        public boolean accepts(ResourceLocation modelLocation) {
-            return (modelLocation.getResourceDomain().equals(SpellcraftMod.MODID) && (modelLocation.getResourcePath().contains("helmet")
-                    || modelLocation.getResourcePath().contains("chestplate") || modelLocation.getResourcePath().contains("leggings") ||
-                    modelLocation.getResourcePath().contains("boots")));
-        }
-
-        @Override
-        public IModel loadModel(ResourceLocation modelLocation) {
-            return MODEL;
-        }
-
-        @Override
-        public void onResourceManagerReload(IResourceManager resourceManager) {
-
-        }
-    }
-
     public static final class BakedDynWandOverrideHandler extends ItemOverrideList {
-        private static HashMap<Item, ImmutableList<BakedQuad>> itemQuadsMap = Maps.newHashMap();
-
         public static final BakedDynWandOverrideHandler INSTANCE = new BakedDynWandOverrideHandler();
+        private static HashMap<Item, ImmutableList<BakedQuad>> itemQuadsMap = Maps.newHashMap();
 
         private BakedDynWandOverrideHandler() {
             super(ImmutableList.of());
@@ -215,18 +212,6 @@ public class ModelDynWand implements IModel, ILoggable {
 
         @Override
         public @Nonnull
-        ItemOverrideList getOverrides() {
-            return BakedDynWandOverrideHandler.INSTANCE;
-        }
-
-        @Override
-        public Pair<? extends IBakedModel, Matrix4f> handlePerspective(@Nonnull TransformType cameraTransformType) {
-            return PerspectiveMapWrapper.handlePerspective(this, transforms, cameraTransformType);
-        }
-
-
-        @Override
-        public @Nonnull
         List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
             if (side == null) return quads;
             return ImmutableList.of();
@@ -246,6 +231,17 @@ public class ModelDynWand implements IModel, ILoggable {
 
         public TextureAtlasSprite getParticleTexture() {
             return null;
+        }
+
+        @Override
+        public @Nonnull
+        ItemOverrideList getOverrides() {
+            return BakedDynWandOverrideHandler.INSTANCE;
+        }
+
+        @Override
+        public Pair<? extends IBakedModel, Matrix4f> handlePerspective(@Nonnull TransformType cameraTransformType) {
+            return PerspectiveMapWrapper.handlePerspective(this, transforms, cameraTransformType);
         }
         /*
         public ItemCameraTransforms getItemCameraTransforms() {

@@ -22,17 +22,16 @@ import java.util.Map;
 public class SpellcraftExecutables extends BaseContainer<ISpellExecutable>
         implements IForgeRegistry.AddCallback<ISpellExecutable>, IForgeRegistry.ClearCallback<ISpellExecutable>,
         IForgeRegistry.CreateCallback<ISpellExecutable>, IForgeRegistry.DummyFactory<ISpellExecutable>, IForgeRegistry.MissingFactory<ISpellExecutable> {
-    private static final SpellcraftExecutables INSTANCE = new SpellcraftExecutables();
-    private boolean instantiated = false;
+    public static final ResourceLocation TYPE_EXECUTABLE_ACCESS = new ResourceLocation(StringHelper.createResourceLocation(ILoggable.MODID, "Type", "Executable", "Registry"));
     private static final ResourceLocation DEFAULT_KEY = new ResourceLocation(StringHelper.createResourceLocation(ILoggable.MODID, "Spell_Executable", "Unidentified"));
+    private static final SpellcraftExecutables INSTANCE = new SpellcraftExecutables();
     //Registry Managing fields
     private static final ResourceLocation NAME = new ResourceLocation(StringHelper.createResourceLocation(ILoggable.MODID, "Spell_Executables"));
-    private static IForgeRegistry<ISpellExecutable> registry;
-    public static final ResourceLocation TYPE_EXECUTABLE_ACCESS = new ResourceLocation(StringHelper.createResourceLocation(ILoggable.MODID, "Type", "Executable", "Registry"));
-    private static RegistryAdvanced<ISpellType, List<ISpellExecutable>> typeExecutables;
-
     //Container fields
     public static ISpellExecutable VOID_EXECUTABLE;
+    private static IForgeRegistry<ISpellExecutable> registry;
+    private static RegistryAdvanced<ISpellType, List<ISpellExecutable>> typeExecutables;
+    private boolean instantiated = false;
 
     private SpellcraftExecutables() {
         super();

@@ -11,6 +11,7 @@ item.log_gold_wand.name=gold-tip Wood-Wand
 item.log_iron_wand.name=iron-tip Wood-Wand
 item.stone_gold_wand.name=gold-tip Stone-Wand
 item.stone_iron_wand.name=iron-tip Stone-Wand
+item.spell_paper.name=Spell Paper
 
 tooltips.information.more=%s<Hold %sSNEAK%s for more details>
 tooltips.information.missing=%sCannot show Information
@@ -24,4 +25,7 @@ tile.wand_crafting_table.gui.wand_properties_standard_info_1=Spellpower: %d-%d
 tile.spell_creator.name=Spell Creator
 tile.spell_creator.gui.inscribe=Inscribe
 tile.spell_creator.gui.edit=Edit %s
-tile.spell_creator.gui.no_spell=Some Spell
+tile.spell_creator.gui.no_spell=No Spell
+tile.spell_creator.gui.no_spell_name=Some Spell
+tile.spell_creator.gui.max_power=Maximum Power/tick: %s
+tile.spell_creator.gui.num_states=SpellState count: %s

@@ -22,19 +22,18 @@ import static mt.mcmods.spellcraft.common.util.NBTHelper.getPersistentData;
 import static mt.mcmods.spellcraft.common.util.NBTHelper.setPersistentData;
 
 public class WandProperties implements IWandProperties {
+    private static final String KEY_ACTIVE = "WandProperties_active";
+    private static final String KEY_ACTIVE_SPELLS = "WandProperties_activeSpells";
     private static final String KEY_EFFICIENCY = "WandProperties_efficiency";
     private static final String KEY_MAX_POWER = "WandProperties_maxPower";
-    private static final String KEY_ACTIVE = "WandProperties_active";
     private static final String KEY_WAND = "WandProperties_wand";
-    private static final String KEY_ACTIVE_SPELLS = "WandProperties_activeSpells";
-    //stack Properties
-    private float maxPower;  //at least 1
-    private float efficiency;  // between 0 and 100
     private List<Integer> activeSpells;
-
     //Object properties
     private boolean changed;
     private IWandPropertyDefinition definition;
+    private float efficiency;  // between 0 and 100
+    //stack Properties
+    private float maxPower;  //at least 1
 
     public WandProperties() {
         this(null);
@@ -76,19 +75,47 @@ public class WandProperties implements IWandProperties {
     }
 
     @Override
+    public float getMaxPower() {
+        return maxPower;
+    }
+
+    @Override
+    public WandProperties setMaxPower(float maxPower) {
+        this.maxPower = MathHelper.clamp(maxPower, definition.getMinMaxPower(), definition.getMaxMaxPower());
+        return this;
+    }
+
+    @Override
+    public float getEfficiency() {
+        return efficiency;
+    }
+
+    @Override
+    public WandProperties setEfficiency(float efficiency) {
+        this.efficiency = MathHelper.clamp(efficiency, definition.getMinEfficiency(), definition.getMaxEfficiency());
+        return this;
+    }
+
+    @Override
     public @Nonnull
     IWandPropertyDefinition getDefinition() {
         return definition;
     }
 
     @Override
-    public float getMaxPower() {
-        return maxPower;
+    public WandProperties setDefinition(IWandPropertyDefinition definition) {
+        this.definition = definition;
+        return this;
     }
 
     @Override
-    public float getEfficiency() {
-        return efficiency;
+    public boolean isComplete() {
+        return hasMaxPower() && hasEfficiency();
+    }
+
+    @Override
+    public boolean isChanged() {
+        return changed;
     }
 
     @Override
@@ -99,71 +126,6 @@ public class WandProperties implements IWandProperties {
     @Override
     public boolean hasEfficiency() {
         return efficiency >= definition.getMinEfficiency() && efficiency <= definition.getMaxEfficiency();
-    }
-
-    @Override
-    public boolean isChanged() {
-        return changed;
-    }
-
-    @Override
-    public WandProperties setMaxPower(float maxPower) {
-        this.maxPower = MathHelper.clamp(maxPower, definition.getMinMaxPower(), definition.getMaxMaxPower());
-        return this;
-    }
-
-    @Override
-    public WandProperties setEfficiency(float efficiency) {
-        this.efficiency = MathHelper.clamp(efficiency, definition.getMinEfficiency(), definition.getMaxEfficiency());
-        return this;
-    }
-
-    @Override
-    public WandProperties setDefinition(IWandPropertyDefinition definition) {
-        this.definition = definition;
-        return this;
-    }
-
-    protected WandProperties setChanged(boolean changed) {
-        this.changed = changed;
-        return this;
-    }
-
-    @Override
-    public boolean isComplete() {
-        return hasMaxPower() && hasEfficiency();
-    }
-
-    @Override
-    public NBTTagCompound serializeNBT() {
-        NBTTagCompound compound = new NBTTagCompound();
-        compound.setFloat(KEY_EFFICIENCY, efficiency);
-        compound.setFloat(KEY_MAX_POWER, maxPower);
-        NBTTagList list = new NBTTagList();
-        for (Integer i :
-                activeSpells) {
-            list.appendTag(new NBTTagInt(i));
-        }
-        compound.setTag(KEY_ACTIVE_SPELLS, list);
-        return compound;
-    }
-
-    @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
-        if (nbt.hasKey(KEY_MAX_POWER))
-            this.maxPower = nbt.getInteger(KEY_MAX_POWER);
-        if (nbt.hasKey(KEY_EFFICIENCY))
-            this.efficiency = nbt.getFloat(KEY_EFFICIENCY);
-        if (nbt.hasKey(KEY_ACTIVE_SPELLS)) {
-            NBTTagList list = nbt.getTagList(KEY_ACTIVE_SPELLS, 3);
-            activeSpells.clear();
-            for (NBTBase nbtBase :
-                    list) {
-                if (nbtBase instanceof NBTTagInt) {
-                    activeSpells.add(((NBTTagInt) nbtBase).getInt());
-                }
-            }
-        }
     }
 
     @Override
@@ -195,20 +157,6 @@ public class WandProperties implements IWandProperties {
             compound.setTag(KEY_WAND, serializeNBT());
             setChanged(false);
             setPersistentData(stack, compound);
-        }
-    }
-
-    /**
-     * Creates all not set Properties according to Definition. Currently: definition is unimplemented
-     */
-    protected void create() {
-        if (!hasEfficiency()) {
-            setEfficiency(SpellcraftMod.rand.nextFloat() * definition.getEfficiencyRange() + definition.getMinEfficiency());
-            setChanged(true);
-        }
-        if (!hasMaxPower()) {
-            setMaxPower(SpellcraftMod.rand.nextFloat() * definition.getMaxPowerRange() + definition.getMinMaxPower());
-            setChanged(true);
         }
     }
 
@@ -249,5 +197,58 @@ public class WandProperties implements IWandProperties {
             tooltip.add(TOOLTIP_INFORMATION_MORE.get(TextFormatting.DARK_GRAY, TextFormatting.DARK_GRAY.toString() + TextFormatting.ITALIC, TextFormatting.DARK_GRAY));
         }
         return Optional.empty();
+    }
+
+    protected WandProperties setChanged(boolean changed) {
+        this.changed = changed;
+        return this;
+    }
+
+    @Override
+    public NBTTagCompound serializeNBT() {
+        NBTTagCompound compound = new NBTTagCompound();
+        compound.setFloat(KEY_EFFICIENCY, efficiency);
+        compound.setFloat(KEY_MAX_POWER, maxPower);
+        NBTTagList list = new NBTTagList();
+        for (Integer i :
+                activeSpells) {
+            list.appendTag(new NBTTagInt(i));
+        }
+        compound.setTag(KEY_ACTIVE_SPELLS, list);
+        return compound;
+    }
+
+    @Override
+    public void deserializeNBT(NBTTagCompound nbt) {
+        if (nbt.hasKey(KEY_MAX_POWER)) {
+            this.maxPower = nbt.getInteger(KEY_MAX_POWER);
+        }
+        if (nbt.hasKey(KEY_EFFICIENCY)) {
+            this.efficiency = nbt.getFloat(KEY_EFFICIENCY);
+        }
+        if (nbt.hasKey(KEY_ACTIVE_SPELLS)) {
+            NBTTagList list = nbt.getTagList(KEY_ACTIVE_SPELLS, 3);
+            activeSpells.clear();
+            for (NBTBase nbtBase :
+                    list) {
+                if (nbtBase instanceof NBTTagInt) {
+                    activeSpells.add(((NBTTagInt) nbtBase).getInt());
+                }
+            }
+        }
+    }
+
+    /**
+     * Creates all not set Properties according to Definition. Currently: definition is unimplemented
+     */
+    protected void create() {
+        if (!hasEfficiency()) {
+            setEfficiency(SpellcraftMod.rand.nextFloat() * definition.getEfficiencyRange() + definition.getMinEfficiency());
+            setChanged(true);
+        }
+        if (!hasMaxPower()) {
+            setMaxPower(SpellcraftMod.rand.nextFloat() * definition.getMaxPowerRange() + definition.getMinMaxPower());
+            setChanged(true);
+        }
     }
 }

@@ -41,6 +41,33 @@ public class ShowParticle implements IMessage {
                 activated.getParZ());
     }
 
+    public ParticleName getParticleName() {
+        return name;
+    }
+
+    public int getParX() {
+        return parX;
+    }
+
+    public int getParY() {
+        return parY;
+    }
+
+    public int getParZ() {
+        return parZ;
+    }
+
+    public int getParticleAmount() {
+        return particleAmount;
+    }
+
+    public float getParticleMaxDistance() {
+        return particleMaxDistance;
+    }
+
+    public float getVelocityFactor() {
+        return velocityFactor;
+    }
 
     /**
      * Convert from the supplied buffer into your specific message type
@@ -72,34 +99,5 @@ public class ShowParticle implements IMessage {
         buf.writeInt(particleAmount);
         buf.writeFloat(particleMaxDistance);
         buf.writeFloat(velocityFactor);
-    }
-
-
-    public ParticleName getParticleName() {
-        return name;
-    }
-
-    public int getParX() {
-        return parX;
-    }
-
-    public int getParY() {
-        return parY;
-    }
-
-    public int getParZ() {
-        return parZ;
-    }
-
-    public int getParticleAmount() {
-        return particleAmount;
-    }
-
-    public float getParticleMaxDistance() {
-        return particleMaxDistance;
-    }
-
-    public float getVelocityFactor() {
-        return velocityFactor;
     }
 }

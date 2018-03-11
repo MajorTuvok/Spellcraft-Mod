@@ -13,12 +13,6 @@ public class RegistryNamespacedAdvanced<K, V> extends RegistryNamespaced<K, V> {
         super();
     }
 
-    public int register(K key, V value) {
-        this.underlyingIntegerMap.add(value);
-        super.putObject(key, value);
-        return underlyingIntegerMap.getId(value);
-    }
-
     public Set<Map.Entry<K, V>> getEntrySet() {
         return registryObjects.entrySet();
     }
@@ -29,6 +23,12 @@ public class RegistryNamespacedAdvanced<K, V> extends RegistryNamespaced<K, V> {
 
     public Collection<V> getValues() {
         return registryObjects.values();
+    }
+
+    public int register(K key, V value) {
+        this.underlyingIntegerMap.add(value);
+        super.putObject(key, value);
+        return underlyingIntegerMap.getId(value);
     }
 
     public void clear() {

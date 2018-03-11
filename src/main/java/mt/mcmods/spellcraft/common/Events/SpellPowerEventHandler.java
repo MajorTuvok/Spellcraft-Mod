@@ -27,10 +27,14 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public class SpellPowerEventHandler {
-    private static ArrayList<Tuple<Entity, ISpellPowerProvider>> serverProviders = Lists.newArrayList();
     //private static ArrayList<Tuple<Entity,ISpellPowerProvider>> clientProviders = Lists.newArrayList();
     private static final int MAX_POWER = 1000; //TODO add to config
     private static final float RECEIVE_POWER = 0.001f; //TODO add to config
+    private static ArrayList<Tuple<Entity, ISpellPowerProvider>> serverProviders = Lists.newArrayList();
+
+    static void clear() {
+        serverProviders.clear();
+    }
 
     @SubscribeEvent
     public void onAttachEntityCapabilities(AttachCapabilitiesEvent<Entity> event) {
@@ -60,10 +64,6 @@ public class SpellPowerEventHandler {
             ILoggable.Log.trace("Sending Spellpower Sync to freshly logged in player");
             SpellcraftMod.CHANNEL_HOLDER.sendTo(new SyncEntitySpellpower(event.player), (EntityPlayerMP) event.player);
         }
-    }
-
-    static void clear() {
-        serverProviders.clear();
     }
 
     private static final class SpellPowerProviderCapabilityProvider implements ICapabilitySerializable<NBTBase> {

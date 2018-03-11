@@ -21,6 +21,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+
 public class BaseTileEntityWithInventory extends TileEntity implements IInventory, IMarkDirtyCallback, ILoggable, ITickable {
     private static final String KEY_INVENTORY = "BaseTileEntityWithInventory_inventoryCompound";
     private ICompatStackHandler inventory;
@@ -30,42 +31,6 @@ public class BaseTileEntityWithInventory extends TileEntity implements IInventor
         inventory = createInventory(size);
         inventory.setDirtyMarkListener(this);
         tickingRunnables = Lists.newArrayListWithExpectedSize(10);
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        inventory.deserializeNBT(compound.getCompoundTag(KEY_INVENTORY));
-        super.readFromNBT(compound);
-    }
-
-    @Override
-    public @Nonnull
-    NBTTagCompound writeToNBT(NBTTagCompound compound) {
-        compound.setTag(KEY_INVENTORY, inventory.serializeNBT());
-        return super.writeToNBT(compound);
-    }
-
-    @Override
-    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
-    }
-
-    @Override
-    public @Nullable
-    <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return (T) inventory;
-        }
-        return super.getCapability(capability, facing);
-    }
-
-
-    protected ICompatStackHandler createInventory(int size) {
-        return new CompatStackHandler(size);
-    }
-
-    protected ICompatStackHandler getInventory() {
-        return inventory;
     }
 
     /**
@@ -211,6 +176,40 @@ public class BaseTileEntityWithInventory extends TileEntity implements IInventor
         return stacks;
     }
 
+    protected ICompatStackHandler getInventory() {
+        return inventory;
+    }
+
+    protected long getTotalTime() {
+        return getWorld().getTotalWorldTime();
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound) {
+        inventory.deserializeNBT(compound.getCompoundTag(KEY_INVENTORY));
+        super.readFromNBT(compound);
+    }
+
+    @Override
+    public @Nonnull
+    NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        compound.setTag(KEY_INVENTORY, inventory.serializeNBT());
+        return super.writeToNBT(compound);
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+    }
+
+    @Override
+    public @Nullable <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return (T) inventory;
+        }
+        return super.getCapability(capability, facing);
+    }
+
     public List<EntityItem> getItemDrops(World world, BlockPos pos) {
         List<EntityItem> stacks = new ArrayList<>(inventory.getSlots());
         for (int i = 0; i < inventory.getSlots(); i++) {
@@ -258,8 +257,8 @@ public class BaseTileEntityWithInventory extends TileEntity implements IInventor
         }
     }
 
-    protected long getTotalTime() {
-        return getWorld().getTotalWorldTime();
+    protected ICompatStackHandler createInventory(int size) {
+        return new CompatStackHandler(size);
     }
 
     protected void registerForUpdates(TickingRunnable tickingRunnable) {

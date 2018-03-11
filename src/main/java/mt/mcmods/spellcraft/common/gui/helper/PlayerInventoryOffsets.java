@@ -1,18 +1,18 @@
 package mt.mcmods.spellcraft.common.gui.helper;
 
 public final class PlayerInventoryOffsets {
-    public static final int DEFAULT_COLUMN_COUNT_INV_BAR = 9;
     public static final int DEFAULT_COLUMN_COUNT_INNER = 9;
+    public static final int DEFAULT_COLUMN_COUNT_INV_BAR = 9;
     public static final int DEFAULT_ROW_COUNT_INNER = 3;
     public static final int DEFAULT_SLOT_X_SIZE = 18;
     public static final int DEFAULT_SLOT_Y_SIZE = 18;
+    private final int mmInnerColumnCount;
+    private final int mmInnerRowCount;
     private final int mmInnerXInvOffset;
     private final int mmInnerYInvOffset;
+    private final int mmInvBarColumnCount;
     private final int mmInvBarXOffset;
     private final int mmInvBarYOffset;
-    private final int mmInnerRowCount;
-    private final int mmInnerColumnCount;
-    private final int mmInvBarColumnCount;
     private final int mmSlotXSize;
     private final int mmSlotYSize;
 
@@ -70,17 +70,17 @@ public final class PlayerInventoryOffsets {
     }
 
     @Override
-    public String toString() {
-        return "PlayerInventoryOffsets{" + "mmInnerXInvOffset=" + mmInnerXInvOffset +
-                ", mmInnerYInvOffset=" + mmInnerYInvOffset +
-                ", mmInvBarXOffset=" + mmInvBarXOffset +
-                ", mmInvBarYOffset=" + mmInvBarYOffset +
-                ", mmInnerRowCount=" + mmInnerRowCount +
-                ", mmInnerColumnCount=" + mmInnerColumnCount +
-                ", mmInvBarColumnCount=" + mmInvBarColumnCount +
-                ", mmSlotXSize=" + mmSlotXSize +
-                ", mmSlotYSize=" + mmSlotYSize +
-                '}';
+    public int hashCode() {
+        int result = mmInnerXInvOffset;
+        result = 31 * result + mmInnerYInvOffset;
+        result = 31 * result + mmInvBarXOffset;
+        result = 31 * result + mmInvBarYOffset;
+        result = 31 * result + mmInnerRowCount;
+        result = 31 * result + mmInnerColumnCount;
+        result = 31 * result + mmInvBarColumnCount;
+        result = 31 * result + mmSlotXSize;
+        result = 31 * result + mmSlotYSize;
+        return result;
     }
 
     @Override
@@ -102,16 +102,16 @@ public final class PlayerInventoryOffsets {
     }
 
     @Override
-    public int hashCode() {
-        int result = mmInnerXInvOffset;
-        result = 31 * result + mmInnerYInvOffset;
-        result = 31 * result + mmInvBarXOffset;
-        result = 31 * result + mmInvBarYOffset;
-        result = 31 * result + mmInnerRowCount;
-        result = 31 * result + mmInnerColumnCount;
-        result = 31 * result + mmInvBarColumnCount;
-        result = 31 * result + mmSlotXSize;
-        result = 31 * result + mmSlotYSize;
-        return result;
+    public String toString() {
+        return "PlayerInventoryOffsets{" + "mmInnerXInvOffset=" + mmInnerXInvOffset +
+                ", mmInnerYInvOffset=" + mmInnerYInvOffset +
+                ", mmInvBarXOffset=" + mmInvBarXOffset +
+                ", mmInvBarYOffset=" + mmInvBarYOffset +
+                ", mmInnerRowCount=" + mmInnerRowCount +
+                ", mmInnerColumnCount=" + mmInnerColumnCount +
+                ", mmInvBarColumnCount=" + mmInvBarColumnCount +
+                ", mmSlotXSize=" + mmSlotXSize +
+                ", mmSlotYSize=" + mmSlotYSize +
+                '}';
     }
 }

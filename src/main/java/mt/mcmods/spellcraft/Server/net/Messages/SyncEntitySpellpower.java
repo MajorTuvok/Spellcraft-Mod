@@ -11,8 +11,8 @@ import net.minecraft.world.World;
 
 
 public class SyncEntitySpellpower extends RequestSyncEntitySpellpower {
-    private float power;
     private float maxPower;
+    private float power;
 
     public SyncEntitySpellpower() {
         this(-1, -1, -1);
@@ -34,6 +34,14 @@ public class SyncEntitySpellpower extends RequestSyncEntitySpellpower {
             this.power = -1;
             this.maxPower = -1;
         }
+    }
+
+    public float getPower() {
+        return power;
+    }
+
+    public float getMaxPower() {
+        return maxPower;
     }
 
     /**
@@ -73,13 +81,5 @@ public class SyncEntitySpellpower extends RequestSyncEntitySpellpower {
         } else {
             ILoggable.Log.error("Cannot set Spellpower without entity!");
         }
-    }
-
-    public float getPower() {
-        return power;
-    }
-
-    public float getMaxPower() {
-        return maxPower;
     }
 }

@@ -1,18 +1,15 @@
 package mt.mcmods.spellcraft.common.interfaces;
 
-import mt.mcmods.spellcraft.common.tiles.CompatStackHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 
 import java.util.List;
 
-public interface ICompatStackHandler extends IItemHandler, IItemHandlerModifiable, INBTSerializable<NBTTagCompound>, IInventory {
-
+public interface ICompatStackHandler extends IItemHandler, INBTSerializable<NBTTagCompound>, IInventory {
     public void setDirtyMarkListener(IMarkDirtyCallback dirtyMarkListener);
 
     public void setPlayerRestrictionProvider(PlayerRestrictionProvider playerRestrictionProvider);
@@ -25,7 +22,7 @@ public interface ICompatStackHandler extends IItemHandler, IItemHandlerModifiabl
         public boolean isUsableByPlayer(EntityPlayer player);
     }
 
-    public interface PlayerInteractionListener extends CompatStackHandler.PlayerRestrictionProvider {
+    public interface PlayerInteractionListener extends ICompatStackHandler.PlayerRestrictionProvider {
         public void openInventory(EntityPlayer player, List<ItemStack> stacks);
 
         public void closeInventory(EntityPlayer player, List<ItemStack> stacks);

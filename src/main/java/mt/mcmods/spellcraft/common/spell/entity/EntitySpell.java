@@ -15,8 +15,13 @@ import javax.annotation.Nullable;
 public abstract class EntitySpell extends Spell {
     public static final String KEY_ENTITY = "EntitySpell_entity";
     public static final String KEY_WORLD = "EntitySpell_world";
-    private Entity entity;
     private static final float ENTITY_ASSOCIATED_DRAW = 0.05f;  //TODO add to config
+    private Entity entity;
+
+    public EntitySpell(Entity entity) throws IllegalArgumentException {
+        super(entity.getCapability(SpellcraftCapabilities.SPELL_POWER_PROVIDER_CAPABILITY, null));
+        this.entity = entity;
+    }
 
     /**
      * This constructor should only be used with deserializeNBT(NBTTagCompound)
@@ -25,18 +30,24 @@ public abstract class EntitySpell extends Spell {
         super();
     }
 
-    public EntitySpell(Entity entity) throws IllegalArgumentException {
-        super(entity.getCapability(SpellcraftCapabilities.SPELL_POWER_PROVIDER_CAPABILITY, null));
+    public Entity getEntity() {
+        return entity;
+    }
+
+    protected void setEntity(Entity entity) {
+        if (entity == null) throw new NullPointerException("Cannot have a null Entity!");
         this.entity = entity;
     }
 
+    @Nullable
     @Override
-    protected void onPerform() {
-        extractPower(ENTITY_ASSOCIATED_DRAW);
-    }
-
-    public Entity getEntity() {
-        return entity;
+    public ISpellPowerProvider getPowerProvider() {
+        ISpellPowerProvider provider = super.getPowerProvider();
+        if (provider == null && getEntity() != null) {
+            provider = entity.getCapability(SpellcraftCapabilities.SPELL_POWER_PROVIDER_CAPABILITY, null);
+            setPowerProvider(provider);
+        }
+        return provider;
     }
 
     @Override
@@ -64,24 +75,13 @@ public abstract class EntitySpell extends Spell {
         }
     }
 
-    @Nullable
     @Override
-    public ISpellPowerProvider getPowerProvider() {
-        ISpellPowerProvider provider = super.getPowerProvider();
-        if (provider == null && getEntity() != null) {
-            provider = entity.getCapability(SpellcraftCapabilities.SPELL_POWER_PROVIDER_CAPABILITY, null);
-            setPowerProvider(provider);
-        }
-        return provider;
+    protected void onPerform() {
+        extractPower(ENTITY_ASSOCIATED_DRAW);
     }
 
     @Override
     protected boolean shouldResume() {
         return getEntity() != null;
-    }
-
-    protected void setEntity(Entity entity) {
-        if (entity == null) throw new NullPointerException("Cannot have a null Entity!");
-        this.entity = entity;
     }
 }

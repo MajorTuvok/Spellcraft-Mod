@@ -23,10 +23,9 @@ import javax.annotation.Nullable;
 import java.util.Random;
 
 public class BaseBlock extends Block implements INamed, IOreDictNamed, ILoggable, IRenderable {
-    private static final int DEFAULT_TICKRATE = 10;
-    private static final float DEFAULT_PARTICLE_VELOCITY_FACTOR = 0.1f;
     private static final float DEFAULT_PARTICLE_MAX_DISTANCE = 0.4f;
-
+    private static final float DEFAULT_PARTICLE_VELOCITY_FACTOR = 0.1f;
+    private static final int DEFAULT_TICKRATE = 10;
     private String mName;
 
     public BaseBlock(Material material, @Nonnull String displayName) {
@@ -35,6 +34,32 @@ public class BaseBlock extends Block implements INamed, IOreDictNamed, ILoggable
         setCreativeTab(CTabs.TAB_MAIN);
         setUnlocalizedName(getName());
         setRegistryName(getName());
+    }
+
+    @Override
+    public String getOreDictName() {
+        return StringHelper.createOreDictNameFromUnlocalized(getName());
+    }
+
+    @Override
+    public String getName() {
+        return mName;
+    }
+
+    public BaseBlock setName(String mName) {
+        this.mName = mName;
+        return this;
+    }
+
+    @Nullable
+    @Override
+    public ResourceLocation getLocation() {
+        return getRegistryName();
+    }
+
+    @Override
+    public boolean registerRenderer() {
+        return true;
     }
 
     @Override
@@ -83,31 +108,5 @@ public class BaseBlock extends Block implements INamed, IOreDictNamed, ILoggable
 
     protected void spawnCustomSyncParticles(World world, ParticleHandler.ParticleName name, int particleAmount, int parX, int parY, int parZ) {
         spawnCustomSyncParticles(world, name, particleAmount, DEFAULT_PARTICLE_MAX_DISTANCE, parX, parY, parZ);
-    }
-
-    @Override
-    public String getOreDictName() {
-        return StringHelper.createOreDictNameFromUnlocalized(getName());
-    }
-
-    @Override
-    public String getName() {
-        return mName;
-    }
-
-    public BaseBlock setName(String mName) {
-        this.mName = mName;
-        return this;
-    }
-
-    @Nullable
-    @Override
-    public ResourceLocation getLocation() {
-        return getRegistryName();
-    }
-
-    @Override
-    public boolean registerRenderer() {
-        return true;
     }
 }

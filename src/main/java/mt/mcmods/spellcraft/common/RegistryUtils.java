@@ -30,12 +30,12 @@ import java.util.*;
 import static mt.mcmods.spellcraft.common.util.StringHelper.getName;
 
 public class RegistryUtils<T extends IForgeRegistryEntry<T>> implements ILoggable {
-    private List<T> renderable;
+    private boolean initWasCalled;
     private List<Item> itemRenderables;
     private List<Tuple<Object, String>> postponedOredictEntries;
-    private HashMap<T, Item> thingItemMap;
     private IForgeRegistry<T> registry;
-    private boolean initWasCalled;
+    private List<T> renderable;
+    private HashMap<T, Item> thingItemMap;
 
     public RegistryUtils() {
         renderable = new LinkedList<>();
@@ -44,6 +44,14 @@ public class RegistryUtils<T extends IForgeRegistryEntry<T>> implements ILoggabl
         registry = null;
         postponedOredictEntries = new LinkedList<>();
         initWasCalled = false;
+    }
+
+    public void setRegistry(IForgeRegistry<T> registry) {
+        this.registry = registry;
+    }
+
+    public Collection<Item> getRegisteredItems() {
+        return thingItemMap.values();
     }
 
     public void clientInit() {
@@ -65,10 +73,6 @@ public class RegistryUtils<T extends IForgeRegistryEntry<T>> implements ILoggabl
         thingItemMap = null;
         registry = null;
         initWasCalled = false;
-    }
-
-    public void setRegistry(IForgeRegistry<T> registry) {
-        this.registry = registry;
     }
 
     public void registerRenders(ModelRegistryEvent registryEvent) {
@@ -125,17 +129,6 @@ public class RegistryUtils<T extends IForgeRegistryEntry<T>> implements ILoggabl
         }
     }
 
-
-    private void checkAdditionalRegistration(T toRegister) {
-        if (toRegister instanceof IOreDictNamed) {
-            registerOreDict((IOreDictNamed) toRegister);
-        }
-        if (toRegister instanceof TileEntityContainer && !((TileEntityContainer) toRegister).doesSelfRegistration()) {
-            GameRegistry.registerTileEntity(((TileEntityContainer<? extends TileEntity>) toRegister).getTileEntityClass(), MODID + getName(toRegister));
-        }
-        addToRenderable(toRegister);
-    }
-
     public @Nullable
     Item getItem(T thing) {
         if (thing instanceof Item) {
@@ -144,29 +137,6 @@ public class RegistryUtils<T extends IForgeRegistryEntry<T>> implements ILoggabl
             return thingItemMap.get(thing);
         }
         return null;
-    }
-
-    protected Object registerOreDict(Object thing, String name) {
-        if (name != null && thing != null) {
-            if (initWasCalled) {
-                if (thing instanceof Block) {
-                    OreDictionary.registerOre(name, (Block) thing);
-                } else if (thing instanceof Item) {
-                    OreDictionary.registerOre(name, (Item) thing);
-                } else if (thing instanceof ItemStack) {
-                    OreDictionary.registerOre(name, (ItemStack) thing);
-                } else {
-                    Log.error("Cannot registerGameOverlayListener " + name + " in the GameRegistry because it is neither a Block, Item or ItemStack!");
-                }
-            } else {
-                postponedOredictEntries.add(new Tuple<>(thing, name));
-            }
-        } else if (name == null) {
-            Log.warn("Attempted to registerGameOverlayListener Object to OreDict with null OreDict Name!");
-        } else {
-            Log.warn("Cannot registerGameOverlayListener null Object(" + name + ") to the OreDictionary!");
-        }
-        return thing;
     }
 
     public IOreDictNamed registerOreDict(@Nonnull IOreDictNamed thing) {
@@ -215,6 +185,39 @@ public class RegistryUtils<T extends IForgeRegistryEntry<T>> implements ILoggabl
         }
     }
 
+    public void addToRenderable(T t) {
+        if (t instanceof IRenderable) {
+            if (thingItemMap.containsKey(t) && thingItemMap.get(t) != null) {
+                itemRenderables.add(thingItemMap.get(t));
+            } else {
+                renderable.add(t);
+            }
+        }
+    }
+
+    protected Object registerOreDict(Object thing, String name) {
+        if (name != null && thing != null) {
+            if (initWasCalled) {
+                if (thing instanceof Block) {
+                    OreDictionary.registerOre(name, (Block) thing);
+                } else if (thing instanceof Item) {
+                    OreDictionary.registerOre(name, (Item) thing);
+                } else if (thing instanceof ItemStack) {
+                    OreDictionary.registerOre(name, (ItemStack) thing);
+                } else {
+                    Log.error("Cannot registerGameOverlayListener " + name + " in the GameRegistry because it is neither a Block, Item or ItemStack!");
+                }
+            } else {
+                postponedOredictEntries.add(new Tuple<>(thing, name));
+            }
+        } else if (name == null) {
+            Log.warn("Attempted to registerGameOverlayListener Object to OreDict with null OreDict Name!");
+        } else {
+            Log.warn("Cannot registerGameOverlayListener null Object(" + name + ") to the OreDictionary!");
+        }
+        return thing;
+    }
+
     @SideOnly(Side.CLIENT)
     protected void registerItemRenderer(@Nonnull Item item, @Nonnegative int meta) {
         if (item.getRegistryName() != null) {
@@ -233,24 +236,20 @@ public class RegistryUtils<T extends IForgeRegistryEntry<T>> implements ILoggabl
         }
     }
 
-    public void addToRenderable(T t) {
-        if (t instanceof IRenderable) {
-            if (thingItemMap.containsKey(t) && thingItemMap.get(t) != null) {
-                itemRenderables.add(thingItemMap.get(t));
-            } else {
-                renderable.add(t);
-            }
-        }
-    }
-
     protected void addToItemMap(T thing, Item item) {
         if (!thingItemMap.containsKey(thing)) {
             thingItemMap.put(thing, item);
         }
     }
 
-    public Collection<Item> getRegisteredItems() {
-        return thingItemMap.values();
+    private void checkAdditionalRegistration(T toRegister) {
+        if (toRegister instanceof IOreDictNamed) {
+            registerOreDict((IOreDictNamed) toRegister);
+        }
+        if (toRegister instanceof TileEntityContainer && !((TileEntityContainer) toRegister).doesSelfRegistration()) {
+            GameRegistry.registerTileEntity(((TileEntityContainer<? extends TileEntity>) toRegister).getTileEntityClass(), MODID + getName(toRegister));
+        }
+        addToRenderable(toRegister);
     }
 
 }

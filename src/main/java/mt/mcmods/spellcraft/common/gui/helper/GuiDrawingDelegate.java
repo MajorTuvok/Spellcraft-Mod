@@ -12,8 +12,8 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nonnull;
 
 public class GuiDrawingDelegate implements ILoggable, IGuiRenderProvider {
-    private IGuiRenderProvider renderProvider;
     private GuiMeasurements measurements;
+    private IGuiRenderProvider renderProvider;
 
     public GuiDrawingDelegate(IGuiRenderProvider renderProvider, GuiMeasurements measurements) {
         this.renderProvider = renderProvider;
@@ -72,18 +72,9 @@ public class GuiDrawingDelegate implements ILoggable, IGuiRenderProvider {
         getRenderProvider().drawCenteredString(fontRendererIn, text, x, y, color);
     }
 
-
-    public void drawCenteredString(String text, int x, int y, int color) {
-        drawCenteredString(getFontRenderer(), text, x, y, color);
-    }
-
     @Override
     public void drawString(FontRenderer fontRendererIn, String text, int x, int y, int color) {
         getRenderProvider().drawString(fontRendererIn, text, x, y, color);
-    }
-
-    public void drawString(String text, int x, int y, int color) {
-        getRenderProvider().drawString(getFontRenderer(), text, x, y, color);
     }
 
     @Override
@@ -121,6 +112,14 @@ public class GuiDrawingDelegate implements ILoggable, IGuiRenderProvider {
     @Override
     public Minecraft getMc() {
         return getRenderProvider().getMc();
+    }
+
+    public void drawCenteredString(String text, int x, int y, int color) {
+        drawCenteredString(getFontRenderer(), text, x, y, color);
+    }
+
+    public void drawString(String text, int x, int y, int color) {
+        getRenderProvider().drawString(getFontRenderer(), text, x, y, color);
     }
 
 

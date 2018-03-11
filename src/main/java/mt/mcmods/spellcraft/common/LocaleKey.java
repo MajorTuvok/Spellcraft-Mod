@@ -17,7 +17,10 @@ public enum LocaleKey {
     GUI_WAND_CRAFTING_TABLE_WAND_PROPS_INFO_STANDARD_1("tile.wand_crafting_table.gui.wand_properties_standard_info_1", 2),
     GUI_SPELL_CREATOR_INSCRIBE("tile.spell_creator.gui.inscribe", 0),
     GUI_SPELL_CREATOR_EDIT("tile.spell_creator.gui.edit", 1),
-    GUI_SPELL_CREATOR_NO_SPELL("tile.spell_creator.gui.no_spell", 0);
+    GUI_SPELL_CREATOR_NO_SPELL("tile.spell_creator.gui.no_spell", 0),
+    GUI_SPELL_CREATOR_NO_SPELL_NAME("tile.spell_creator.gui.no_spell_name", 0),
+    GUI_SPELL_CREATOR_MAX_POWER("tile.spell_creator.gui.max_power", 1),
+    GUI_SPELL_CREATOR_NUM_STATES("tile.spell_creator.gui.num_states", 1);
     private final int mArgCount;  //Helper variable for testing purposes...
     private final String mLangKey;
 
@@ -44,7 +47,9 @@ public enum LocaleKey {
     }
 
     public String get(Object... args) {
-        assert mArgCount <= 0 || ((args != null && args.length == mArgCount)) : "Argument mismatch! " + (args == null ? "Given Argument List was null!" : (args.length < mArgCount ? "Provided to few Arguments!" : "Provided to many Arguments"));
+        assert mArgCount <= 0 || ((args != null && args.length == mArgCount)) : "Argument mismatch! " + (args == null ? "Given Argument List was null!" : (args.length < mArgCount ? "Provided to few Arguments!" : "Provided to many Arguments!"));
         return I18n.format(getLangKey(), args);
     }
+
+
 }

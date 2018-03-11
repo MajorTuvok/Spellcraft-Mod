@@ -16,12 +16,12 @@ public class ItemStackWrapper implements Cloneable, INBTSerializable<NBTTagCompo
         this.stack = stack;
     }
 
-    public ItemStack get() {
-        return stack;
-    }
-
     public void set(ItemStack stack) {
         this.stack = stack;
+    }
+
+    public ItemStack get() {
+        return stack;
     }
 
     /**
@@ -184,20 +184,20 @@ public class ItemStackWrapper implements Cloneable, INBTSerializable<NBTTagCompo
     }
 
     @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ItemStackWrapper{");
+        sb.append("stack=").append(stack.getDisplayName());
+        sb.append('}');
+        return sb.toString();
+    }
+
+    @Override
     public NBTTagCompound serializeNBT() {
         return stack.serializeNBT();
     }
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
-        stack = new ItemStack(nbt);
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("ItemStackWrapper{");
-        sb.append("stack=").append(stack.getDisplayName());
-        sb.append('}');
-        return sb.toString();
+        set(new ItemStack(nbt));
     }
 }

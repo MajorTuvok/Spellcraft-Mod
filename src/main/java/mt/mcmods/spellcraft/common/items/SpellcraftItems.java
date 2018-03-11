@@ -3,6 +3,7 @@ package mt.mcmods.spellcraft.common.items;
 
 import mt.mcmods.spellcraft.CommonProxy;
 import mt.mcmods.spellcraft.common.BaseContainer;
+import mt.mcmods.spellcraft.common.CTabs;
 import mt.mcmods.spellcraft.common.Capabilities.wandproperties.WandPropertyDefinition;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import mt.mcmods.spellcraft.common.items.wand.ItemWand;
@@ -21,20 +22,20 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Mod.EventBusSubscriber
 public class SpellcraftItems extends BaseContainer<Item> {
+    private static final SpellcraftItems INSTANCE = new SpellcraftItems();
+    public static ItemSpellPaper SPELL_PAPER;
+    public static ItemWand WAND_IRON_IRON;
     private static boolean createdItems = false;
     private static boolean instantiated = false;
-    private static final SpellcraftItems INSTANCE = new SpellcraftItems();
-    public static ItemWand WAND_IRON_IRON;
-    public static ItemSpellPaper SPELL_PAPER;
-
-    public static SpellcraftItems getInstance() {
-        return INSTANCE;
-    }
 
     private SpellcraftItems() {
         super();
         if (instantiated) throw new AssertionError();
         instantiated = true;
+    }
+
+    public static SpellcraftItems getInstance() {
+        return INSTANCE;
     }
 
     private static void createWands() {
@@ -54,17 +55,6 @@ public class SpellcraftItems extends BaseContainer<Item> {
         help.getWand(StringHelper.createUnlocalizedName("log", "gold", "wand"), Items.GOLD_INGOT, Blocks.LOG).setCustomLocation(goldLocation);
     }
 
-    @Override
-    public void commonPreInit() {
-        createItems();
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void clientInit() {
-        super.clientInit();
-    }
-
     private static void createItems() {
         if (!createdItems) {
             createdItems = true;
@@ -72,6 +62,18 @@ public class SpellcraftItems extends BaseContainer<Item> {
             createWands();
             SPELL_PAPER = new ItemSpellPaper();
         }
+    }
+
+    private static void addWandParts() {
+        WandRegistryHelper help = WandRegistryHelper.INSTANCE;
+        help.addCorePart(Items.IRON_INGOT, new WandPropertyDefinition(80, 60, 140, 100));
+        help.addCorePart(Items.GOLD_INGOT, new WandPropertyDefinition(85, 70, 100, 80));
+        help.addCorePart(Blocks.COBBLESTONE, new WandPropertyDefinition(50, 45, 70, 50));
+        help.addCorePart(Blocks.STONE, new WandPropertyDefinition(55, 50, 80, 70));
+        help.addCorePart(Blocks.LOG, new WandPropertyDefinition(70, 40, 50, 30));
+
+        help.addTipPart(Items.IRON_INGOT, new WandPropertyDefinition(85, 65, 100, 60));
+        help.addTipPart(Items.GOLD_INGOT, new WandPropertyDefinition(90, 75, 60, 40));
     }
 
     @Override
@@ -86,15 +88,20 @@ public class SpellcraftItems extends BaseContainer<Item> {
         ILoggable.Log.debug("Successfully registered Items");
     }
 
-    private static void addWandParts() {
-        WandRegistryHelper help = WandRegistryHelper.INSTANCE;
-        help.addCorePart(Items.IRON_INGOT, new WandPropertyDefinition(80, 60, 140, 100));
-        help.addCorePart(Items.GOLD_INGOT, new WandPropertyDefinition(85, 70, 100, 80));
-        help.addCorePart(Blocks.COBBLESTONE, new WandPropertyDefinition(50, 45, 70, 50));
-        help.addCorePart(Blocks.STONE, new WandPropertyDefinition(55, 50, 80, 70));
-        help.addCorePart(Blocks.LOG, new WandPropertyDefinition(70, 40, 50, 30));
+    @Override
+    public void commonPreInit() {
+        createItems();
+    }
 
-        help.addTipPart(Items.IRON_INGOT, new WandPropertyDefinition(85, 65, 100, 60));
-        help.addTipPart(Items.GOLD_INGOT, new WandPropertyDefinition(90, 75, 60, 40));
+    @Override
+    public void postInit() {
+        super.postInit();
+        CTabs.setSearchableIconStack(CTabs.TAB_MAIN, WAND_IRON_IRON.getDefaultInstance());
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void clientInit() {
+        super.clientInit();
     }
 }

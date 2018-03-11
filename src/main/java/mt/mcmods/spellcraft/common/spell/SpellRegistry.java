@@ -2,11 +2,9 @@ package mt.mcmods.spellcraft.common.spell;
 
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import mt.mcmods.spellcraft.common.registry.RegistryAdvanced;
-import mt.mcmods.spellcraft.common.spell.entity.EntitySpell;
 import mt.mcmods.spellcraft.common.spell.types.ISpellType;
 import mt.mcmods.spellcraft.common.spell.types.SpellTypes;
 import mt.mcmods.spellcraft.common.util.NBTHelper;
-import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -20,17 +18,25 @@ import org.apache.commons.lang3.Validate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 @NotThreadSafe
-public class SpellRegistry extends WorldSavedData {
-    private static final String NAME = ILoggable.MODID + " SpellRegistry-WorldSavedData";
+public class SpellRegistry {
     private static final String KEY_SPELLS = "SpellRegistry_flattenedIdRegistry";
+    private static final String NAME = ILoggable.MODID + " SpellRegistry-WorldSavedData";
     private static final RegistryAdvanced<Integer, Spell> idRegistry = new RegistryAdvanced<>();
-    private static final RegistryAdvanced<Entity, List<EntitySpell>> entitySpellRegistry = new RegistryAdvanced<>();
+    private static final ArrayList<ISpellRegistryCallback> mRegistries = new ArrayList<>();
     private static int curId = 0;
+    private static SpellWorldSaveData lastInstance;
     private static MinecraftServer server;
-    private static SpellRegistry lastInstance;
+
+    public static void addSpellRegistryCallback(ISpellRegistryCallback registry) {
+        mRegistries.add(registry);
+        registry.onCreate();
+    }
 
     public static void onServerStarting(FMLServerStartingEvent event) {
         server = event.getServer();
@@ -39,19 +45,6 @@ public class SpellRegistry extends WorldSavedData {
     public static void registerSpell(Spell spell) {
         registerSpellWithId(spell, getNextId());
         markDataDirty();
-    }
-
-    public static void unregisterAllSpells(Entity entity) {
-        if (entity != null && entitySpellRegistry.containsKey(entity)) {
-            List<EntitySpell> spells = entitySpellRegistry.getObject(entity);
-            if (spells != null) {
-                spells = new ArrayList<>(spells); //id don't want to remove things while i'm iterating over them...
-                for (EntitySpell spell :
-                        spells) {
-                    unregisterSpell(spell); //it has to be unregistered from global map correctly
-                }
-            }
-        }
     }
 
     public static @Nullable
@@ -93,15 +86,16 @@ public class SpellRegistry extends WorldSavedData {
     }
 
     public static @Nullable
-    SpellRegistry getSaveData() {
+    SpellWorldSaveData getSaveData() {
         if (getServer() != null) {
             MapStorage storage = getServer().getEntityWorld().getMapStorage();
-            SpellRegistry instance = null;
-            if (storage != null)
-                instance = (SpellRegistry) storage.getOrLoadData(SpellRegistry.class, NAME);
+            SpellWorldSaveData instance = null;
+            if (storage != null) {
+                instance = (SpellWorldSaveData) storage.getOrLoadData(SpellWorldSaveData.class, NAME);
+            }
 
             if (instance == null) {
-                instance = new SpellRegistry();
+                instance = new SpellWorldSaveData();
                 if (storage != null) {
                     storage.setData(NAME, instance);
                     lastInstance = instance;
@@ -112,25 +106,6 @@ public class SpellRegistry extends WorldSavedData {
             return instance;
         }
         return null;
-    }
-
-    public static @Nullable
-    List<EntitySpell> getEntitySpells(UUID uuid) {
-        if (uuid != null) {
-            for (Map.Entry<Entity, List<EntitySpell>> entry :
-                    entitySpellRegistry.getEntrySet()) {
-                if (entry.getKey() != null && entry.getKey().getUniqueID().equals(uuid)) {
-                    return new ArrayList<>(entry.getValue());
-                }
-            }
-        }
-        return null;
-    }
-
-    public static @Nullable
-    List<EntitySpell> getEntitySpells(Entity entity) {
-        List<EntitySpell> spells = entitySpellRegistry.getObject(entity);
-        return spells != null ? new ArrayList<>(spells) : null;
     }
 
     private static void registerSpellWithId(Spell spell, int id) {
@@ -147,6 +122,43 @@ public class SpellRegistry extends WorldSavedData {
             registerSpell(spell2);
     }
 
+    private static void checkAdditionalRegistration(Spell spell) {
+        for (ISpellRegistryCallback registry :
+                mRegistries) {
+            registry.onRegisterSpell(spell);
+        }
+    }
+
+    private static void checkAdditionalUnRegistration(Spell spell) {
+        for (ISpellRegistryCallback registry :
+                mRegistries) {
+            registry.onUnRegisterSpell(spell);
+        }
+    }
+
+    private static void clear() {
+        for (Map.Entry<Integer, Spell> entry :
+                idRegistry.getEntrySet()) {
+            entry.getValue().onPause();
+        }
+        idRegistry.clear();
+        for (ISpellRegistryCallback registry :
+                mRegistries) {
+            registry.onClear();
+        }
+    }
+
+    private static void markDataDirty() {
+        if (lastInstance != null) {
+            lastInstance.markDirty();
+        } else {
+            WorldSavedData data = getSaveData();
+            if (data != null) {
+                data.markDirty();
+            }
+        }
+    }
+
     private static int getNextId() {
         if (lastInstance == null) {
             getSaveData();
@@ -157,145 +169,101 @@ public class SpellRegistry extends WorldSavedData {
         return curId;
     }
 
-    private static void checkAdditionalRegistration(Spell spell) {
-        if (spell instanceof EntitySpell) {
-            register((EntitySpell) spell);
-        }
-    }
+    public static final class SpellWorldSaveData extends WorldSavedData {
+        private final List<Integer> unregisteredIds;
+        private final List<Tuple<NBTTagCompound, ISpellType>> unregisteredSpells;
 
-    private static void register(EntitySpell spell) {
-        if (!entitySpellRegistry.containsKey(spell.getEntity())) {
-            entitySpellRegistry.putObject(spell.getEntity(), new ArrayList<>(10));
+        public SpellWorldSaveData() {
+            this(NAME);
         }
-        List<EntitySpell> spells = entitySpellRegistry.getObject(spell.getEntity());
-        if (spells != null) {
-            spells.add(spell);
-        }
-    }
 
-    private static void checkAdditionalUnRegistration(Spell spell) {
-        if (spell instanceof EntitySpell) {
-            unregister((EntitySpell) spell);
+        public SpellWorldSaveData(String name) {
+            super(name);
+            unregisteredSpells = new LinkedList<>();
+            unregisteredIds = new LinkedList<>();
         }
-    }
 
-    private static void unregister(EntitySpell spell) {
-        if (entitySpellRegistry.containsKey(spell.getEntity())) {
-            List<EntitySpell> spells = entitySpellRegistry.getObject(spell.getEntity());
-            if (spells != null) {
-                if (spells.contains(spell))
-                    spells.remove(spell);
-                else
-                    ILoggable.Log.warn("Unregistering incorrectly registered spell");
-                if (spells.isEmpty()) {
-                    entitySpellRegistry.remove(spell.getEntity(), spells);
+        public @Nonnull
+        ArrayList<Tuple<NBTTagCompound, ISpellType>> getUnregisteredSpells() {
+            return new ArrayList<>(unregisteredSpells);
+        }
+
+        /**
+         * reads in data from the NBTTagCompound into this MapDataBase
+         *
+         * @param nbt
+         */
+        @Override
+        public void readFromNBT(@Nonnull NBTTagCompound nbt) {
+            NBTTagList spells = (NBTTagList) nbt.getTag(KEY_SPELLS);
+            for (NBTBase content :
+                    spells) {
+                if (content instanceof NBTTagCompound) {
+                    ISpellType type = SpellTypes.getType((NBTTagCompound) content);
+                    if (type != null) {
+                        unregisteredSpells.add(new Tuple<>((NBTTagCompound) content, type));
+                        unregisteredIds.add(NBTHelper.getSpellId((NBTTagCompound) content));
+                    }
                 }
             }
-        }
-    }
-
-    private static void clear() {
-        for (Map.Entry<Integer, Spell> entry :
-                idRegistry.getEntrySet()) {
-            entry.getValue().onPause();
-        }
-        idRegistry.clear();
-        entitySpellRegistry.clear();
-    }
-
-    private static void markDataDirty() {
-        if (lastInstance != null) {
-            lastInstance.markDirty();
-        } else {
-            SpellRegistry registry = getSaveData();
-            if (registry != null) {
-                registry.markDirty();
+            for (ISpellRegistryCallback registry :
+                    mRegistries) {
+                registry.onReadFromNBT(nbt);
             }
         }
-    }
 
-    //--------------------------------non-static Methods ------------------------------------------------
-
-    private List<Tuple<NBTTagCompound, ISpellType>> unregisteredSpells;
-    private List<Integer> unregisteredIds;
-
-    public SpellRegistry() {
-        this(NAME);
-    }
-
-    public SpellRegistry(String name) {
-        super(name);
-        unregisteredSpells = new LinkedList<>();
-        unregisteredIds = new LinkedList<>();
-    }
-
-    @Override
-    public @Nonnull
-    NBTTagCompound writeToNBT(@Nonnull NBTTagCompound compound) {
-        NBTTagList spells = new NBTTagList();
-        for (Map.Entry<Integer, Spell> entry :
-                idRegistry.getEntrySet()) {
-            spells.appendTag(entry.getValue().serializeNBT());
+        @Override
+        public @Nonnull
+        NBTTagCompound writeToNBT(@Nonnull NBTTagCompound compound) {
+            NBTTagList spells = new NBTTagList();
+            for (Map.Entry<Integer, Spell> entry :
+                    idRegistry.getEntrySet()) {
+                spells.appendTag(entry.getValue().serializeNBT());
+            }
+            for (Tuple<NBTTagCompound, ISpellType> tuple :
+                    unregisteredSpells) {
+                spells.appendTag(tuple.getFirst());
+            }
+            compound.setTag(KEY_SPELLS, spells);
+            for (ISpellRegistryCallback registry :
+                    mRegistries) {
+                registry.onWriteToNBT(compound);
+            }
+            return compound;
         }
-        for (Tuple<NBTTagCompound, ISpellType> tuple :
-                unregisteredSpells) {
-            spells.appendTag(tuple.getFirst());
-        }
-        compound.setTag(KEY_SPELLS, spells);
-        return compound;
-    }
 
-    /**
-     * reads in data from the NBTTagCompound into this MapDataBase
-     *
-     * @param nbt
-     */
-    @Override
-    public void readFromNBT(@Nonnull NBTTagCompound nbt) {
-        NBTTagList spells = (NBTTagList) nbt.getTag(KEY_SPELLS);
-        for (NBTBase content :
-                spells) {
-            if (content instanceof NBTTagCompound) {
-                ISpellType type = SpellTypes.getType((NBTTagCompound) content);
-                if (type != null) {
-                    unregisteredSpells.add(new Tuple<>((NBTTagCompound) content, type));
-                    unregisteredIds.add(NBTHelper.getSpellId((NBTTagCompound) content));
+        public boolean registerInactiveSpell(Tuple<NBTTagCompound, ISpellType> toRegister) {
+            try {
+                Spell spell = toRegister.getSecond().instantiate(toRegister.getFirst());
+                if (spell != null) {
+                    if (spell.canRegister()) {
+                        registerSpellWithId(spell, spell.getId());
+                        unregisteredSpells.remove(toRegister);
+                        unregisteredIds.remove(new Integer(spell.getId()));
+                        markDirty();
+                    }
+                    if (spell.shouldResume()) {
+                        spell.onResume();
+                    }
+                    return true;
                 }
+            } catch (InstantiationException e) {
+                ILoggable.Log.error("Could not instantiate Spell! This will result in this Spell being discarded and deleted from the SpellRegistry!", e);
             }
+            return false;
+        }
+
+        public void asUnregisteredSpell(Spell spell) {
+            spell.onPause();
+            unregisterSpell(spell);
+            unregisteredSpells.add(new Tuple<>(spell.serializeNBT(), spell.getType()));
+            unregisteredIds.add(spell.getId());
+            markDirty();
+        }
+
+        public boolean isUnregisteredId(Integer id) {
+            return unregisteredIds.contains(id);
         }
     }
 
-    public @Nonnull
-    ArrayList<Tuple<NBTTagCompound, ISpellType>> getUnregisteredSpells() {
-        return new ArrayList<>(unregisteredSpells);
-    }
-
-    public boolean registerInactiveSpell(Tuple<NBTTagCompound, ISpellType> toRegister) {
-        try {
-            Spell spell = toRegister.getSecond().instantiate(toRegister.getFirst());
-            if (spell != null) {
-                registerSpellWithId(spell, spell.getId());
-                unregisteredSpells.remove(toRegister);
-                unregisteredIds.remove(new Integer(spell.getId()));
-                if (spell.shouldResume())
-                    spell.onResume();
-                markDirty();
-            }
-        } catch (InstantiationException e) {
-            ILoggable.Log.error("Could not instantiate Spell! This will result in this Spell being discarded and deleted from the SpellRegistry!",e);
-        }
-        return false;
-    }
-
-    public void setToUnregisteredSpell(Spell spell) {
-        spell.onPause();
-        unregisterSpell(spell);
-        unregisteredSpells.add(new Tuple<>(spell.serializeNBT(), spell.getType()));
-        unregisteredIds.add(spell.getId());
-        markDirty();
-    }
-
-    public boolean isUnregisteredId(Integer id) {
-        return unregisteredIds.contains(id);
-    }
 }

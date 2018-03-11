@@ -23,11 +23,17 @@ public final class VoidSpellExecutable extends AbsSpellExecutable implements ILo
      *
      * @param componentCallback The ConditionCallback representing outside circumstances. Will probably be a Spell who's ISpellType is one of getSupportedTypes(), although this is not guaranteed. Use this to interfere with the outside world.
      * @param attributeProvider
-     * @return Whether or not this Component executed successfully. Return false and call IllegalCallbackDetected if the ISpellConditionCallback is not the required Type.
+     * @return Whether or not this ViewComponent executed successfully. Return false and call IllegalCallbackDetected if the ISpellConditionCallback is not the required Type.
      */
     @Override
     public boolean execute(ISpellExecutableCallback componentCallback, IAttributeProvider attributeProvider) {
         Log.trace("Executing Void component!!!");
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "VoidSpellExecutable{" +
+                (getRegistryName() != null ? "registryName=" + getRegistryName() + "}" : "}");
     }
 }

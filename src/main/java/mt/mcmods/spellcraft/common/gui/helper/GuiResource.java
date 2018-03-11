@@ -20,10 +20,10 @@ public enum GuiResource implements ResourceInfo, ILoggable {
     OVERLAY_SPELLPOWER_FOREGROUND(StringHelper.createResourceLocation(MODID, "textures", "gui", "overlay", "spellpower_foreground.png"), 0, 0, 19, 60),
     BOOK_AND_QUILL(StringHelper.createResourceLocation(MODID, "textures", "gui", "book_and_quill.png"), 0, 0, 20, 20);
     ResourceLocation location;
-    private int imgXStart;
-    private int imgYStart;
     private int imgXSize;
+    private int imgXStart;
     private int imgYSize;
+    private int imgYStart;
     private PlayerInventoryOffsets suggestedOffsets;
 
     GuiResource(@Nonnull ResourceLocation location, int imgXStart, int imgYStart, int imgXSize, int imgYSize, PlayerInventoryOffsets playerInventoryOffsets) {

@@ -25,6 +25,18 @@ public abstract class BasicProcessingRecipe<IN extends ProcessingInput<IN>, OUT 
         return output;
     }
 
+    @Override
+    public long processingTime() {
+        return this.processingTime;
+    }
+
+    public RECIPE setProcessingTime(long newTime) {
+        if (newTime >= 0) {
+            this.processingTime = newTime;
+        }
+        return (RECIPE) this;
+    }
+
     /**
      * Creates and returns a copy of this object.  The precise meaning
      * of "copy" may depend on the class of the object. The general
@@ -88,16 +100,5 @@ public abstract class BasicProcessingRecipe<IN extends ProcessingInput<IN>, OUT 
     @Override
     protected RECIPE clone() throws CloneNotSupportedException {
         return this.copy();
-    }
-
-    public RECIPE setProcessingTime(long newTime) {
-        if (newTime >= 0)
-            this.processingTime = newTime;
-        return (RECIPE) this;
-    }
-
-    @Override
-    public long processingTime() {
-        return this.processingTime;
     }
 }

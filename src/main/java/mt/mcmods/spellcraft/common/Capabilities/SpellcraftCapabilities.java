@@ -11,14 +11,12 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.items.IItemHandler;
 
 public class SpellcraftCapabilities {
-    @CapabilityInject(IItemHandler.class)
-    static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY = null;
-
     @CapabilityInject(ISpellPowerProvider.class)
     public static Capability<ISpellPowerProvider> SPELL_POWER_PROVIDER_CAPABILITY = null;
-
     @CapabilityInject(IWandProperties.class)
     public static Capability<IWandProperties> WAND_PROPERTIES_CAPABILITY = null;
+    @CapabilityInject(IItemHandler.class)
+    static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY = null;
 
     public static void registerCapabilities() {
         SpellPowerProviderCapability spellPowerProviderCapability = new SpellPowerProviderCapability();

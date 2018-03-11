@@ -1,14 +1,20 @@
 package mt.mcmods.spellcraft.common.exceptions;
 
-import java.security.PrivilegedActionException;
 
-public class UnknownSpellStateException extends Exception{
+import java.util.HashSet;
+import java.util.Set;
+
+public class UnknownSpellStateException extends RuntimeException {
+    private Set<String> mAvailableStates;
+    private String mStateName;
+
     /**
      * Constructs a new exception with {@code null} as its detail message.
      * The cause is not initialized, and may subsequently be initialized by a
      * call to {@link #initCause}.
      */
-    public UnknownSpellStateException() {
+    public UnknownSpellStateException(String stateName, Set<String> availableStates) {
+        this("Attempted to access unknown SpellState with name " + stateName + "!", stateName, availableStates);
     }
 
     /**
@@ -19,8 +25,9 @@ public class UnknownSpellStateException extends Exception{
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public UnknownSpellStateException(String message) {
+    public UnknownSpellStateException(String message, String stateName, Set<String> availableStates) {
         super(message);
+        initInfo(stateName, availableStates);
     }
 
     /**
@@ -37,8 +44,9 @@ public class UnknownSpellStateException extends Exception{
      *                unknown.)
      * @since 1.4
      */
-    public UnknownSpellStateException(String message, Throwable cause) {
+    public UnknownSpellStateException(String message, Throwable cause, String stateName, Set<String> availableStates) {
         super(message, cause);
+        initInfo(stateName, availableStates);
     }
 
     /**
@@ -46,8 +54,7 @@ public class UnknownSpellStateException extends Exception{
      * message of <tt>(cause==null ? null : cause.toString())</tt> (which
      * typically contains the class and detail message of <tt>cause</tt>).
      * This constructor is useful for exceptions that are little more than
-     * wrappers for other throwables (for example, {@link
-     * PrivilegedActionException}).
+     * wrappers for other throwables (for example, PriviligedActionException).
      *
      * @param cause the cause (which is saved for later retrieval by the
      *              {@link #getCause()} method).  (A <tt>null</tt> value is
@@ -55,8 +62,9 @@ public class UnknownSpellStateException extends Exception{
      *              unknown.)
      * @since 1.4
      */
-    public UnknownSpellStateException(Throwable cause) {
+    public UnknownSpellStateException(Throwable cause, String stateName, Set<String> availableStates) {
         super(cause);
+        initInfo(stateName, availableStates);
     }
 
     /**
@@ -73,7 +81,21 @@ public class UnknownSpellStateException extends Exception{
      *                           be writable
      * @since 1.7
      */
-    public UnknownSpellStateException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public UnknownSpellStateException(String message, Throwable cause, String stateName, Set<String> availableStates, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
+        initInfo(stateName, availableStates);
+    }
+
+    public String getStateName() {
+        return mStateName;
+    }
+
+    public Set<String> getAvailableStates() {
+        return new HashSet<>(mAvailableStates);
+    }
+
+    private void initInfo(String stateName, Set<String> availableStates) {
+        this.mStateName = stateName;
+        this.mAvailableStates = availableStates;
     }
 }

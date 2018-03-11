@@ -11,7 +11,7 @@ public final class FalseCondition extends AbsSpellCondition {
         setRegistryName(location);
     }
 
-    public static FalseCondition getINSTANCE() {
+    public static FalseCondition getInstance() {
         return INSTANCE;
     }
 
@@ -25,5 +25,11 @@ public final class FalseCondition extends AbsSpellCondition {
     @Override
     public boolean holdsTrue(ISpellConditionCallback conditionCallback, IAttributeProvider attributeProvider) {
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "FalseCondition{" +
+                (getRegistryName() != null ? "registryName=" + getRegistryName() + "}" : "}");
     }
 }

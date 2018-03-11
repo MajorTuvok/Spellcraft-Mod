@@ -15,24 +15,24 @@ public interface IWandProperties extends INBTSerializable<NBTTagCompound> {
 
     public float getMaxPower();
 
+    public IWandProperties setMaxPower(float maxPower);
+
     public float getEfficiency();
+
+    public IWandProperties setEfficiency(float efficiency);
 
     public @Nonnull
     IWandPropertyDefinition getDefinition();
 
-    public IWandProperties setMaxPower(float maxPower);
-
-    public IWandProperties setEfficiency(float efficiency);
-
     public IWandProperties setDefinition(IWandPropertyDefinition definition);
-
-    public boolean hasMaxPower();
-
-    public boolean hasEfficiency();
 
     public boolean isComplete();
 
     public boolean isChanged();
+
+    public boolean hasMaxPower();
+
+    public boolean hasEfficiency();
 
     public void getOrCreate(ItemStack stack);
 

@@ -2,6 +2,7 @@ package mt.mcmods.spellcraft;
 
 
 import mt.mcmods.spellcraft.Client.model.ModelDynWand;
+import mt.mcmods.spellcraft.common.Events.EventHandler;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -15,12 +16,13 @@ public class ClientProxy extends CommonProxy {
     public void preInit(FMLPreInitializationEvent e) {
         super.preInit(e);
         //doesn't work like I excpected it to work... => I can pre-create my textures
-        //ModelLoaderRegistry.registerLoader(ModelDynWand.LoaderDynBlockArmor.INSTANCE);
+        //ModelLoaderRegistry.registerLoader(ModelDynWand.LoaderDynBlockArmor.ENTITY_SPELL_REGISTRY);
     }
 
     @Override
     public void init(FMLInitializationEvent e) {
         super.init(e);
+        EventHandler.registerClientEvents();
         this.items.clientInit();
         this.blocks.clientInit();
         this.conditions.clientInit();

@@ -16,21 +16,26 @@ import net.minecraftforge.items.SlotItemHandler;
 import javax.annotation.Nonnull;
 
 public class GuiContainerWandCraftingTable extends BaseGuiContainer {
-    private static final int CRAFTING_Y_POS = 10;
-    private static final int MIN_SLOT_DIS = 2;
-    static final int CRAFTING_Y_0 = CRAFTING_Y_POS;
     static final PlayerInventoryOffsets OFFSETS = GuiResource.GUI_BLANK.getSuggestedOffsets();
     private static final int CRAFTING_X_POS = OFFSETS.getInnerXInvOffset();
     private static final int CRAFTING_X_0 = CRAFTING_X_POS;
+    private static final int CRAFTING_Y_POS = 10;
+    static final int CRAFTING_Y_0 = CRAFTING_Y_POS;
+    private static final int MIN_SLOT_DIS = 2;
     private static final int CRAFTING_X_1 = CRAFTING_X_POS + Math.round(OFFSETS.getSlotXSize() * 0.5f) + MIN_SLOT_DIS;
     static final int CRAFTING_Y_1 = CRAFTING_Y_POS + OFFSETS.getSlotYSize() + MIN_SLOT_DIS;
-    private static final int RESULT_Y_POS = CRAFTING_Y_1;
     static final int CRAFTING_Y_2 = CRAFTING_Y_POS + OFFSETS.getSlotYSize() * 2 + MIN_SLOT_DIS * 2;
     static final int CRAFTING_X_2 = CRAFTING_X_POS + OFFSETS.getSlotXSize() + MIN_SLOT_DIS * 2;
     private static final int RESULT_X_POS = CRAFTING_X_POS + OFFSETS.getSlotXSize() * 8;
+    private static final int RESULT_Y_POS = CRAFTING_Y_1;
 
     public GuiContainerWandCraftingTable(@Nonnull InventoryPlayer playerInv, @Nonnull TileEntityWandCraftingTable entity) {
         super(playerInv, entity, OFFSETS, null);
+    }
+
+    @Override
+    public TileEntityWandCraftingTable getTileEntity() {
+        return (TileEntityWandCraftingTable) super.getTileEntity();
     }
 
     @Override
@@ -40,11 +45,6 @@ public class GuiContainerWandCraftingTable extends BaseGuiContainer {
         addSlotToContainer(new CoreCraftingSlot(handler));
         addSlotToContainer(new CrystalCraftingSlot(handler));
         addSlotToContainer(new WandSlot(handler));
-    }
-
-    @Override
-    public TileEntityWandCraftingTable getTileEntity() {
-        return (TileEntityWandCraftingTable) super.getTileEntity();
     }
 
     private class WandSlot extends SingleElementSlot {

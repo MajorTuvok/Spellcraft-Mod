@@ -22,17 +22,18 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
 import java.util.HashMap;
+import java.util.Objects;
 
 @NotThreadSafe
 public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompound> {
-    private static final String KEY_ACTIVE = "Spell_active";
+    public static final String KEY_ID = "Spell_id";
     private static final String KEY_ACCESS_PROVIDER = "Spell_global_access_provider";
+    private static final String KEY_ACTIVE = "Spell_active";
     private static final String KEY_CURRENT_STATE = "Spell_current_state";
+    private static final String KEY_DISPLAY_NAME = "Spell_displayName";
     private static final String KEY_EFFICIENCY = "Spell_efficiency";
     private static final String KEY_MAX_POWER = "Spell_maxPower";
     private static final String KEY_STATES = "Spell_states";
-    private static final String KEY_DISPLAY_NAME = "Spell_displayName";
-    public static final String KEY_ID = "Spell_id";
     private boolean active;
     private SpellState currentState;
     private String displayName;
@@ -51,7 +52,7 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
         this.id = Integer.MIN_VALUE;
         this.efficiency = 100.0f;
         this.maxPower = Float.MAX_VALUE;
-        Validate.notNull(provider, "Cannot construct Spell without PowerProvider");
+        Objects.requireNonNull(provider, "Cannot construct Spell without PowerProvider");
         this.powerProvider = provider;
         this.states = new HashMap<>();
         this.currentState = null;
@@ -144,9 +145,8 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
      *
      * @param provider The new SpellPowerProvider to use
      */
-    protected void setPowerProvider(ISpellPowerProvider provider) {
-        if (provider != null)
-            powerProvider = provider;
+    protected void setPowerProvider(@Nonnull ISpellPowerProvider provider) {
+        powerProvider = provider;
     }
 
     /**
@@ -260,7 +260,6 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
         } else {
             onAbort(getCurrentState() == null ? "No State defined!" : null);
         }
-
     }
 
     public void onAbort() {
@@ -270,20 +269,31 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
         }
     }
 
-    public void onAbort(String error) {
-        if (error != null && !error.isEmpty())
-            Log.error("Spell Execution is aborted because an Error occurred: " + error);
+    public void onAbort(@Nullable String logError) {
+        if (logError != null && !logError.isEmpty()) {
+            Log.error("Spell Execution is aborted because an Error occurred: " + logError);
+        }
         onAbort();
     }
 
     /**
-     * Convenience overload for extractPower(getPowerProvider(), amount)
+     * Convenience overload for {@code extractPower(getPowerProvider(), amount)}
      *
      * @param amount the amount of power to extract
      * @return The actual amount of power consumed
      */
     public float extractPower(float amount) {
         return extractPower(getPowerProvider(), amount);
+    }
+
+    @Override
+    public String toString() {
+        return "Spell{" +
+                "displayName='" + displayName + '\'' +
+                ", efficiency=" + efficiency +
+                ", id=" + id +
+                ", maxPower=" + maxPower +
+                '}';
     }
 
     void activate() {
@@ -294,13 +304,14 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
     }
 
     /**
-     * Called to determine whether onPerform should be called or not.
-     * The implementation must call setActive(true) if the Spell should not be aborted and onPerform should be called.
-     * By default this will call the CurrentStates moveToActiveCondition and the result of that will be set to setActive.
+     * Called to determine whether or not {@code onPerform} should be called.
+     * The implementation must call {@code setActive(true)} if the Spell should not be aborted and {@code onPerform} should be called.
+     * By default this will call the current {@link SpellState}s {@code moveToActiveCondition} and the result of that will be send to {@code setActive}.
+     *
      * @throws NullPointerException if getCurrentState returns null
      */
     protected void onCheckActive() {
-        Validate.notNull(getCurrentState(),"Cannot perform Spell Actions with a null SpellState!");
+        Validate.notNull(getCurrentState(), "Cannot perform Spell Actions with a null SpellState!");
         setActive(getCurrentState().moveToActiveCondition(getConditionCallback(), getGlobalAccess()));
     }
 
@@ -346,12 +357,12 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
 
     /**
      * Will attempt to extract power from the given ISpellPowerProvider.
-     * Will call onOverload and onOutOfPower when needed.
+     * Will call {@code onOverload} and {@code onOutOfPower} when needed.
      * Providing null will result in no action being done.
      *
      * @param provider The Provider to extract from
      * @param amount   The amount of SpellPower to consume
-     * @return The actual amount of consumed Power
+     * @return The actual amount of consumed Power. Result will be zero if no action was done
      */
     protected float extractPower(@Nullable ISpellPowerProvider provider, float amount) {
         float extracted = 0;
@@ -368,6 +379,9 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
         return extracted;
     }
 
+    /**
+     * Call this Method to notify the Spell, that the Execution Failed.
+     */
     protected void onSpellExecutionFailed() {
         onAbort();
     }
@@ -389,10 +403,23 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
     }
 
     /**
+     * By default this Method returns {@code canRegister}.
+     * Note: That there will be no other call to {@code onResume} if this Method returns false, but {@code canRegister} returns true.
+     *
      * @return Whether or not this Spell-Object may be resumed by the SpellRegistry.
-     * Returning false from this Method will prevent this Object from being resumed although it may still be moved back to the registered Spell-List
+     * Returning false from this Method will prevent this Object from a call to {@code onResume}, but it may still be re-registered as an active Spell.
      */
     protected boolean shouldResume() {
+        return canRegister();
+    }
+
+    /**
+     * By default this Method returns true.
+     *
+     * @return Whether or not this Spell-Object can be re-registered as an active Spell.
+     * Whether {@code onResume} is called depends on the Result of {@code shouldResume}.
+     */
+    protected boolean canRegister() {
         return true;
     }
 
@@ -408,6 +435,9 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
         protected SpellCallbackImpl() {
         }
 
+        @Override
+        public abstract ISpellType getSpellType();
+
         /**
          * Extracts Power from this Spells powerProvider
          *
@@ -420,11 +450,8 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
         }
 
         @Override
-        public abstract ISpellType getSpellType();
-
-        @Override
         public void onIllegalCallbackDetected() {
-
+            Spell.this.onSpellExecutionFailed();
         }
 
 

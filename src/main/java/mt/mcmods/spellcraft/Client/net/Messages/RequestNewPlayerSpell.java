@@ -7,8 +7,8 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class RequestNewPlayerSpell implements IMessage {
-    private int slot;
     private NBTTagCompound compound;
+    private int slot;
 
     public RequestNewPlayerSpell() {
         this(-1, null);
@@ -17,6 +17,14 @@ public class RequestNewPlayerSpell implements IMessage {
     public RequestNewPlayerSpell(int slot, NBTTagCompound compound) {
         this.slot = slot;
         this.compound = compound;
+    }
+
+    public int getSlot() {
+        return slot;
+    }
+
+    public NBTTagCompound getCompound() {
+        return compound;
     }
 
     /**
@@ -39,13 +47,5 @@ public class RequestNewPlayerSpell implements IMessage {
     public void toBytes(ByteBuf buf) {
         buf.writeInt(slot);
         ByteBufUtils.writeTag(buf, compound);
-    }
-
-    public int getSlot() {
-        return slot;
-    }
-
-    public NBTTagCompound getCompound() {
-        return compound;
     }
 }

@@ -7,6 +7,25 @@ import java.util.List;
 
 public abstract class BasicProcessingOutput<OUTPUT extends BasicProcessingOutput<OUTPUT>> implements ProcessingOutput<OUTPUT>, Cloneable {
 
+    public boolean applyProcessResult(List<ItemStack> stacks, int index, ItemStack result, boolean simulate) {
+        if (index < stacks.size() && index >= 0) {
+            ItemStack to = stacks.get(index);
+            if (to == null || to.isEmpty()) {
+                if (!simulate) {
+                    stacks.set(index, result);
+                }
+                return true;
+            } else if (areItemsEqual(to, result) && to.getMaxStackSize() >= to.getCount() + result.getCount()) {
+                if (!simulate) {
+                    to.setCount(to.getCount() + result.getCount());
+                    stacks.set(index, to);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Creates and returns a copy of this object.  The precise meaning
      * of "copy" may depend on the class of the object. The general
@@ -71,26 +90,6 @@ public abstract class BasicProcessingOutput<OUTPUT extends BasicProcessingOutput
     protected Object clone() throws CloneNotSupportedException {
         return copy();
     }
-
-    public boolean applyProcessResult(List<ItemStack> stacks, int index, ItemStack result, boolean simulate) {
-        if (index < stacks.size() && index >= 0) {
-            ItemStack to = stacks.get(index);
-            if (to == null || to.isEmpty()) {
-                if (!simulate) {
-                    stacks.set(index, result);
-                }
-                return true;
-            } else if (areItemsEqual(to, result) && to.getMaxStackSize() >= to.getCount() + result.getCount()) {
-                if (!simulate) {
-                    to.setCount(to.getCount() + result.getCount());
-                    stacks.set(index, to);
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     protected boolean areItemsEqual(ItemStack first, ItemStack second) {
         return ItemStack.areItemsEqual(first, second) || OreDictionary.itemMatches(first, second, false);

@@ -49,6 +49,17 @@ public class BaseArmor extends ItemArmor implements ILoggable, INamed, IRenderab
         return mItemName + getArmorName(armorType);
     }
 
+    @Nullable
+    @Override
+    public ResourceLocation getLocation() {
+        return null;
+    }
+
+    @Override
+    public boolean registerRenderer() {
+        return true;
+    }
+
     /**
      * Called by RenderBiped and RenderPlayer to determine the armor texture that
      * should be use for the currently equipped item.
@@ -67,16 +78,5 @@ public class BaseArmor extends ItemArmor implements ILoggable, INamed, IRenderab
     public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
         return StringHelper.createResourceLocation(MODID, "textures", "armor",
                 StringHelper.createUnlocalizedName(mItemName, "layer", (slot.equals(EntityEquipmentSlot.LEGS) ? "1" : "0"))) + ".png";
-    }
-
-    @Nullable
-    @Override
-    public ResourceLocation getLocation() {
-        return null;
-    }
-
-    @Override
-    public boolean registerRenderer() {
-        return true;
     }
 }

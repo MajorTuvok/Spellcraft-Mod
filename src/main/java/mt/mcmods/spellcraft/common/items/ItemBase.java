@@ -86,7 +86,7 @@ public class ItemBase extends Item implements IOreDictNamed, INamed, ILoggable, 
     }
 
     protected @Nonnull
-    EnumActionResult onLeftClick(EntityPlayer player, ItemStack stack) {
+    EnumActionResult onLeftClick(EntityPlayer player, @Nonnull ItemStack stack) {
         return EnumActionResult.PASS;
     }
 }

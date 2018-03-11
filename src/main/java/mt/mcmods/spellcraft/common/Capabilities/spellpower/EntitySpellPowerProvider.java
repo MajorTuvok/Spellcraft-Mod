@@ -13,11 +13,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class EntitySpellPowerProvider implements ISpellPowerProvider {
-    private static final String KEY_POWER = "EntitySpellPowerProvider_power";
     private static final String KEY_MAX_POWER = "EntitySpellPowerProvider_maxPower";
-    private float power;
-    private float maxPower;
+    private static final String KEY_POWER = "EntitySpellPowerProvider_power";
     private Entity entity;
+    private float maxPower;
+    private float power;
 
     public EntitySpellPowerProvider(float maxPower) {
         this(maxPower, 0);
@@ -139,11 +139,11 @@ public class EntitySpellPowerProvider implements ISpellPowerProvider {
     }
 
     @Override
-    public String toString() {
-        return "EntitySpellPowerProvider{" + "power=" + power +
-                ", maxPower=" + maxPower +
-                ", entity=" + entity +
-                '}';
+    public int hashCode() {
+        int result = (getPower() != +0.0f ? Float.floatToIntBits(getPower()) : 0);
+        result = 31 * result + (getMaxPower() != +0.0f ? Float.floatToIntBits(getMaxPower()) : 0);
+        result = 31 * result + (getEntity() != null ? getEntity().hashCode() : 0);
+        return result;
     }
 
     @Override
@@ -160,11 +160,11 @@ public class EntitySpellPowerProvider implements ISpellPowerProvider {
     }
 
     @Override
-    public int hashCode() {
-        int result = (getPower() != +0.0f ? Float.floatToIntBits(getPower()) : 0);
-        result = 31 * result + (getMaxPower() != +0.0f ? Float.floatToIntBits(getMaxPower()) : 0);
-        result = 31 * result + (getEntity() != null ? getEntity().hashCode() : 0);
-        return result;
+    public String toString() {
+        return "EntitySpellPowerProvider{" + "power=" + power +
+                ", maxPower=" + maxPower +
+                ", entity=" + entity +
+                '}';
     }
 
     private void sendSync() {

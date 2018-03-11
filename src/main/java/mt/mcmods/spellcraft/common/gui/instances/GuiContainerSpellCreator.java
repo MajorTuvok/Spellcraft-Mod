@@ -22,8 +22,8 @@ import static mt.mcmods.spellcraft.common.tiles.TileEntitySpellCreator.OUTPUT_SL
 
 public class GuiContainerSpellCreator extends BaseGuiContainer {
     static final PlayerInventoryOffsets OFFSETS = GUI_BLANK.getSuggestedOffsets();
-    static final int X_INPUT = 10;
-    private static final int X_OUTPUT = GUI_BLANK.getImgXSize() - OFFSETS.getSlotXSize() - X_INPUT;
+    static final int X_INPUT = OFFSETS.getInnerXInvOffset();
+    private static final int X_OUTPUT = OFFSETS.getSlotXSize() * OFFSETS.getInnerColumnCount() + X_INPUT;
     private static final int Y_INPUT = Math.round((float) OFFSETS.getInnerYInvOffset() / 2 - (float) OFFSETS.getSlotYSize() / 2); //=34
     static final int Y_OUTPUT = Y_INPUT;
 
@@ -40,6 +40,11 @@ public class GuiContainerSpellCreator extends BaseGuiContainer {
     }
 
     @Override
+    public TileEntitySpellCreator getTileEntity() {
+        return (TileEntitySpellCreator) super.getTileEntity();
+    }
+
+    @Override
     protected void createInventoryFromCapability(IItemHandler handler) {
         addSlotToContainer(new InputSlot(handler));
         addSlotToContainer(new OutputSlot(handler));
@@ -47,11 +52,6 @@ public class GuiContainerSpellCreator extends BaseGuiContainer {
 
     private boolean isItemValidForSpellCreation(ItemStack stack) {
         return !ItemHelper.isEmptyOrNull(stack) && stack.getItem() instanceof ItemSpellPaper;
-    }
-
-    @Override
-    public TileEntitySpellCreator getTileEntity() {
-        return (TileEntitySpellCreator) super.getTileEntity();
     }
 
     private class InputSlot extends SlotItemHandler {

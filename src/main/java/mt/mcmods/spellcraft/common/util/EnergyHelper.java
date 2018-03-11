@@ -3,9 +3,10 @@ package mt.mcmods.spellcraft.common.util;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
 
 public class EnergyHelper {
-    public static void serializeEnergyStorage(NBTTagCompound nbtTagCompound, EnergyStorage storage) {
+    public static void serializeEnergyStorage(NBTTagCompound nbtTagCompound, IEnergyStorage storage) {
         if (storage != null) {
             nbtTagCompound.setInteger("Global Max Energy Stored", storage.getMaxEnergyStored());
             nbtTagCompound.setInteger("Global Max Receive", storage.receiveEnergy(Integer.MAX_VALUE, true));

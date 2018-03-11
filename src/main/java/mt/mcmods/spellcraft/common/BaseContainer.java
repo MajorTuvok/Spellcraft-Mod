@@ -50,6 +50,11 @@ public class BaseContainer<T extends IForgeRegistryEntry<T>> implements ILoggabl
         getUtils().clientInit();
     }
 
+    @SubscribeEvent
+    public void registerRender(ModelRegistryEvent registryEvent) {
+        getUtils().registerRenders(registryEvent);
+    }
+
     protected T register(T thing) {
         return getUtils().register(thing);
     }
@@ -71,12 +76,6 @@ public class BaseContainer<T extends IForgeRegistryEntry<T>> implements ILoggabl
 
     protected Object registerOreDict(@Nonnull Object thing, String name) {
         return getUtils().registerOreDict(thing, name);
-    }
-
-
-    @SubscribeEvent
-    public void registerRender(ModelRegistryEvent registryEvent) {
-        getUtils().registerRenders(registryEvent);
     }
 
     protected IOreDictNamed registerOreDict(@Nonnull IOreDictNamed thing) {

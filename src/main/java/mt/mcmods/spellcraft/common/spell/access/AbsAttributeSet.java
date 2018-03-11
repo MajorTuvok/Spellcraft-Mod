@@ -3,17 +3,23 @@ package mt.mcmods.spellcraft.common.spell.access;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Set;
 
 public abstract class AbsAttributeSet implements IAttributeSet {
-    private Set<AccessType> mAccessTypes;
-    private ResourceLocation mResourceLocation;
+    private final Set<AccessType> mAccessTypes;
+    private final ResourceLocation mResourceLocation;
+
+    public AbsAttributeSet(ResourceLocation resourceLocation) {
+        this(resourceLocation, EnumSet.allOf(AccessType.class));
+    }
 
     public AbsAttributeSet(ResourceLocation resourceLocation, Set<AccessType> accessTypes) {
-        mResourceLocation = resourceLocation;
-        mAccessTypes = accessTypes;
         if (accessTypes == null || resourceLocation == null)
             throw new NullPointerException("Cannot construct from null values");
+        mResourceLocation = resourceLocation;
+        mAccessTypes = accessTypes;
     }
 
     /**
@@ -23,7 +29,7 @@ public abstract class AbsAttributeSet implements IAttributeSet {
      */
     @Override
     public Set<AccessType> getSupportedAccessTypes() {
-        return mAccessTypes;
+        return Collections.unmodifiableSet(mAccessTypes);
     }
 
     /**
@@ -34,7 +40,7 @@ public abstract class AbsAttributeSet implements IAttributeSet {
      */
     @Nonnull
     @Override
-    public ResourceLocation getComponentRegistryName() {
+    public ResourceLocation getComponentKey() {
         return mResourceLocation;
     }
 }

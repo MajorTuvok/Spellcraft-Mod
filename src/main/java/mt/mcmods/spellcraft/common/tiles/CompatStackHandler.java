@@ -1,7 +1,7 @@
 package mt.mcmods.spellcraft.common.tiles;
 
 import mcp.MethodsReturnNonnullByDefault;
-import mt.mcmods.spellcraft.common.interfaces.ICompatStackHandler;
+import mt.mcmods.spellcraft.common.interfaces.ICompatStackHandlerModifiable;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import mt.mcmods.spellcraft.common.interfaces.IMarkDirtyCallback;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,14 +16,14 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 
-public class CompatStackHandler extends ItemStackHandler implements ICompatStackHandler, ILoggable {
-    private static final String NBT_NAME_NAME = "Name";
+public class CompatStackHandler extends ItemStackHandler implements ICompatStackHandlerModifiable, ILoggable {
     private static final String NBT_NAME_HAS_NAME = "Has Name";
-    private String mName;
-    private IMarkDirtyCallback mMarkDirtyCallback;
-    private PlayerRestrictionProvider mPlayerRestrictionProvider;
-    private PlayerInteractionListener mPlayerInteractionListener;
+    private static final String NBT_NAME_NAME = "Name";
     private ItemStackHandlerListener mItemStackHandlerListener;
+    private IMarkDirtyCallback mMarkDirtyCallback;
+    private String mName;
+    private PlayerInteractionListener mPlayerInteractionListener;
+    private PlayerRestrictionProvider mPlayerRestrictionProvider;
 
     public CompatStackHandler() {
         super();
@@ -41,92 +41,24 @@ public class CompatStackHandler extends ItemStackHandler implements ICompatStack
     }
 
     @Override
-    public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
-        super.setStackInSlot(slot, stack);
-        markDirty();
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack getStackInSlot(int slot) {
-        markDirty();
-        return super.getStackInSlot(slot);
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        markDirty();
-        return super.insertItem(slot, stack, simulate);
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        markDirty();
-        return super.extractItem(slot, amount, simulate);
-    }
-
-    public @Nonnull
-    NonNullList<ItemStack> getSubStack(int singleStack) { //TODO return implementation wrapper
-        validateSlotIndex(singleStack);
-        NonNullList<ItemStack> inv = NonNullList.create();
-        inv.add(stacks.get(singleStack));
-        return inv;
-    }
-
-    public @Nonnull
-    NonNullList<ItemStack> getSubStacks(int from, int to) {
-        validateSlotIndex(from);
-        validateSlotIndex(to);
-        NonNullList<ItemStack> inv = NonNullList.create();
-        if (from < to) {
-            for (int i = from; i <= to; ++i) {
-                inv.add(stacks.get(i));
-            }
-        } else if (from > to) {
-            for (int i = from; i >= to; --i) {
-                inv.add(stacks.get(i));
-            }
-        }
-        return inv;
-    }
-
-    //------------------ItemStackHandler Methods ----------------------------------------------
-
-
-    @Override
-    public NBTTagCompound serializeNBT() {
-        NBTTagCompound tagCompound = super.serializeNBT();
-        if (hasCustomName()) {
-            tagCompound.setString(NBT_NAME_NAME, mName);
-        }
-        return tagCompound;
+    public void setDirtyMarkListener(IMarkDirtyCallback dirtyMarkListener) {
+        this.mMarkDirtyCallback = dirtyMarkListener;
     }
 
     @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
-        super.deserializeNBT(nbt);
-        if (nbt.hasKey(NBT_NAME_NAME)) {
-            mName = nbt.getString(NBT_NAME_NAME);
-        } else {
-            mName = null;
-        }
+    public void setPlayerRestrictionProvider(PlayerRestrictionProvider playerRestrictionProvider) {
+        this.mPlayerRestrictionProvider = playerRestrictionProvider;
     }
 
     @Override
-    protected void onLoad() {
-        super.onLoad();
-        if (mItemStackHandlerListener != null) mItemStackHandlerListener.onLoad();
+    public void setPlayerInteractionListener(PlayerInteractionListener playerInteractionListener) {
+        this.mPlayerInteractionListener = playerInteractionListener;
     }
 
     @Override
-    protected void onContentsChanged(int slot) {
-        super.onContentsChanged(slot);
-        if (mItemStackHandlerListener != null) mItemStackHandlerListener.onContentChanged(slot, stacks);
+    public void setItemStackHandlerListener(ItemStackHandlerListener itemStackHandlerListener) {
+        this.mItemStackHandlerListener = itemStackHandlerListener;
     }
-
-    //-------------------------IInventory Methods -------------------------------
 
     /**
      * Returns the number of slots in the inventory.
@@ -146,6 +78,8 @@ public class CompatStackHandler extends ItemStackHandler implements ICompatStack
         }
         return true;
     }
+
+    //------------------ItemStackHandler Methods ----------------------------------------------
 
     /**
      * Removes up to a specified number of items from an inventory slot and returns them in a new stack.
@@ -195,6 +129,8 @@ public class CompatStackHandler extends ItemStackHandler implements ICompatStack
     public int getInventoryStackLimit() {
         return getSlotLimit(0);
     }
+
+    //-------------------------IInventory Methods -------------------------------
 
     /**
      * For tile entities, ensures the chunk containing the tile entity is saved to disk later - the game won't think it
@@ -283,8 +219,6 @@ public class CompatStackHandler extends ItemStackHandler implements ICompatStack
         return this.mName != null && !this.mName.equals("");
     }
 
-//---------------------Custom Methods ---------------------------------
-
     /**
      * Get the formatted ChatComponent that will be used for the sender's username in chat
      */
@@ -294,23 +228,88 @@ public class CompatStackHandler extends ItemStackHandler implements ICompatStack
     }
 
     @Override
-    public void setDirtyMarkListener(IMarkDirtyCallback dirtyMarkListener) {
-        this.mMarkDirtyCallback = dirtyMarkListener;
+    public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+        super.setStackInSlot(slot, stack);
+        markDirty();
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack getStackInSlot(int slot) {
+        markDirty();
+        return super.getStackInSlot(slot);
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+        markDirty();
+        return super.insertItem(slot, stack, simulate);
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        markDirty();
+        return super.extractItem(slot, amount, simulate);
     }
 
     @Override
-    public void setPlayerRestrictionProvider(PlayerRestrictionProvider playerRestrictionProvider) {
-        this.mPlayerRestrictionProvider = playerRestrictionProvider;
+    public NBTTagCompound serializeNBT() {
+        NBTTagCompound tagCompound = super.serializeNBT();
+        if (hasCustomName()) {
+            tagCompound.setString(NBT_NAME_NAME, mName);
+        }
+        return tagCompound;
+    }
+
+//---------------------Custom Methods ---------------------------------
+
+    @Override
+    public void deserializeNBT(NBTTagCompound nbt) {
+        super.deserializeNBT(nbt);
+        if (nbt.hasKey(NBT_NAME_NAME)) {
+            mName = nbt.getString(NBT_NAME_NAME);
+        } else {
+            mName = null;
+        }
     }
 
     @Override
-    public void setPlayerInteractionListener(PlayerInteractionListener playerInteractionListener) {
-        this.mPlayerInteractionListener = playerInteractionListener;
+    protected void onLoad() {
+        super.onLoad();
+        if (mItemStackHandlerListener != null) mItemStackHandlerListener.onLoad();
     }
 
     @Override
-    public void setItemStackHandlerListener(ItemStackHandlerListener itemStackHandlerListener) {
-        this.mItemStackHandlerListener = itemStackHandlerListener;
+    protected void onContentsChanged(int slot) {
+        super.onContentsChanged(slot);
+        if (mItemStackHandlerListener != null) mItemStackHandlerListener.onContentChanged(slot, stacks);
+    }
+
+    public @Nonnull
+    NonNullList<ItemStack> getSubStack(int singleStack) { //TODO return implementation wrapper
+        validateSlotIndex(singleStack);
+        NonNullList<ItemStack> inv = NonNullList.create();
+        inv.add(stacks.get(singleStack));
+        return inv;
+    }
+
+    public @Nonnull
+    NonNullList<ItemStack> getSubStacks(int from, int to) {
+        validateSlotIndex(from);
+        validateSlotIndex(to);
+        NonNullList<ItemStack> inv = NonNullList.create();
+        if (from < to) {
+            for (int i = from; i <= to; ++i) {
+                inv.add(stacks.get(i));
+            }
+        } else if (from > to) {
+            for (int i = from; i >= to; --i) {
+                inv.add(stacks.get(i));
+            }
+        }
+        return inv;
     }
 
     protected void init() {

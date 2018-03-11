@@ -11,10 +11,10 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nonnull;
 
 public class SlotDrawingDelegate extends GuiDrawingDelegate {
-    private InventoryPlayer inventoryPlayer;
-    private int slotCount;
     private Container container;
+    private InventoryPlayer inventoryPlayer;
     private PlayerInventoryOffsets offsets;
+    private int slotCount;
 
     public SlotDrawingDelegate(InventoryPlayer inventoryPlayer, IGuiRenderProvider renderProvider, Container container, PlayerInventoryOffsets offsets, GuiMeasurements measurements) {
         super(renderProvider, measurements);
