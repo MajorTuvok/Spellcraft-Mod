@@ -1,6 +1,6 @@
 package mt.mcmods.spellcraft.common.spell;
 
-import mt.mcmods.spellcraft.common.Capabilities.spellpower.ISpellPowerProvider;
+import mt.mcmods.spellcraft.common.capabilities.spellpower.ISpellPowerProvider;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import mt.mcmods.spellcraft.common.spell.access.AccessType;
 import mt.mcmods.spellcraft.common.spell.access.IAttributeAccess;
@@ -388,7 +388,7 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
 
     /**
      * Called by the SpellRegistry when this Spell-Object is moved to the unregistered Spell-List.
-     * By default this will simply stop receiving Tick-Events.
+     * By default this will simply stop receiving Tick-events.
      */
     protected void onPause() {
         MinecraftForge.EVENT_BUS.unregister(this);
@@ -396,7 +396,7 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
 
     /**
      * Called by the SpellRegistry when this Spell-Object is removed from the unregistered Spell-List (e.g. it is re-registered).
-     * By default this will simply start receiving Tick-Events.
+     * By default this will simply start receiving Tick-events.
      */
     protected void onResume() {
         MinecraftForge.EVENT_BUS.register(this);

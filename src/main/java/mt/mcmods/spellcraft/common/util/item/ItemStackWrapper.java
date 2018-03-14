@@ -118,6 +118,20 @@ public class ItemStackWrapper implements Cloneable, INBTSerializable<NBTTagCompo
                 obj instanceof ItemStack && areItemStacksEqual(get(), (ItemStack) obj);
     }
 
+    public void asSingleElementStack() {
+        if (!stack.isEmpty()) {
+            stack.setCount(1);
+        }
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ItemStackWrapper{");
+        sb.append("stack=").append(stack.getDisplayName());
+        sb.append('}');
+        return sb.toString();
+    }
+
     /**
      * Creates and returns a copy of this object.  The precise meaning
      * of "copy" may depend on the class of the object. The general
@@ -179,16 +193,10 @@ public class ItemStackWrapper implements Cloneable, INBTSerializable<NBTTagCompo
      * @see Cloneable
      */
     @Override
-    protected ItemStackWrapper clone() {
-        return new ItemStackWrapper(get());
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("ItemStackWrapper{");
-        sb.append("stack=").append(stack.getDisplayName());
-        sb.append('}');
-        return sb.toString();
+    protected ItemStackWrapper clone() throws CloneNotSupportedException {
+        ItemStackWrapper wrapper = (ItemStackWrapper) super.clone();
+        wrapper.set(this.get().copy());
+        return wrapper;
     }
 
     @Override

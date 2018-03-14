@@ -3,7 +3,7 @@ package mt.mcmods.spellcraft.common.tiles;
 import mt.mcmods.spellcraft.CommonProxy;
 import mt.mcmods.spellcraft.common.interfaces.ICompatStackHandlerModifiable;
 import mt.mcmods.spellcraft.common.items.wand.ItemWand;
-import mt.mcmods.spellcraft.common.registry.WandRegistry;
+import mt.mcmods.spellcraft.common.recipes.WandRegistry;
 import mt.mcmods.spellcraft.common.util.NBTHelper;
 import mt.mcmods.spellcraft.common.util.item.ItemHelper;
 import mt.mcmods.spellcraft.common.util.item.StackHandlers;

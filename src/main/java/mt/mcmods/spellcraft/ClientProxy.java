@@ -1,8 +1,8 @@
 package mt.mcmods.spellcraft;
 
 
-import mt.mcmods.spellcraft.Client.model.ModelDynWand;
-import mt.mcmods.spellcraft.common.Events.EventHandler;
+import mt.mcmods.spellcraft.client.model.ModelDynWand;
+import mt.mcmods.spellcraft.common.events.handlers.EventHandler;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;

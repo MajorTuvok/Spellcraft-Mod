@@ -1,7 +1,7 @@
 package mt.mcmods.spellcraft.common.spell.entity;
 
-import mt.mcmods.spellcraft.common.Capabilities.SpellcraftCapabilities;
-import mt.mcmods.spellcraft.common.Capabilities.spellpower.ISpellPowerProvider;
+import mt.mcmods.spellcraft.common.capabilities.SpellcraftCapabilities;
+import mt.mcmods.spellcraft.common.capabilities.spellpower.ISpellPowerProvider;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import mt.mcmods.spellcraft.common.spell.Spell;
 import mt.mcmods.spellcraft.common.spell.SpellRegistry;

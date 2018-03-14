@@ -59,14 +59,6 @@ public class GuiSpellCreator extends BaseGui {
         showOverallSpellInformation();
     }
 
-    private String getMaxPowerInfo() {
-        return GUI_SPELL_CREATOR_MAX_POWER.get(GUI_SPELL_CREATOR_NO_SPELL.get());
-    }
-
-    private String getNumStatesInfo() {
-        return GUI_SPELL_CREATOR_MAX_POWER.get(GUI_SPELL_CREATOR_NO_SPELL.get());
-    }
-
     /**
      * Adds the buttons (and other controls) to the screen in question. Called when the GUI is displayed and when the
      * window resize's, the buttonList is cleared beforehand.
@@ -82,6 +74,14 @@ public class GuiSpellCreator extends BaseGui {
         ButtonAdapterComponent inscribeSpellAdapter = new ButtonAdapterComponent(mButtonInscribeSpell);
         addComponent(editSpellAdapter);
         addComponent(inscribeSpellAdapter);
+    }
+
+    private String getMaxPowerInfo() {
+        return GUI_SPELL_CREATOR_MAX_POWER.get(GUI_SPELL_CREATOR_NO_SPELL.get());
+    }
+
+    private String getNumStatesInfo() {
+        return GUI_SPELL_CREATOR_MAX_POWER.get(GUI_SPELL_CREATOR_NO_SPELL.get());
     }
 
     /**

@@ -35,7 +35,7 @@ public class BaseArmor extends ItemArmor implements ILoggable, INamed, IRenderab
             case FEET:
                 return "_boots";
             default:
-                Log.warn("Attempted to getWand Armor Name for unidentified Equipment Slot!");
+                Log.warn("Attempted to getWandName Armor Name for unidentified Equipment Slot!");
                 return "";
         }
     }

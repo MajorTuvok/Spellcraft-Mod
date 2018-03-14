@@ -1,25 +1,25 @@
 package mt.mcmods.spellcraft;
 
 
-import mt.mcmods.spellcraft.Client.net.MessageHandlers.ShowParticleHandler;
-import mt.mcmods.spellcraft.Client.net.MessageHandlers.SyncEntitySpellpowerHandler;
-import mt.mcmods.spellcraft.Client.net.Messages.ParticleActivated;
-import mt.mcmods.spellcraft.Client.net.Messages.RequestNewPlayerSpell;
-import mt.mcmods.spellcraft.Client.net.Messages.RequestSyncEntitySpellpower;
 import mt.mcmods.spellcraft.Server.net.MessageHandlers.ParticleActivatedHandler;
 import mt.mcmods.spellcraft.Server.net.MessageHandlers.RequestAddPlayerSpellHandler;
 import mt.mcmods.spellcraft.Server.net.MessageHandlers.RequestSyncEntitySpellpowerHandler;
 import mt.mcmods.spellcraft.Server.net.Messages.ShowParticle;
 import mt.mcmods.spellcraft.Server.net.Messages.SyncEntitySpellpower;
-import mt.mcmods.spellcraft.common.Capabilities.SpellcraftCapabilities;
+import mt.mcmods.spellcraft.client.net.MessageHandlers.ShowParticleHandler;
+import mt.mcmods.spellcraft.client.net.MessageHandlers.SyncEntitySpellpowerHandler;
+import mt.mcmods.spellcraft.client.net.Messages.ParticleActivated;
+import mt.mcmods.spellcraft.client.net.Messages.RequestNewPlayerSpell;
+import mt.mcmods.spellcraft.client.net.Messages.RequestSyncEntitySpellpower;
 import mt.mcmods.spellcraft.common.ConfigurationManager;
-import mt.mcmods.spellcraft.common.Events.EventHandler;
-import mt.mcmods.spellcraft.common.RecipeManager;
 import mt.mcmods.spellcraft.common.blocks.SpellcraftBlocks;
+import mt.mcmods.spellcraft.common.capabilities.SpellcraftCapabilities;
+import mt.mcmods.spellcraft.common.events.handlers.EventHandler;
 import mt.mcmods.spellcraft.common.gui.SpellcraftGuiHandler;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import mt.mcmods.spellcraft.common.items.SpellcraftItems;
 import mt.mcmods.spellcraft.common.materials.Materials;
+import mt.mcmods.spellcraft.common.recipes.RecipeManager;
 import mt.mcmods.spellcraft.common.spell.SpellRegistry;
 import mt.mcmods.spellcraft.common.spell.components.conditions.SpellcraftConditions;
 import mt.mcmods.spellcraft.common.spell.components.executables.SpellcraftExecutables;
@@ -46,13 +46,13 @@ public abstract class CommonProxy implements ILoggable {
         materials = Materials.getINSTANCE();
         conditions = SpellcraftConditions.getInstance();
         executables = SpellcraftExecutables.getInstance();
+        EventHandler.registerEvents();
     }
 
     public abstract boolean isClient();
 
     public void preInit(FMLPreInitializationEvent e) {
         CONFIG.register(e);
-        EventHandler.registerEvents();
         materials.onConfigCreated(this);
         items.commonPreInit();
         blocks.commonPreInit();
@@ -64,7 +64,6 @@ public abstract class CommonProxy implements ILoggable {
     }
 
     public void init(FMLInitializationEvent e) {
-        RecipeManager.registerRecipes();
         RecipeManager.registerSmelting();
         blocks.registerWorldGen();
     }
@@ -74,6 +73,7 @@ public abstract class CommonProxy implements ILoggable {
         blocks.postInit();
         conditions.postInit();
         executables.postInit();
+        EventHandler.postInit();
     }
 
     public void serverStarting(FMLServerStartingEvent event) {

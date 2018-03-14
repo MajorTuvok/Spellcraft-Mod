@@ -3,7 +3,10 @@ package mt.mcmods.spellcraft.common;
 import mt.mcmods.spellcraft.common.interfaces.*;
 import mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -129,8 +132,8 @@ public class RegistryUtils<T extends IForgeRegistryEntry<T>> implements ILoggabl
         }
     }
 
-    public @Nullable
-    Item getItem(T thing) {
+    @Nullable
+    public Item getItem(T thing) {
         if (thing instanceof Item) {
             return (Item) thing;
         } else if (thingItemMap.containsKey(thing)) {
@@ -181,6 +184,7 @@ public class RegistryUtils<T extends IForgeRegistryEntry<T>> implements ILoggabl
                 registerItemRenderer(stack.getItem(), stack.getMetadata());
             }
         } else {
+            Log.trace("Registering item without subtypes " + getName(thing));
             registerItemRenderer(thing, 0);
         }
     }
@@ -218,6 +222,32 @@ public class RegistryUtils<T extends IForgeRegistryEntry<T>> implements ILoggabl
         return thing;
     }
 
+    @SafeVarargs
+    @SideOnly(Side.CLIENT)
+    public final <I extends Item & IItemColorable> void registerItemColor(@Nonnull I... items) {
+        for (I thing : items) {
+            registerItemColor(thing.getItemColor(), thing);
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void registerItemColor(@Nonnull IItemColor color, @Nonnull Item... items) {
+        Minecraft.getMinecraft().getItemColors().registerItemColorHandler(color, items);
+    }
+
+    @SafeVarargs
+    @SideOnly(Side.CLIENT)
+    public final <I extends Block & IBlockColorable> void registerBlockColor(@Nonnull I... blocks) {
+        for (I thing : blocks) {
+            registerBlockColor(thing.getBlockColor(), thing);
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void registerBlockColor(@Nonnull IBlockColor color, @Nonnull Block... blocks) {
+        Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(color, blocks);
+    }
+
     @SideOnly(Side.CLIENT)
     protected void registerItemRenderer(@Nonnull Item item, @Nonnegative int meta) {
         if (item.getRegistryName() != null) {
@@ -225,6 +255,7 @@ public class RegistryUtils<T extends IForgeRegistryEntry<T>> implements ILoggabl
             if (item instanceof IRenderable && ((IRenderable) item).getLocation() != null) {
                 location = ((IRenderable) item).getLocation();
             }
+            assert location != null : "at least the RegistryName is required in order for a Renderer to be registered";
             String path = StringHelper.createResourceLocation(MODID, location.getResourcePath());
             if (!(item instanceof IRenderable) || ((IRenderable) item).registerRenderer()) {
                 ModelLoader.setCustomModelResourceLocation(item, meta,
@@ -246,8 +277,8 @@ public class RegistryUtils<T extends IForgeRegistryEntry<T>> implements ILoggabl
         if (toRegister instanceof IOreDictNamed) {
             registerOreDict((IOreDictNamed) toRegister);
         }
-        if (toRegister instanceof TileEntityContainer && !((TileEntityContainer) toRegister).doesSelfRegistration()) {
-            GameRegistry.registerTileEntity(((TileEntityContainer<? extends TileEntity>) toRegister).getTileEntityClass(), MODID + getName(toRegister));
+        if (toRegister instanceof ITileEntityContainer && !((ITileEntityContainer) toRegister).doesSelfRegistration()) {
+            GameRegistry.registerTileEntity(((ITileEntityContainer<? extends TileEntity>) toRegister).getTileEntityClass(), MODID + getName(toRegister));
         }
         addToRenderable(toRegister);
     }

@@ -41,8 +41,8 @@ public class StringHelper {
         return builder.toString();
     }
 
-    public static @Nonnull
-    String createOreDictNameFromUnlocalized(String unlocalizedName) {
+    @Nonnull
+    public static String createOreDictNameFromUnlocalized(String unlocalizedName) {
         if (unlocalizedName == null || unlocalizedName.isEmpty()) {
             ILoggable.Log.warn("Attempted to create oreDictName from null Argument list.");
             return "";
@@ -51,8 +51,8 @@ public class StringHelper {
         return createOreDictName(splitted);
     }
 
-    public static @Nonnull
-    String createOreDictName(String... args) {
+    @Nonnull
+    public static String createOreDictName(String... args) {
         if (args == null || args.length < 1) {
             ILoggable.Log.warn("Attempted to create oreDictName from null Argument list.");
             return "";
@@ -82,8 +82,8 @@ public class StringHelper {
                 : "unnamed");
     }
 
-    public static @Nullable
-    String getOreIdentityName(ItemStack stack) {
+    @Nullable
+    public static String getOreIdentityName(ItemStack stack) {
         int[] ids = OreDictionary.getOreIDs(stack);
         if (ids.length > 0) {
             return OreDictionary.getOreName(ids[0]);
@@ -94,11 +94,22 @@ public class StringHelper {
         }
     }
 
-    public static @Nullable
-    String getSubstringAfterLastIndexOf(String regex, String s) {
+    @Nullable
+    public static String getSubstringAfterLastIndexOf(String regex, String s) {
         if (s == null || regex == null) return null;
         int index = s.lastIndexOf(regex) + 1;
         if (index <= 0 || index >= s.length()) return s;
         return s.substring(index);
+    }
+
+    public static String trimRegistryName(String name) {
+        return name.replaceAll("ingot_", "")
+                .replaceAll("_ingot", "")
+                .replaceAll("block_", "")
+                .replaceAll("_block", "")
+                .replaceAll("nugget_", "")
+                .replaceAll("_nugget", "")
+                .replaceAll("ore_", "")
+                .replaceAll("_ore", "");
     }
 }

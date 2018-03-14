@@ -4,7 +4,7 @@ import mt.mcmods.spellcraft.common.gui.BaseGuiContainer;
 import mt.mcmods.spellcraft.common.gui.helper.GuiResource;
 import mt.mcmods.spellcraft.common.gui.helper.PlayerInventoryOffsets;
 import mt.mcmods.spellcraft.common.gui.helper.slots.SingleElementSlot;
-import mt.mcmods.spellcraft.common.registry.WandRegistryHelper;
+import mt.mcmods.spellcraft.common.recipes.WandRegistryHelper;
 import mt.mcmods.spellcraft.common.tiles.TileEntityWandCraftingTable;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;

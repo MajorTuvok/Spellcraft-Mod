@@ -143,7 +143,7 @@ dependencies {
 
 def modinfoFile = 'src/main/resources/mcmod.info'
 def tempDir = 'build/tmp/modifiedSources'
-def classesDir = 'classes/production/Spellcraft_-_MC_14.23.2.2611_main'
+def outDir = 'classes/production/Spellcraft-Mod_main'
 def buildDir = 'build/resources/main'
 def versionFileName = 'mcmod.info'
 def tempFile = tempDir+'/'+versionFileName
@@ -157,7 +157,7 @@ compileJava.doFirst {
     ant.replace(file: tempFile, token: '${mcversion}', value: project.minecraft.version)
     copy {
         from(tempFile)
-        into(classesDir)
+        into(outDir)
     }
     copy {
         from(tempFile)
@@ -165,18 +165,7 @@ compileJava.doFirst {
     }
 }
 
-compileJava.doLast {
-    copy {
-        from(tempFile)
-        into(classesDir)
-    }
-    copy {
-        from(tempFile)
-        into(buildDir)
-    }
-}
-
-
+processResources
 processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version

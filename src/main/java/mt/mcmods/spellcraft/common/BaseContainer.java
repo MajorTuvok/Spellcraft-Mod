@@ -1,7 +1,12 @@
 package mt.mcmods.spellcraft.common;
 
+import mt.mcmods.spellcraft.common.interfaces.IBlockColorable;
+import mt.mcmods.spellcraft.common.interfaces.IItemColorable;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import mt.mcmods.spellcraft.common.interfaces.IOreDictNamed;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -72,6 +77,26 @@ public class BaseContainer<T extends IForgeRegistryEntry<T>> implements ILoggabl
     @SideOnly(Side.CLIENT)
     protected void registerItemRenderer(@Nonnull Item item, @Nonnegative int meta) {
         getUtils().registerItemRenderer(item, meta);
+    }
+
+    @SideOnly(Side.CLIENT)
+    protected <I extends Item & IItemColorable> void registerItemColor(@Nonnull I... items) {
+        getUtils().registerItemColor(items);
+    }
+
+    @SideOnly(Side.CLIENT)
+    protected void registerItemColor(@Nonnull IItemColor color, @Nonnull Item... items) {
+        getUtils().registerItemColor(color, items);
+    }
+
+    @SideOnly(Side.CLIENT)
+    protected <I extends Block & IBlockColorable> void registerBlockColor(@Nonnull I... blocks) {
+        getUtils().registerBlockColor(blocks);
+    }
+
+    @SideOnly(Side.CLIENT)
+    protected void registerBlockColor(@Nonnull IBlockColor color, @Nonnull Block... blocks) {
+        getUtils().registerBlockColor(color, blocks);
     }
 
     protected Object registerOreDict(@Nonnull Object thing, String name) {

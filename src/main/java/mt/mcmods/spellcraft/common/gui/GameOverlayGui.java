@@ -1,10 +1,10 @@
 package mt.mcmods.spellcraft.common.gui;
 
-import mt.mcmods.spellcraft.common.Capabilities.SpellcraftCapabilities;
-import mt.mcmods.spellcraft.common.Capabilities.spellpower.ISpellPowerProvider;
-import mt.mcmods.spellcraft.common.Events.GameOverlayEventHandler.IRenderPostGameOverlayListener;
-import mt.mcmods.spellcraft.common.Events.GameOverlayEventHandler.IRenderTextGameOverlayListener;
-import mt.mcmods.spellcraft.common.Events.GameOverlayEventHandler.ISizeChangedListener;
+import mt.mcmods.spellcraft.common.capabilities.SpellcraftCapabilities;
+import mt.mcmods.spellcraft.common.capabilities.spellpower.ISpellPowerProvider;
+import mt.mcmods.spellcraft.common.events.handlers.GameOverlayEventHandler.IRenderPostGameOverlayListener;
+import mt.mcmods.spellcraft.common.events.handlers.GameOverlayEventHandler.IRenderTextGameOverlayListener;
+import mt.mcmods.spellcraft.common.events.handlers.GameOverlayEventHandler.ISizeChangedListener;
 import mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate;
 import mt.mcmods.spellcraft.common.gui.helper.GuiMeasurements;
 import mt.mcmods.spellcraft.common.interfaces.IGuiRenderProvider;

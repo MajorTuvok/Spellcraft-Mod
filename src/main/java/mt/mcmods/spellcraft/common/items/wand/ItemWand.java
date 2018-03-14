@@ -1,22 +1,23 @@
 package mt.mcmods.spellcraft.common.items.wand;
 
-import mt.mcmods.spellcraft.Client.net.Messages.RequestNewPlayerSpell;
 import mt.mcmods.spellcraft.SpellcraftMod;
+import mt.mcmods.spellcraft.client.net.Messages.RequestNewPlayerSpell;
 import mt.mcmods.spellcraft.common.CTabs;
-import mt.mcmods.spellcraft.common.Capabilities.SpellcraftCapabilities;
-import mt.mcmods.spellcraft.common.Capabilities.wandproperties.IWandProperties;
-import mt.mcmods.spellcraft.common.Capabilities.wandproperties.WandProperties;
-import mt.mcmods.spellcraft.common.Capabilities.wandproperties.WandPropertyDefinition;
-import mt.mcmods.spellcraft.common.Events.LeftClickEventHandler.IClickListener;
+import mt.mcmods.spellcraft.common.capabilities.SpellcraftCapabilities;
+import mt.mcmods.spellcraft.common.capabilities.wandproperties.IWandProperties;
+import mt.mcmods.spellcraft.common.capabilities.wandproperties.WandProperties;
+import mt.mcmods.spellcraft.common.capabilities.wandproperties.WandPropertyDefinition;
+import mt.mcmods.spellcraft.common.events.handlers.LeftClickEventHandler.IClickListener;
 import mt.mcmods.spellcraft.common.exceptions.UnknownSpellStateException;
+import mt.mcmods.spellcraft.common.interfaces.IItemColorable;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import mt.mcmods.spellcraft.common.items.ItemBase;
 import mt.mcmods.spellcraft.common.spell.components.conditions.CountingSpellCondition;
 import mt.mcmods.spellcraft.common.spell.components.executables.VoidSpellExecutable;
 import mt.mcmods.spellcraft.common.spell.entity.PlayerSpellBuilder;
-import mt.mcmods.spellcraft.common.util.NetworkUtils;
 import mt.mcmods.spellcraft.common.util.StringHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -35,17 +36,26 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
 import static org.lwjgl.input.Keyboard.isKeyDown;
 
-public class ItemWand extends ItemBase implements IClickListener {
-    public static final ResourceLocation DEFAULT_WAND_TEXTURE = new ResourceLocation(StringHelper.createResourceLocation(SpellcraftMod.MODID, "items", "wands", "wand"));
+public class ItemWand extends ItemBase implements IClickListener, IItemColorable {
+    public static final int DEFAULT_COLOR = new Color(0, 0, 0, 0).getRGB();
+    public static final ResourceLocation DEFAULT_WAND_MODEL = new ResourceLocation(StringHelper.createResourceLocation(SpellcraftMod.MODID, "wands", "wand_colored"));
+    public static final ResourceLocation DEFAULT_WAND_TEXTURE = new ResourceLocation(StringHelper.createResourceLocation(SpellcraftMod.MODID, "items", "wands", "wand_iron"));
     private ResourceLocation customLocation;
     private WandPropertyDefinition definition;
+    private int mCoreColor;
+    private int mTipColor;
 
     public ItemWand(@Nonnull String itemName, WandPropertyDefinition definition) {
+        this(itemName, definition, Color.BLACK.getRGB(), Color.BLACK.getRGB());
+    }
+
+    public ItemWand(@Nonnull String itemName, WandPropertyDefinition definition, int tipColor, int coreColor) {
         super(itemName);
         this.setCreativeTab(CTabs.TAB_MAIN);
         this.definition = definition;
@@ -54,6 +64,40 @@ public class ItemWand extends ItemBase implements IClickListener {
         }
         //this.addPropertyOverride(new ResourceLocation("type"), new ActivePropertyGetter());
         this.customLocation = null;
+        mTipColor = DEFAULT_COLOR;
+        mCoreColor = DEFAULT_COLOR;
+    }
+
+    @Override
+    public @Nonnull
+    IItemColor getItemColor() {
+        return WandColorHandler.WAND_INSTANCE;
+    }
+
+    public int getTipColor() {
+        return mTipColor;
+    }
+
+    public void setTipColor(int tipColor) {
+        mTipColor = tipColor;
+    }
+
+    public int getCoreColor() {
+        return mCoreColor;
+    }
+
+    public void setCoreColor(int coreColor) {
+        mCoreColor = coreColor;
+    }
+
+    @Override
+    @Nonnull
+    public ResourceLocation getLocation() {
+        if (customLocation != null) {
+            return customLocation;
+        } else {
+            return DEFAULT_WAND_MODEL;
+        }
     }
 
     public void setCustomLocation(@Nullable ResourceLocation customLocation) {
@@ -70,13 +114,9 @@ public class ItemWand extends ItemBase implements IClickListener {
     }
 
     @Override
-    public @Nonnull
-    ResourceLocation getLocation() {
-        if (customLocation != null) {
-            return customLocation;
-        } else {
-            return new ResourceLocation(StringHelper.createResourceLocation(ILoggable.MODID, "wands", getName()));
-        }
+    @Nonnull
+    public ItemStack getDefaultInstance() {
+        return new ItemStack(this);
     }
 
     @Override
@@ -156,22 +196,13 @@ public class ItemWand extends ItemBase implements IClickListener {
         return new WandCapabilityProvider(properties);
     }
 
-    @Override
-    public @Nonnull
-    ItemStack getDefaultInstance() {
-        ItemStack stack;
-        if (NetworkUtils.physicalClient()) {
-            stack = super.getDefaultInstance();
-        } else {
-            stack = new ItemStack(this);
-        }
-        getProperties(stack);
-        return stack;
+    public boolean useColorLayers() {
+        return customLocation == null;
     }
 
     @Override
-    public @Nonnull
-    Tuple<Boolean, EnumActionResult> onAnyLeftClick(EntityPlayer player, ItemStack stack, EnumHand hand, BlockPos pos) {
+    @Nonnull
+    public Tuple<Boolean, EnumActionResult> onAnyLeftClick(EntityPlayer player, ItemStack stack, EnumHand hand, BlockPos pos) {
         int slot = player.inventory.getSlotFor(stack);
         IWandProperties properties = getProperties(stack);
         try {
@@ -199,14 +230,14 @@ public class ItemWand extends ItemBase implements IClickListener {
     }
 
     @Override
-    public @Nonnull
-    Tuple<Boolean, EnumActionResult> onEmptyLeftClick(EntityPlayer player, ItemStack stack, EnumHand hand, BlockPos pos) {
+    @Nonnull
+    public Tuple<Boolean, EnumActionResult> onEmptyLeftClick(EntityPlayer player, ItemStack stack, EnumHand hand, BlockPos pos) {
         return new Tuple<>(false, EnumActionResult.PASS);
     }
 
     @Override
-    public @Nonnull
-    Tuple<Boolean, EnumActionResult> onBlockLeftClick(EntityPlayer player, ItemStack stack, EnumHand hand, BlockPos pos) {
+    @Nonnull
+    public Tuple<Boolean, EnumActionResult> onBlockLeftClick(EntityPlayer player, ItemStack stack, EnumHand hand, BlockPos pos) {
         return new Tuple<>(false, EnumActionResult.PASS);
     }
 
@@ -216,8 +247,8 @@ public class ItemWand extends ItemBase implements IClickListener {
      * @param stack The ItemStack from which the Properties should be retrieved
      * @return The retrieved or created WandProperty Object
      */
-    protected @Nonnull
-    IWandProperties getProperties(ItemStack stack) {
+    @Nonnull
+    protected IWandProperties getProperties(ItemStack stack) {
         IWandProperties properties = null;
         if (stack.hasCapability(SpellcraftCapabilities.WAND_PROPERTIES_CAPABILITY, null)) {
             properties = stack.getCapability(SpellcraftCapabilities.WAND_PROPERTIES_CAPABILITY, null);

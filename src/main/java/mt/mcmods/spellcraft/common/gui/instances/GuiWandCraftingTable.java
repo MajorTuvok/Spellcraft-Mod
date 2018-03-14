@@ -1,6 +1,6 @@
 package mt.mcmods.spellcraft.common.gui.instances;
 
-import mt.mcmods.spellcraft.common.Capabilities.wandproperties.WandPropertyDefinition;
+import mt.mcmods.spellcraft.common.capabilities.wandproperties.WandPropertyDefinition;
 import mt.mcmods.spellcraft.common.gui.BaseGui;
 import mt.mcmods.spellcraft.common.items.wand.ItemWand;
 import mt.mcmods.spellcraft.common.tiles.TileEntityWandCraftingTable;

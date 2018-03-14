@@ -2,9 +2,9 @@ package mt.mcmods.spellcraft.Server.net.Messages;
 
 
 import io.netty.buffer.ByteBuf;
-import mt.mcmods.spellcraft.Client.net.Messages.RequestSyncEntitySpellpower;
-import mt.mcmods.spellcraft.common.Capabilities.SpellcraftCapabilities;
-import mt.mcmods.spellcraft.common.Capabilities.spellpower.ISpellPowerProvider;
+import mt.mcmods.spellcraft.client.net.Messages.RequestSyncEntitySpellpower;
+import mt.mcmods.spellcraft.common.capabilities.SpellcraftCapabilities;
+import mt.mcmods.spellcraft.common.capabilities.spellpower.ISpellPowerProvider;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;

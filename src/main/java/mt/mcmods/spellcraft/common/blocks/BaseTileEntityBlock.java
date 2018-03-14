@@ -1,6 +1,6 @@
 package mt.mcmods.spellcraft.common.blocks;
 
-import mt.mcmods.spellcraft.common.interfaces.TileEntityContainer;
+import mt.mcmods.spellcraft.common.interfaces.ITileEntityContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class BaseTileEntityBlock<T extends TileEntity> extends BaseBlock implements TileEntityContainer<T> {
+public abstract class BaseTileEntityBlock<T extends TileEntity> extends BaseBlock implements ITileEntityContainer<T> {
     public BaseTileEntityBlock(Material material, @Nonnull String displayName) {
         super(material, displayName);
     }
