@@ -167,9 +167,11 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         mComponentController.drawLayer(mouseX, mouseY, -1, DrawLayer.FOREGROUND);
-        DrawLayer.FOREGROUND.normalizeGLState(getXSize(), getYSize());
+        //translateForeground();
+        DrawLayer.FOREGROUND.normalizeGLState(getGuiLeft(), getGuiTop());
         this.renderHoveredToolTip(mouseX, mouseY);
         DrawLayer.FOREGROUND.resetGLState();
+        //revertTranslateForeground();
     }
 
     /**
@@ -235,7 +237,11 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
      */
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        super.keyTyped(typedChar, keyCode);
+        if (keyCode == 1 || this.mc.gameSettings.keyBindInventory.isActiveAndMatches(keyCode)) {
+            onShouldCloseScreen();
+        } else {
+            super.keyTyped(typedChar, keyCode);
+        }
         mComponentController.onKeyTyped(typedChar, keyCode);
     }
 
@@ -246,6 +252,10 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
     public void updateScreen() {
         super.updateScreen();
         mComponentController.onUpdate();
+    }
+
+    protected void onShouldCloseScreen() {
+        this.mc.player.closeScreen();
     }
 
     protected void createInventoryViews(BaseGuiContainer inventorySlotsIn) {

@@ -157,11 +157,11 @@ compileJava.doFirst {
     ant.replace(file: tempFile, token: '${mcversion}', value: project.minecraft.version)
     copy {
         from(tempFile)
-        into(outDir)
+        into(buildDir)
     }
     copy {
         from(tempFile)
-        into(buildDir)
+        into(outDir)
     }
 }
 

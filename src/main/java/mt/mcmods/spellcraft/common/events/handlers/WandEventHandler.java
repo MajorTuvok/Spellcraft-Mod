@@ -38,15 +38,5 @@ class WandEventHandler {
 
     private void createWands(WandRegistryHelper help) {
         WAND_IRON_IRON = help.getWand(StringHelper.createUnlocalizedName("iron", "iron", "wand"), Items.IRON_INGOT, Items.IRON_INGOT);
-        //WAND_IRON_IRON.setCustomLocation(ironLocation);
-        /*help.getWand(StringHelper.createUnlocalizedName("iron", "gold", "wand"), Items.IRON_INGOT, Items.GOLD_INGOT);
-        help.getWand(StringHelper.createUnlocalizedName("cobblestone", "iron", "wand"), Items.IRON_INGOT, Blocks.COBBLESTONE);
-        help.getWand(StringHelper.createUnlocalizedName("cobblestone", "gold", "wand"), Items.GOLD_INGOT, Blocks.COBBLESTONE);
-        help.getWand(StringHelper.createUnlocalizedName("stone", "iron", "wand"), Items.IRON_INGOT, Blocks.STONE);
-        help.getWand(StringHelper.createUnlocalizedName("stone", "gold", "wand"), Items.GOLD_INGOT, Blocks.STONE);
-        help.getWand(StringHelper.createUnlocalizedName("gold", "iron", "wand"), Items.GOLD_INGOT, Items.IRON_INGOT);
-        help.getWand(StringHelper.createUnlocalizedName("gold", "gold", "wand"), Items.GOLD_INGOT, Items.GOLD_INGOT);
-        help.getWand(StringHelper.createUnlocalizedName("log", "iron", "wand"), Items.IRON_INGOT, Blocks.LOG);
-        help.getWand(StringHelper.createUnlocalizedName("log", "gold", "wand"), Items.GOLD_INGOT, Blocks.LOG);*/
     }
 }

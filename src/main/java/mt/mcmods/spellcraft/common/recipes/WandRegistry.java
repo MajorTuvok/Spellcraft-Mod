@@ -69,7 +69,7 @@ public enum WandRegistry implements ILoggable {
             RegisterEvent event = new RegisterEvent(this, wand, recipe);
             MinecraftForge.EVENT_BUS.post(event);
             if (!event.isCanceled()) {
-                Log.trace("Registering ItemWand {} with tip {} and core {}.", wand.getName(), tip.getUnlocalizedName(), core.getUnlocalizedName());
+                Log.trace("Registering ItemWand {} with tip {} and core {}.", wand.getUnlocalizedName(), tip.getUnlocalizedName(), core.getUnlocalizedName());
                 recipeWandMap.putObject(recipe, wand);
                 wandRecipeMap.putObject(wand, recipe);
             }
@@ -109,7 +109,7 @@ public enum WandRegistry implements ILoggable {
     }
 
     public String getSuggestedName(ItemStack tip, ItemStack core) {
-        return StringHelper.createUnlocalizedName(simpleName(core), simpleName(tip), "wand");
+        return StringHelper.createUnlocalizedName(simpleName(tip), simpleName(core), "wand");
     }
 
     @Nullable

@@ -11,13 +11,18 @@ import javax.annotation.Nullable;
 
 public class GuiContainerSpellCreation extends GuiContainerSpellCreator {
     private static final PlayerInventoryOffsets OFFSETS = GuiResource.GUI_BLANK_MAX.getSuggestedOffsets();
-
+    private GuiContainerSpellCreator mGuiContainerSpellCreator;
     public GuiContainerSpellCreation(GuiContainerSpellCreator containerSpellCreator) {
         this(containerSpellCreator.getPlayerInventory(), containerSpellCreator.getTileEntity());
+        mGuiContainerSpellCreator = containerSpellCreator;
     }
 
-    public GuiContainerSpellCreation(@Nonnull InventoryPlayer playerInv, @Nullable TileEntitySpellCreator entity) {
+    private GuiContainerSpellCreation(@Nonnull InventoryPlayer playerInv, @Nullable TileEntitySpellCreator entity) {
         super(playerInv, entity, OFFSETS, null);
+    }
+
+    public GuiContainerSpellCreator getGuiContainerSpellCreator() {
+        return mGuiContainerSpellCreator;
     }
 
     @Override

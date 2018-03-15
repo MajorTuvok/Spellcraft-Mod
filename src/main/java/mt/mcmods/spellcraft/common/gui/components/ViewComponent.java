@@ -233,7 +233,7 @@ public class ViewComponent implements Constants, ILoggable {
     }
 
     protected void normalizeGlState(DrawLayer layer) {
-        layer.normalizeGLState(getComponentCallback().getGuiXSize(), getComponentCallback().getGuiYSize());
+        layer.normalizeGLState(getComponentCallback().getGuiLeft(), getComponentCallback().getGuiTop());
     }
 
     protected void onAdd() {

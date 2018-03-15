@@ -9,7 +9,7 @@ public enum DrawLayer {
             component.drawFirstLayer(drawingDelegate, mouseX, mouseY);
         }
 
-        public void normalizeGLState(int guiXSize, int guiYSize) {
+        public void normalizeGLState(int guiLeft, int guiTop) {
             GlStateManager.pushMatrix();
             GlStateManager.color(1, 1, 1, 1);
         }
@@ -23,7 +23,7 @@ public enum DrawLayer {
             component.drawBackgroundLayer(drawingDelegate, mouseX, mouseY);
         }
 
-        public void normalizeGLState(int guiXSize, int guiYSize) {
+        public void normalizeGLState(int guiLeft, int guiTop) {
             GlStateManager.pushMatrix();
             GlStateManager.color(1, 1, 1, 1);
         }
@@ -37,10 +37,10 @@ public enum DrawLayer {
             component.drawForegroundLayer(drawingDelegate, mouseX, mouseY);
         }
 
-        public void normalizeGLState(int guiXSize, int guiYSize) {
+        public void normalizeGLState(int guiLeft, int guiTop) {
             GlStateManager.pushMatrix();
             GlStateManager.color(1, 1, 1, 1);
-            GlStateManager.translate(-guiXSize, -guiYSize, 0);
+            GlStateManager.translate(-guiLeft, -guiTop, 0);
         }
 
         public void resetGLState() {
@@ -52,7 +52,7 @@ public enum DrawLayer {
             component.drawLastLayer(drawingDelegate, mouseX, mouseY);
         }
 
-        public void normalizeGLState(int guiXSize, int guiYSize) {
+        public void normalizeGLState(int guiLeft, int guiTop) {
             GlStateManager.pushMatrix();
             GlStateManager.color(1, 1, 1, 1);
         }
@@ -62,7 +62,7 @@ public enum DrawLayer {
         }
     };
 
-    public abstract void normalizeGLState(int guiXSize, int guiYSize);
+    public abstract void normalizeGLState(int guiLeft, int guiTop);
 
     public abstract void resetGLState();
 

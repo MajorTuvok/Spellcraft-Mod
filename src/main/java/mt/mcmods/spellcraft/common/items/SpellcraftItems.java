@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Mod.EventBusSubscriber
-public class SpellcraftItems extends BaseContainer<Item> {
+public final class SpellcraftItems extends BaseContainer<Item> {
     private static final SpellcraftItems INSTANCE = new SpellcraftItems();
     public static ItemSpellPaper SPELL_PAPER;
     public static ItemWand WAND_IRON_IRON;
@@ -32,7 +32,6 @@ public class SpellcraftItems extends BaseContainer<Item> {
         return INSTANCE;
     }
 
-
     private static void createItems() {
         if (!createdItems) {
             createdItems = true;
@@ -43,7 +42,6 @@ public class SpellcraftItems extends BaseContainer<Item> {
     @Override
     @SubscribeEvent
     public void onRegistryEvent(RegistryEvent.Register<Item> e) {
-        createItems();
         super.onRegistryEvent(e);
         ILoggable.Log.info("Registering Items");
         CommonProxy.ITEM_REGISTRY = e.getRegistry();
@@ -68,6 +66,5 @@ public class SpellcraftItems extends BaseContainer<Item> {
     public void clientInit() {
         super.clientInit();
         WandRegistry.INSTANCE.onClientInit(getUtils());
-
     }
 }

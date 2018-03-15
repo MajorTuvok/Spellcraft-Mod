@@ -94,7 +94,7 @@ public class GuiSpellCreator extends BaseGui {
         super.actionPerformed(button);
         switch (button.id) {
             case ID_EDIT:
-                Minecraft.getMinecraft().displayGuiScreen(new GuiSpellCreation(new GuiContainerSpellCreation((GuiContainerSpellCreator) inventorySlots)));
+                Minecraft.getMinecraft().displayGuiScreen(new GuiSpellCreation(this));
                 break;
             case ID_INSCRIBE:
                 Log.info("Inscribing...");
