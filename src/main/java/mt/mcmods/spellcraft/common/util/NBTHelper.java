@@ -187,7 +187,7 @@ public class NBTHelper {
     }
 
     public static Integer getSpellId(NBTTagCompound compound) {
-        return compound.hasKey(Spell.KEY_ID) ? compound.getInteger(Spell.KEY_ID) : Integer.MIN_VALUE;
+        return compound.hasKey(Spell.KEY_ID) ? compound.getInteger(Spell.KEY_ID) : SpellRegistry.NO_ID;
     }
 
     public static @Nonnull

@@ -1,7 +1,6 @@
 package mt.mcmods.spellcraft.common.gui.instances;
 
 import mt.mcmods.spellcraft.common.gui.BaseGui;
-import mt.mcmods.spellcraft.common.gui.components.ButtonAdapterComponent;
 import mt.mcmods.spellcraft.common.gui.components.ImageButton;
 import mt.mcmods.spellcraft.common.gui.helper.GuiResource;
 import mt.mcmods.spellcraft.common.tiles.TileEntitySpellCreator;
@@ -21,11 +20,11 @@ public class GuiSpellCreator extends BaseGui {
     private static final float SCALE_INFO_MAX_POWER = 0.4f;
     private static final GuiResource USED_BACKGROUND = GUI_BLANK;
     private static final int X_EDIT_SPELL = X_INPUT + OFFSETS.getSlotXSize() + 4;
-    private static final int X_INFO_MAX_POWER = X_INPUT + 4;
+    private static final int X_INFO_MAX_POWER = X_INPUT + OFFSETS.getSlotXSize() + 4;
     private static final int Y_EDIT_SPELL = 10;
     private static final int Y_EDIT_SPELL_ADD = 6;
     private static final int Y_INFO_MAX_POWER = Y_OUTPUT;
-    private static final int Y_INSCRIBE_SPELL = Y_OUTPUT - Math.round((BOOK_AND_QUILL.getImgYSize() - OFFSETS.getSlotYSize()) / 2);
+    private static final int Y_INSCRIBE_SPELL = Y_OUTPUT;
     private GuiButton mButtonEditSpell;
     private GuiButton mButtonInscribeSpell;
 
@@ -45,6 +44,21 @@ public class GuiSpellCreator extends BaseGui {
     }
 
     /**
+     * Adds the buttons (and other controls) to the screen in question. Called when the GUI is displayed and when the
+     * window resize's, the buttonList is cleared beforehand.
+     */
+    @Override
+    public void initGui() {
+        super.initGui();
+        String spellName = getSpellName();
+        mButtonEditSpell = addButton(new GuiButton(ID_EDIT, getGuiLeft() + X_EDIT_SPELL, getGuiTop() + Y_EDIT_SPELL, GUI_SPELL_CREATOR_EDIT.get(spellName)));
+        mButtonEditSpell.width = getFontRenderer().getStringWidth(mButtonEditSpell.displayString) + Y_EDIT_SPELL_ADD;
+        mButtonEditSpell.visible = true;
+        mButtonInscribeSpell = addButton(new ImageButton(ID_INSCRIBE, getXSize(), Y_INSCRIBE_SPELL, BOOK_AND_QUILL, getDelegate()));
+        mButtonInscribeSpell.visible = true;
+    }
+
+    /**
      * Draws the background layer of this container (behind the items).
      *
      * @param partialTicks
@@ -53,27 +67,10 @@ public class GuiSpellCreator extends BaseGui {
      */
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
         getDelegate().drawGuiBackground(USED_BACKGROUND);
         getDelegate().drawAllSlotsWithResource(SLOT);
+        super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
         showOverallSpellInformation();
-    }
-
-    /**
-     * Adds the buttons (and other controls) to the screen in question. Called when the GUI is displayed and when the
-     * window resize's, the buttonList is cleared beforehand.
-     */
-    @Override
-    public void initGui() {
-        super.initGui();
-        String spellName = getSpellName();
-        mButtonEditSpell = new GuiButton(ID_EDIT, getGuiLeft() + X_EDIT_SPELL, getGuiTop() + Y_EDIT_SPELL, GUI_SPELL_CREATOR_EDIT.get(spellName));
-        mButtonEditSpell.width = getFontRenderer().getStringWidth(mButtonEditSpell.displayString) + Y_EDIT_SPELL_ADD;
-        mButtonInscribeSpell = new ImageButton(ID_INSCRIBE, getXSize(), Y_INSCRIBE_SPELL, BOOK_AND_QUILL, getDelegate());
-        ButtonAdapterComponent editSpellAdapter = new ButtonAdapterComponent(mButtonEditSpell);
-        ButtonAdapterComponent inscribeSpellAdapter = new ButtonAdapterComponent(mButtonInscribeSpell);
-        addComponent(editSpellAdapter);
-        addComponent(inscribeSpellAdapter);
     }
 
     private String getMaxPowerInfo() {
@@ -108,7 +105,7 @@ public class GuiSpellCreator extends BaseGui {
     private void showOverallSpellInformation() {
         String maxPower = getMaxPowerInfo();
         String numStates = getNumStatesInfo();
-        getDelegate().drawScaledStringTopLeft(maxPower, X_INFO_MAX_POWER, Y_INFO_MAX_POWER, Color.BLACK.getRGB(), SCALE_INFO_MAX_POWER * getScaleFactor());
-        getDelegate().drawScaledStringTopLeft(numStates, X_INFO_MAX_POWER, Y_INFO_MAX_POWER + 8, Color.BLACK.getRGB(), SCALE_INFO_MAX_POWER * getScaleFactor());
+        getDelegate().drawScaledStringTopLeft(maxPower, getGuiLeft() + X_INFO_MAX_POWER, getGuiTop() + Y_INFO_MAX_POWER, Color.BLACK.getRGB(), SCALE_INFO_MAX_POWER * getScaleFactor());
+        getDelegate().drawScaledStringTopLeft(numStates, getGuiLeft() + X_INFO_MAX_POWER, getGuiTop() + Y_INFO_MAX_POWER + 8, Color.BLACK.getRGB(), SCALE_INFO_MAX_POWER * getScaleFactor());
     }
 }

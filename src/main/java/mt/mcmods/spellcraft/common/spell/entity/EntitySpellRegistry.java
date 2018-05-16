@@ -38,6 +38,17 @@ public enum EntitySpellRegistry implements ISpellRegistryCallback {
         entitySpellRegistry.clear();
     }
 
+    @Override
+    public String getName() {
+        return toString();
+    }
+
+    @Override
+    public String getModId() {
+        return ILoggable.MODID;
+    }
+
+
     public @Nullable
     List<EntitySpell> getEntitySpells(Entity entity) {
         List<EntitySpell> spells = entitySpellRegistry.getObject(entity);
@@ -69,6 +80,7 @@ public enum EntitySpellRegistry implements ISpellRegistryCallback {
             }
         }
     }
+
 
     private void unregister(EntitySpell spell) {
         if (entitySpellRegistry.containsKey(spell.getEntity())) {

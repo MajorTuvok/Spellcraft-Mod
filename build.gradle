@@ -37,6 +37,8 @@ minecraft {
     version = "1.12.2-14.23.2.2611"
     if (project.hasProperty('ver_mc') && project.hasProperty('ver_forge')) {
         version = "${ver_mc}-${ver_forge}"
+    } else {
+        print "Versions were unavailable - "
     }
     println "using Minecraft version "+version
     runDir = "run"
@@ -102,6 +104,7 @@ void updateProperties() {
         return
     }
     OrderedProperties properties = new OrderedProperties();
+
     properties.load(new FileInputStream(file))
     properties.setProperty('ver_build',ver_build)
     properties.setProperty('ver_code',ver_code)

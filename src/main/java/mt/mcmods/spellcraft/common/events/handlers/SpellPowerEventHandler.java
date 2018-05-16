@@ -1,13 +1,13 @@
 package mt.mcmods.spellcraft.common.events.handlers;
 
 import com.google.common.collect.Lists;
-import mt.mcmods.spellcraft.Server.net.Messages.SyncEntitySpellpower;
 import mt.mcmods.spellcraft.SpellcraftMod;
 import mt.mcmods.spellcraft.common.capabilities.SpellcraftCapabilities;
 import mt.mcmods.spellcraft.common.capabilities.spellpower.EntitySpellPowerProvider;
 import mt.mcmods.spellcraft.common.capabilities.spellpower.ISpellPowerProvider;
 import mt.mcmods.spellcraft.common.capabilities.spellpower.SpellPowerProviderCapability;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
+import mt.mcmods.spellcraft.server.net.Messages.SyncEntitySpellpower;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

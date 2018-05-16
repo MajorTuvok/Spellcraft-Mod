@@ -1,9 +1,9 @@
 package mt.mcmods.spellcraft.common.util;
 
 import io.netty.buffer.ByteBuf;
-import mt.mcmods.spellcraft.ServerProxy;
 import mt.mcmods.spellcraft.SpellcraftMod;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
+import mt.mcmods.spellcraft.server.ServerProxy;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;

@@ -1,11 +1,6 @@
 package mt.mcmods.spellcraft;
 
 
-import mt.mcmods.spellcraft.Server.net.MessageHandlers.ParticleActivatedHandler;
-import mt.mcmods.spellcraft.Server.net.MessageHandlers.RequestAddPlayerSpellHandler;
-import mt.mcmods.spellcraft.Server.net.MessageHandlers.RequestSyncEntitySpellpowerHandler;
-import mt.mcmods.spellcraft.Server.net.Messages.ShowParticle;
-import mt.mcmods.spellcraft.Server.net.Messages.SyncEntitySpellpower;
 import mt.mcmods.spellcraft.client.net.MessageHandlers.ShowParticleHandler;
 import mt.mcmods.spellcraft.client.net.MessageHandlers.SyncEntitySpellpowerHandler;
 import mt.mcmods.spellcraft.client.net.Messages.ParticleActivated;
@@ -23,7 +18,13 @@ import mt.mcmods.spellcraft.common.recipes.RecipeManager;
 import mt.mcmods.spellcraft.common.spell.SpellRegistry;
 import mt.mcmods.spellcraft.common.spell.components.conditions.SpellcraftConditions;
 import mt.mcmods.spellcraft.common.spell.components.executables.SpellcraftExecutables;
+import mt.mcmods.spellcraft.common.spell.entity.EntitySpellRegistry;
 import mt.mcmods.spellcraft.common.util.ChannelHolder;
+import mt.mcmods.spellcraft.server.net.MessageHandlers.ParticleActivatedHandler;
+import mt.mcmods.spellcraft.server.net.MessageHandlers.RequestAddPlayerSpellHandler;
+import mt.mcmods.spellcraft.server.net.MessageHandlers.RequestSyncEntitySpellpowerHandler;
+import mt.mcmods.spellcraft.server.net.Messages.ShowParticle;
+import mt.mcmods.spellcraft.server.net.Messages.SyncEntitySpellpower;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -66,6 +67,7 @@ public abstract class CommonProxy implements ILoggable {
     public void init(FMLInitializationEvent e) {
         RecipeManager.registerSmelting();
         blocks.registerWorldGen();
+        SpellRegistry.addSpellRegistryCallback(EntitySpellRegistry.ENTITY_SPELL_REGISTRY);
     }
 
     public void postInit(FMLPostInitializationEvent e) {

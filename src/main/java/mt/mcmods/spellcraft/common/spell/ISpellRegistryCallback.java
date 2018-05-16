@@ -21,4 +21,8 @@ public interface ISpellRegistryCallback {
     public void onUnRegisterSpell(Spell spell);
 
     public void onClear();
+
+    public String getName();
+
+    public String getModId();
 }

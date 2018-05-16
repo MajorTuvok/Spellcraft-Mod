@@ -25,8 +25,10 @@ import java.util.Map;
 
 @NotThreadSafe
 public class SpellRegistry {
+    public static final int NO_ID = Integer.MIN_VALUE;
     private static final String KEY_SPELLS = "SpellRegistry_flattenedIdRegistry";
-    private static final String NAME = ILoggable.MODID + " SpellRegistry-WorldSavedData";
+    private static final String KEY_COMPOUND_REGISTRIES = "SpellRegistry_subRegistries";
+    private static final String NAME = ILoggable.MODID + " SpellRegistry";
     private static final RegistryAdvanced<Integer, Spell> idRegistry = new RegistryAdvanced<>();
     private static final ArrayList<ISpellRegistryCallback> mRegistries = new ArrayList<>();
     private static int curId = 0;
@@ -75,18 +77,18 @@ public class SpellRegistry {
         return null;
     }
 
-    public static @Nullable
-    Spell getSpellById(Integer id) {
+    @Nullable
+    public static Spell getSpellById(Integer id) {
         return idRegistry.getObject(id);
     }
 
-    public static @Nullable
-    MinecraftServer getServer() {
+    @Nullable
+    public static MinecraftServer getServer() {
         return server;
     }
 
-    public static @Nullable
-    SpellWorldSaveData getSaveData() {
+    @Nullable
+    public static SpellWorldSaveData getSaveData() {
         if (getServer() != null) {
             MapStorage storage = getServer().getEntityWorld().getMapStorage();
             SpellWorldSaveData instance = null;
@@ -163,7 +165,7 @@ public class SpellRegistry {
         if (lastInstance == null) {
             getSaveData();
         }
-        while (idRegistry.containsKey(curId) || curId == Integer.MIN_VALUE || lastInstance.isUnregisteredId(curId)) {
+        while (idRegistry.containsKey(curId) || curId == NO_ID || lastInstance.isUnregisteredId(curId)) {
             ++curId;
         }
         return curId;
@@ -206,15 +208,29 @@ public class SpellRegistry {
                     }
                 }
             }
-            for (ISpellRegistryCallback registry :
-                    mRegistries) {
-                registry.onReadFromNBT(nbt);
+            if (!mRegistries.isEmpty() && nbt.hasKey(KEY_COMPOUND_REGISTRIES)) {
+                for (ISpellRegistryCallback registry :
+                        mRegistries) {
+                    registry.onReadFromNBT(nbt);
+                }
+            } else if (!mRegistries.isEmpty() && !nbt.hasKey(KEY_COMPOUND_REGISTRIES)) {
+                ILoggable.Log.warn("Could not deserialize Sub-Spell-Registries. This is probably due to updating Spellcraft or adding some other on Spellcraft depending mod.");
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < mRegistries.size(); ++i) {
+                    builder.append(mRegistries.get(i).getModId());
+                    builder.append(':');
+                    builder.append(mRegistries.get(i).getName());
+                    if (i < mRegistries.size() - 1) {
+                        builder.append(" ,");
+                    }
+                }
+                ILoggable.Log.warn("This should not happen repeatedly! If it does contact developers. Following Sub-Registries were detected: {}.", builder.toString());
             }
         }
 
         @Override
-        public @Nonnull
-        NBTTagCompound writeToNBT(@Nonnull NBTTagCompound compound) {
+        @Nonnull
+        public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound compound) {
             NBTTagList spells = new NBTTagList();
             for (Map.Entry<Integer, Spell> entry :
                     idRegistry.getEntrySet()) {
@@ -225,9 +241,13 @@ public class SpellRegistry {
                 spells.appendTag(tuple.getFirst());
             }
             compound.setTag(KEY_SPELLS, spells);
-            for (ISpellRegistryCallback registry :
-                    mRegistries) {
-                registry.onWriteToNBT(compound);
+            if (!mRegistries.isEmpty()) {
+                NBTTagCompound subRegistries = new NBTTagCompound();
+                for (ISpellRegistryCallback registry :
+                        mRegistries) {
+                    registry.onWriteToNBT(subRegistries);
+                }
+                compound.setTag(KEY_COMPOUND_REGISTRIES, subRegistries);
             }
             return compound;
         }
@@ -239,7 +259,7 @@ public class SpellRegistry {
                     if (spell.canRegister()) {
                         registerSpellWithId(spell, spell.getId());
                         unregisteredSpells.remove(toRegister);
-                        unregisteredIds.remove(new Integer(spell.getId()));
+                        unregisteredIds.remove(Integer.valueOf(spell.getId()));
                         markDirty();
                     }
                     if (spell.shouldResume()) {
@@ -249,6 +269,11 @@ public class SpellRegistry {
                 }
             } catch (InstantiationException e) {
                 ILoggable.Log.error("Could not instantiate Spell! This will result in this Spell being discarded and deleted from the SpellRegistry!", e);
+                int id = NBTHelper.getSpellId(toRegister.getFirst());
+                if (id != NO_ID) {
+                    unregisteredSpells.remove(toRegister);
+                    unregisteredIds.remove(id);
+                }
             }
             return false;
         }

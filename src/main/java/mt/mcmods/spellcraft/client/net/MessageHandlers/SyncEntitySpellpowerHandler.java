@@ -1,7 +1,7 @@
 package mt.mcmods.spellcraft.client.net.MessageHandlers;
 
-import mt.mcmods.spellcraft.Server.net.Messages.SyncEntitySpellpower;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
+import mt.mcmods.spellcraft.server.net.Messages.SyncEntitySpellpower;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;

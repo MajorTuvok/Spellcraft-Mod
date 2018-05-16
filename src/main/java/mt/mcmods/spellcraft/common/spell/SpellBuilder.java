@@ -242,6 +242,14 @@ public class SpellBuilder implements ILoggable {
         return true;
     }
 
+    public int getStateCount() {
+        return mSpell.getStates().size();
+    }
+
+    public int getStateListSize(String state) {
+        return getState(state).getCommands().size();
+    }
+
     @Override
     public String toString() {
         return "SpellBuilder{" +

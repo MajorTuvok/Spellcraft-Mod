@@ -1,8 +1,7 @@
-package mt.mcmods.spellcraft;
+package mt.mcmods.spellcraft.server;
 
 
-import mt.mcmods.spellcraft.common.spell.SpellRegistry;
-import mt.mcmods.spellcraft.common.spell.entity.EntitySpellRegistry;
+import mt.mcmods.spellcraft.CommonProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 
 public class ServerProxy extends CommonProxy {
@@ -18,6 +17,5 @@ public class ServerProxy extends CommonProxy {
     @Override
     public void init(FMLInitializationEvent e) {
         super.init(e);
-        SpellRegistry.addSpellRegistryCallback(EntitySpellRegistry.ENTITY_SPELL_REGISTRY);
     }
 }

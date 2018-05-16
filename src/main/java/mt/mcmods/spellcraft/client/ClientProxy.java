@@ -1,7 +1,7 @@
-package mt.mcmods.spellcraft;
+package mt.mcmods.spellcraft.client;
 
 
-import mt.mcmods.spellcraft.client.model.ModelDynWand;
+import mt.mcmods.spellcraft.CommonProxy;
 import mt.mcmods.spellcraft.common.events.handlers.EventHandler;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -15,8 +15,6 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void preInit(FMLPreInitializationEvent e) {
         super.preInit(e);
-        //doesn't work like I excpected it to work... => I can pre-create my textures
-        //ModelLoaderRegistry.registerLoader(ModelDynWand.LoaderDynBlockArmor.ENTITY_SPELL_REGISTRY);
     }
 
     @Override
@@ -32,12 +30,6 @@ public class ClientProxy extends CommonProxy {
     @Override
     public boolean isClient() {
         return true;
-    }
-
-    private void mapTextures() {
-        //create inventory icons
-        int numIcons = ModelDynWand.BakedDynWandOverrideHandler.createInventoryIcons();
-        Log.info("Created " + numIcons + " inventory icons for Wands!");
     }
 
 

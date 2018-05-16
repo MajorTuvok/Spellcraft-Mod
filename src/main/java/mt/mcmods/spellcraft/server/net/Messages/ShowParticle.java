@@ -1,4 +1,4 @@
-package mt.mcmods.spellcraft.Server.net.Messages;
+package mt.mcmods.spellcraft.server.net.Messages;
 
 
 import io.netty.buffer.ByteBuf;

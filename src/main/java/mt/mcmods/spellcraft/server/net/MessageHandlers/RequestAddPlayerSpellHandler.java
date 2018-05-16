@@ -1,4 +1,4 @@
-package mt.mcmods.spellcraft.Server.net.MessageHandlers;
+package mt.mcmods.spellcraft.server.net.MessageHandlers;
 
 import mt.mcmods.spellcraft.client.net.Messages.RequestNewPlayerSpell;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;

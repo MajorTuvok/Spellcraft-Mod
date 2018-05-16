@@ -1,7 +1,7 @@
 package mt.mcmods.spellcraft.client.net.Messages;
 
 import io.netty.buffer.ByteBuf;
-import mt.mcmods.spellcraft.Server.net.Messages.ShowParticle;
+import mt.mcmods.spellcraft.server.net.Messages.ShowParticle;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import static mt.mcmods.spellcraft.client.Particles.ParticleHandler.ParticleName;

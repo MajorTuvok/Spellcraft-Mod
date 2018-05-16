@@ -11,7 +11,7 @@
   "credits": "To everyone who helped me design this!",
   "parent": "",
   "screenshots": [],
-  "requiredMods":[],
+  "requiredMods":["forge@1.12.2"],
   "dependencies": ["jei"],
   "useDependencyInformation": true
 }
