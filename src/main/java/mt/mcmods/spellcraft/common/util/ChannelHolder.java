@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class ChannelHolder {
+public final class ChannelHolder {
 
     private final SimpleNetworkWrapper mChannel;
     private int idCount;
@@ -26,7 +26,7 @@ public class ChannelHolder {
         if (idCount < 255) {
             return idCount++;
         } else {
-            throw new RuntimeException("Attempted to registerGameOverlayListener more than 255 Messages on a single Channel!");
+            throw new RuntimeException("Attempted to registerGameOverlayListener more than 255 messages on a single Channel!");
         }
     }
 

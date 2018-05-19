@@ -19,8 +19,8 @@ public enum PlayerSpellType implements ISpellType {
         try {
             if (!matches(compound))
                 return null;
-            if (!isPlayerOnServer(compound))
-                return null;
+            /*if (!isPlayerOnServer(compound))
+                return null;*/
             PlayerSpell spell = (PlayerSpell) constructableInstance();
             spell.deserializeNBT(compound);
             return spell;

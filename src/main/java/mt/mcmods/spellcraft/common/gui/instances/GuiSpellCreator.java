@@ -40,7 +40,7 @@ public class GuiSpellCreator extends BaseGui {
     }
 
     private String getSpellName() {
-        return GUI_SPELL_CREATOR_NO_SPELL_NAME.get();
+        return getTileEntity().getSpellName();
     }
 
     /**
@@ -67,9 +67,9 @@ public class GuiSpellCreator extends BaseGui {
      */
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+        super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
         getDelegate().drawGuiBackground(USED_BACKGROUND);
         getDelegate().drawAllSlotsWithResource(SLOT);
-        super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
         showOverallSpellInformation();
     }
 

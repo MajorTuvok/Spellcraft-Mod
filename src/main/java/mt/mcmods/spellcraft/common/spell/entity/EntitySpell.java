@@ -53,8 +53,10 @@ public abstract class EntitySpell extends Spell {
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound compound = super.serializeNBT();
-        compound.setUniqueId(KEY_ENTITY, getEntity().getUniqueID());
-        compound.setInteger(KEY_WORLD, getEntity().world.provider.getDimension());
+        if (getEntity() != null) {
+            compound.setUniqueId(KEY_ENTITY, getEntity().getUniqueID());
+            compound.setInteger(KEY_WORLD, getEntity().world.provider.getDimension());
+        }
         return compound;
     }
 

@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @NotThreadSafe
@@ -30,7 +31,7 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
     private static final String KEY_ACCESS_PROVIDER = "Spell_global_access_provider";
     private static final String KEY_ACTIVE = "Spell_active";
     private static final String KEY_CURRENT_STATE = "Spell_current_state";
-    private static final String KEY_DISPLAY_NAME = "Spell_displayName";
+    public static final String KEY_DISPLAY_NAME = "Spell_displayName";
     private static final String KEY_EFFICIENCY = "Spell_efficiency";
     private static final String KEY_MAX_POWER = "Spell_maxPower";
     private static final String KEY_STATES = "Spell_states";
@@ -157,7 +158,7 @@ public abstract class Spell implements ILoggable, INBTSerializable<NBTTagCompoun
         return getSpellCallback().getSpellType();
     }
 
-    HashMap<String, SpellState> getStates() {
+    Map<String, SpellState> getStates() {
         return states;
     }
 

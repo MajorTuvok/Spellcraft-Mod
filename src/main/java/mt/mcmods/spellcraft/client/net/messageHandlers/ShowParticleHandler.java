@@ -1,7 +1,7 @@
-package mt.mcmods.spellcraft.client.net.MessageHandlers;
+package mt.mcmods.spellcraft.client.net.messageHandlers;
 
-import mt.mcmods.spellcraft.client.Particles.ParticleHandler;
-import mt.mcmods.spellcraft.server.net.Messages.ShowParticle;
+import mt.mcmods.spellcraft.client.particles.ParticleHandler;
+import mt.mcmods.spellcraft.server.net.messages.ShowParticle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;

@@ -18,9 +18,12 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.UUID;
 
-public class NBTHelper {
+public final class NBTHelper {
     public static final String UUID_LEAST_SIG_BITS = "leastSigBits";
     public static final String UUID_MOST_SIG_BITS = "mostSigBits";
+
+    private NBTHelper() {
+    }
 
     /*
      * I didn't think of this incredibly good system myself... :(
@@ -186,8 +189,14 @@ public class NBTHelper {
         return false;
     }
 
+    @Nonnull
     public static Integer getSpellId(NBTTagCompound compound) {
         return compound.hasKey(Spell.KEY_ID) ? compound.getInteger(Spell.KEY_ID) : SpellRegistry.NO_ID;
+    }
+
+    @Nonnull
+    public static String getSpellName(NBTTagCompound compound) {
+        return compound.hasKey(Spell.KEY_DISPLAY_NAME) ? compound.getString(Spell.KEY_DISPLAY_NAME) : "";
     }
 
     public static @Nonnull

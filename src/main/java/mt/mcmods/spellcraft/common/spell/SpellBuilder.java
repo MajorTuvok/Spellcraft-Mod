@@ -11,18 +11,20 @@ import net.minecraft.nbt.NBTTagCompound;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
-import java.util.ArrayList;
+import java.util.*;
 
 @NotThreadSafe
 public class SpellBuilder implements ILoggable {
     private final Spell mSpell;
     private boolean mIsValid;
+    private List<String> mStateNameCache;
 
     /**
      * @param type The ISpellType used for constructing Spells defined by this SpellBuilder.
      */
     public SpellBuilder(ISpellType type) throws InstantiationException {
         mSpell = type.constructableInstance();
+        mStateNameCache = new ArrayList<>();
         mIsValid = true;
     }
 
@@ -37,11 +39,14 @@ public class SpellBuilder implements ILoggable {
             throw new NullPointerException("Cannot create SpellBuilder from null Parameters!");
         }
         this.mSpell = type.instantiate(compound);
+        if (mSpell == null) throw new InstantiationException("Failed to create spell!");
         mIsValid = true;
+        Map<String, SpellState> states = mSpell.getStates();
+        mStateNameCache = new ArrayList<>(states.keySet());
     }
 
-    public static @Nullable
-    SpellBuilder getUncheckedInstance(ISpellType type) {
+    @Nullable
+    public static SpellBuilder getUncheckedInstance(ISpellType type) {
         try {
             return new SpellBuilder(type);
         } catch (InstantiationException e) {
@@ -50,8 +55,8 @@ public class SpellBuilder implements ILoggable {
         return null;
     }
 
-    public static @Nullable
-    SpellBuilder getUncheckedInstance(NBTTagCompound compound, ISpellType type) {
+    @Nullable
+    public static SpellBuilder getUncheckedInstance(NBTTagCompound compound, ISpellType type) {
         try {
             return new SpellBuilder(type, compound);
         } catch (InstantiationException e) {
@@ -87,11 +92,9 @@ public class SpellBuilder implements ILoggable {
         return getSpellUnchecked().serializeNBT();
     }
 
-    public boolean addSpellState(@Nonnull String name) {
-        checkValidity();
-        if (hasState(name)) return false;
-        getSpellUnchecked().getStates().put(name, new SpellState(name));
-        return true;
+    public int getStateCount() {
+        Map<String, SpellState> states = mSpell.getStates();
+        return states != null ? states.size() : 0;
     }
 
     public boolean setStartState(@Nonnull String name) {
@@ -106,19 +109,8 @@ public class SpellBuilder implements ILoggable {
         }
     }
 
-    public boolean changeSpellStateName(@Nonnull String name, @Nonnull String newName) {
-        checkValidity();
-        if (!name.equals(newName) && hasState(name)) {
-            getSpellUnchecked().getStates().get(name).setName(newName);
-            getSpellUnchecked().getStates().put(newName, getSpellUnchecked().getStates().remove(name));
-            for (SpellState state : getSpellUnchecked().getStates().values()) {
-                for (StateList list :
-                        state.getCommands()) {
-                    if (list.getNextState().equals(name)) list.setNextState(newName);
-                }
-            }
-        }
-        return false;
+    public List<String> getStateNames() {
+        return Collections.unmodifiableList(mStateNameCache);
     }
 
     public boolean addStateList(String spellStateName) {
@@ -242,12 +234,34 @@ public class SpellBuilder implements ILoggable {
         return true;
     }
 
-    public int getStateCount() {
-        return mSpell.getStates().size();
+    public boolean addSpellState(@Nonnull String name) {
+        checkValidity();
+        if (Objects.requireNonNull(name).isEmpty() || hasState(name)) {
+            return false;
+        }
+        getSpellUnchecked().getStates().put(name, new SpellState(name));
+        mStateNameCache.add(name);
+        return true;
     }
 
     public int getStateListSize(String state) {
         return getState(state).getCommands().size();
+    }
+
+    public boolean changeSpellStateName(@Nonnull String name, @Nonnull String newName) {
+        checkValidity();
+        if (!name.equals(newName) && hasState(name)) {
+            getSpellUnchecked().getStates().get(name).setName(newName);
+            getSpellUnchecked().getStates().put(newName, getSpellUnchecked().getStates().remove(name));
+            for (SpellState state : getSpellUnchecked().getStates().values()) {
+                for (StateList list :
+                        state.getCommands()) {
+                    if (list.getNextState().equals(name)) list.setNextState(newName);
+                }
+            }
+            mStateNameCache.set(mStateNameCache.indexOf(name), newName);
+        }
+        return false;
     }
 
     @Override

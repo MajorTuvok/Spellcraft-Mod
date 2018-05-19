@@ -17,6 +17,7 @@ public enum GuiResource implements ResourceInfo, ILoggable {
     GUI_BLANK_MAX(StringHelper.createResourceLocation(MODID, "textures", "gui", "gui_blank_max.png"), 0, 0, 256, 256, new PlayerInventoryOffsets(44, 172, 44, 230)),
     GUI_COLOR(StringHelper.createResourceLocation(MODID, "textures", "gui", "gui_color.png"), 0, 0, 256, 256, new PlayerInventoryOffsets(44, 172, 44, 230)),
     GUI_BLANK_BIG_WPI(StringHelper.createResourceLocation(MODID, "textures", "gui", "gui_blank_big_with_player_inv.png"), 0, 0, 176, 222),
+    BACKGROUND_PLATING(StringHelper.createResourceLocation(MODID, "textures", "gui", "background_plating.png"), 0, 0, 256, 256),
     OVERLAY_SPELLPOWER_BACKGROUND(StringHelper.createResourceLocation(MODID, "textures", "gui", "overlay", "spellpower_background.png"), 0, 0, 19, 60),
     OVERLAY_SPELLPOWER_FOREGROUND(StringHelper.createResourceLocation(MODID, "textures", "gui", "overlay", "spellpower_foreground.png"), 0, 0, 19, 60),
     BOOK_AND_QUILL(StringHelper.createResourceLocation(MODID, "textures", "gui", "book_and_quill.png"), 0, 0, 20, 20);

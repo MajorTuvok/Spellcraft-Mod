@@ -1,7 +1,7 @@
 package mt.mcmods.spellcraft.common.items.wand;
 
 import mt.mcmods.spellcraft.SpellcraftMod;
-import mt.mcmods.spellcraft.client.net.Messages.RequestNewPlayerSpell;
+import mt.mcmods.spellcraft.client.net.messages.RequestNewPlayerSpell;
 import mt.mcmods.spellcraft.common.CTabs;
 import mt.mcmods.spellcraft.common.capabilities.SpellcraftCapabilities;
 import mt.mcmods.spellcraft.common.capabilities.wandproperties.IWandProperties;
@@ -138,8 +138,8 @@ public class ItemWand extends ItemBase implements IClickListener, IItemColorable
      * @param handIn
      */
     @Override
-    public @Nonnull
-    ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
+    @Nonnull
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
         return super.onItemRightClick(worldIn, playerIn, handIn);
     }
 

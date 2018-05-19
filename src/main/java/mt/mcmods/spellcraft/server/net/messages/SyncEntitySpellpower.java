@@ -1,8 +1,8 @@
-package mt.mcmods.spellcraft.server.net.Messages;
+package mt.mcmods.spellcraft.server.net.messages;
 
 
 import io.netty.buffer.ByteBuf;
-import mt.mcmods.spellcraft.client.net.Messages.RequestSyncEntitySpellpower;
+import mt.mcmods.spellcraft.client.net.messages.RequestSyncEntitySpellpower;
 import mt.mcmods.spellcraft.common.capabilities.SpellcraftCapabilities;
 import mt.mcmods.spellcraft.common.capabilities.spellpower.ISpellPowerProvider;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;

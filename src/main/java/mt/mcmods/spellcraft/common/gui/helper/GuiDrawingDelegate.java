@@ -348,6 +348,49 @@ public class GuiDrawingDelegate implements ILoggable, IGuiRenderProvider {
         GlStateManager.popMatrix();
     }
 
+
+    /**
+     * Draws a string scaled with the given Scale Factor.
+     * Coordinates are relative to the Center of the String.
+     * Effectively behaves as {@link #drawScaledStringTopLeft(String, float, float, int, float)} with the exception of using
+     * {@link #drawCenteredString(String, int, int, int)} instead of {@link #drawString(String, int, int, int)}.
+     *
+     * @param text  The String to draw
+     * @param x     The x-Coordinate
+     * @param y     The y-Coordinate
+     * @param color The color to draw with
+     * @param scale The scale to scale the String by
+     */
+    public void drawScaledStringCentered(String text, float x, float y, int color, float scale) {
+        float reverse = 1.0f / scale;
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(scale, scale, 1);
+
+        drawCenteredString(text, Math.round(x * reverse), Math.round(y * reverse), color);
+        GlStateManager.popMatrix();
+    }
+
+    /**
+     * Draws a string scaled with the given Scale Factor.
+     * The Horizontal Coordinate is relative to the Center of the String, the vertical Coordinate is the top End of the String.
+     * Effectively behaves as {@link #drawScaledStringTopLeft(String, float, float, int, float)} using
+     * {@link #drawCenteredString(String, int, int, int)} instead of {@link #drawString(String, int, int, int)} and additionally
+     * centering the Text vertically.
+     *
+     * @param text  The String to draw
+     * @param x     The x-Coordinate (left)
+     * @param y     The y-Coordinate (top)
+     * @param color The color to draw with
+     * @param scale The scale to scale the String by
+     */
+    public void drawScaledStringCenteredHorizontally(String text, float x, float y, int color, float scale) {
+        float reverse = 1.0f / scale;
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(scale, scale, 1);
+        drawCenteredString(text, Math.round(x * reverse), Math.round((y + Math.round(getFontRenderer().FONT_HEIGHT / 2f)) * reverse), color);
+        GlStateManager.popMatrix();
+    }
+
     /**
      * Draws a string scaled with the given Scale Factor.
      * Coordinates are relative to the bottom right end of the String.
@@ -372,8 +415,8 @@ public class GuiDrawingDelegate implements ILoggable, IGuiRenderProvider {
     /**
      * Draws a string scaled with the given Scale Factor.
      * Coordinates are relative to the bottom right end of the String.
-     * This Method takes the size of the gui into account and is therefore equal to calling
-     * drawScaledStringWithResScale(text,x+getXSize(),y+getYSize(),color,scale,resScaleFactor).
+     * This Method takes the position of the gui into account and is therefore equal to calling
+     * {@link #drawScaledStringWithResScale(String, float, float, int, float, float)} with x+{@link #getGuiLeft()} and x+{@link #getGuiTop()}.
      *
      * @param text           The String to draw
      * @param x              The x-Coordinate
@@ -383,7 +426,7 @@ public class GuiDrawingDelegate implements ILoggable, IGuiRenderProvider {
      * @param resScaleFactor The ScaleFactor of the current Resolution
      */
     public void drawScaledStringWithResScaleInGui(String text, float x, float y, int color, float scale, float resScaleFactor) {
-        drawScaledStringWithResScale(text, x + getXSize(), y + getYSize(), color, scale, resScaleFactor);
+        drawScaledStringWithResScale(text, x + getGuiLeft(), y + getGuiTop(), color, scale, resScaleFactor);
     }
 
     //----------------------------Interfaces ---------------------------------------------------------------

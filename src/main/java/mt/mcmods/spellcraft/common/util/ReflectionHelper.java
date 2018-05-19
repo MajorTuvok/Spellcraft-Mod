@@ -10,11 +10,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-public class ReflectionHelper {
+public final class ReflectionHelper {
     private static final HashMap<String, Class> nameClassMap = new HashMap<>();
 
-    public static @Nullable
-    Object instantiate(@Nonnull Class<?> clazz, Object... params) {
+    private ReflectionHelper() {
+    }
+
+    @Nullable
+    public static Object instantiate(@Nonnull Class<?> clazz, Object... params) {
         try {
             Class[] classes;
             if (params == null || params.length <= 0) {
@@ -26,8 +29,10 @@ public class ReflectionHelper {
                 classes[i] = params[i].getClass();
             }
             Constructor<?> constructor = clazz.getDeclaredConstructor(classes);
-            setAccessiblePublic(constructor);
-            return constructor.newInstance(params);
+            if (constructor != null) {
+                setAccessiblePublic(constructor);
+                return constructor.newInstance(params);
+            }
         } catch (NoSuchMethodException e) {
             ILoggable.Log.error("Failed to construct Class " + clazz.getName() + " because there was no Method found for the given Parameter list with length " + (params != null ? params.length : "0") + ".", e);
         } catch (IllegalAccessException e) {
@@ -40,8 +45,8 @@ public class ReflectionHelper {
         return null;
     }
 
-    public static @Nullable
-    Object instantiate(@Nonnull String name, Object... params) {
+    @Nullable
+    public static Object instantiate(@Nonnull String name, Object... params) {
         Class clazz = findClassForName(name);
         if (clazz != null) {
             return instantiate(clazz, params);
@@ -61,8 +66,8 @@ public class ReflectionHelper {
         field.setAccessible(true);
     }
 
-    public static @Nullable
-    Class findClassForName(@Nonnull String name) {
+    @Nullable
+    public static Class findClassForName(@Nonnull String name) {
         Class clazz = nameClassMap.get(name);
         if (clazz == null) {
             try {

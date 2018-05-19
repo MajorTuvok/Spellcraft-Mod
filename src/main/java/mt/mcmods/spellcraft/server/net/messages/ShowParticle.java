@@ -1,12 +1,12 @@
-package mt.mcmods.spellcraft.server.net.Messages;
+package mt.mcmods.spellcraft.server.net.messages;
 
 
 import io.netty.buffer.ByteBuf;
-import mt.mcmods.spellcraft.client.Particles.ParticleHandler.ParticleName;
+import mt.mcmods.spellcraft.client.particles.ParticleHandler.ParticleName;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
-import static mt.mcmods.spellcraft.client.Particles.ParticleHandler.ID_PARTICLE_MAP;
-import static mt.mcmods.spellcraft.client.Particles.ParticleHandler.PARTICLE_ID_MAP;
+import static mt.mcmods.spellcraft.client.particles.ParticleHandler.ID_PARTICLE_MAP;
+import static mt.mcmods.spellcraft.client.particles.ParticleHandler.PARTICLE_ID_MAP;
 
 public class ShowParticle implements IMessage {
     private ParticleName name;

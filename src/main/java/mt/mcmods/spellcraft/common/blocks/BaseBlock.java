@@ -2,15 +2,15 @@ package mt.mcmods.spellcraft.common.blocks;
 
 
 import mt.mcmods.spellcraft.SpellcraftMod;
-import mt.mcmods.spellcraft.client.Particles.ParticleHandler;
-import mt.mcmods.spellcraft.client.net.Messages.ParticleActivated;
+import mt.mcmods.spellcraft.client.net.messages.ParticleActivated;
+import mt.mcmods.spellcraft.client.particles.ParticleHandler;
 import mt.mcmods.spellcraft.common.CTabs;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import mt.mcmods.spellcraft.common.interfaces.INamed;
 import mt.mcmods.spellcraft.common.interfaces.IOreDictNamed;
 import mt.mcmods.spellcraft.common.interfaces.IRenderable;
 import mt.mcmods.spellcraft.common.util.StringHelper;
-import mt.mcmods.spellcraft.server.net.Messages.ShowParticle;
+import mt.mcmods.spellcraft.server.net.messages.ShowParticle;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.EnumParticleTypes;

@@ -9,9 +9,13 @@ import net.minecraftforge.oredict.OreDictionary;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class StringHelper {
-    public static @Nonnull
-    String createUnlocalizedName(String... args) {
+public final class StringHelper {
+
+    private StringHelper() {
+    }
+
+    @Nonnull
+    public static String createUnlocalizedName(String... args) {
         if (args == null || args.length < 1) {
             ILoggable.Log.warn("Attempted to create unlocalized Name from null Argument list.");
             return "";
@@ -25,8 +29,8 @@ public class StringHelper {
         return builder.toString();
     }
 
-    public static @Nonnull
-    String createResourceLocation(String modId, String... args) {
+    @Nonnull
+    public static String createResourceLocation(String modId, String... args) {
         if (args == null || args.length < 1) {
             ILoggable.Log.warn("Attempted to create resourceLocation from null Argument list.");
             return "";
@@ -64,8 +68,8 @@ public class StringHelper {
         return builder.toString();
     }
 
-    public static @Nonnull
-    String capitalizeWord(String arg) {
+    @Nonnull
+    public static String capitalizeWord(String arg) {
         if (arg != null && arg.length() > 1) return Character.toUpperCase(arg.charAt(0)) + arg.substring(1);
         else if (arg != null && arg.length() == 1) return arg.toUpperCase();
         else {

@@ -1,9 +1,9 @@
-package mt.mcmods.spellcraft.server.net.MessageHandlers;
+package mt.mcmods.spellcraft.server.net.messageHandlers;
 
 
 import mt.mcmods.spellcraft.SpellcraftMod;
-import mt.mcmods.spellcraft.client.net.Messages.ParticleActivated;
-import mt.mcmods.spellcraft.server.net.Messages.ShowParticle;
+import mt.mcmods.spellcraft.client.net.messages.ParticleActivated;
+import mt.mcmods.spellcraft.server.net.messages.ShowParticle;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.fml.common.network.NetworkRegistry;

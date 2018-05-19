@@ -5,7 +5,11 @@ import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 
-public class MessageUtils {
+public final class MessageUtils {
+
+    private MessageUtils() {
+    }
+
     public static NetworkRegistry.TargetPoint readTargetPoint(ByteBuf buf) {
         int dim = buf.readInt();
         double x = buf.readDouble();

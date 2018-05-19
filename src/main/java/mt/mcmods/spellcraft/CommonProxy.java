@@ -1,11 +1,9 @@
 package mt.mcmods.spellcraft;
 
 
-import mt.mcmods.spellcraft.client.net.MessageHandlers.ShowParticleHandler;
-import mt.mcmods.spellcraft.client.net.MessageHandlers.SyncEntitySpellpowerHandler;
-import mt.mcmods.spellcraft.client.net.Messages.ParticleActivated;
-import mt.mcmods.spellcraft.client.net.Messages.RequestNewPlayerSpell;
-import mt.mcmods.spellcraft.client.net.Messages.RequestSyncEntitySpellpower;
+import mt.mcmods.spellcraft.client.net.messageHandlers.SyncEntitySpellpowerHandler;
+import mt.mcmods.spellcraft.client.net.messages.RequestNewPlayerSpell;
+import mt.mcmods.spellcraft.client.net.messages.RequestSyncEntitySpellpower;
 import mt.mcmods.spellcraft.common.ConfigurationManager;
 import mt.mcmods.spellcraft.common.blocks.SpellcraftBlocks;
 import mt.mcmods.spellcraft.common.capabilities.SpellcraftCapabilities;
@@ -20,11 +18,9 @@ import mt.mcmods.spellcraft.common.spell.components.conditions.SpellcraftConditi
 import mt.mcmods.spellcraft.common.spell.components.executables.SpellcraftExecutables;
 import mt.mcmods.spellcraft.common.spell.entity.EntitySpellRegistry;
 import mt.mcmods.spellcraft.common.util.ChannelHolder;
-import mt.mcmods.spellcraft.server.net.MessageHandlers.ParticleActivatedHandler;
-import mt.mcmods.spellcraft.server.net.MessageHandlers.RequestAddPlayerSpellHandler;
-import mt.mcmods.spellcraft.server.net.MessageHandlers.RequestSyncEntitySpellpowerHandler;
-import mt.mcmods.spellcraft.server.net.Messages.ShowParticle;
-import mt.mcmods.spellcraft.server.net.Messages.SyncEntitySpellpower;
+import mt.mcmods.spellcraft.server.net.messageHandlers.RequestAddPlayerSpellHandler;
+import mt.mcmods.spellcraft.server.net.messageHandlers.RequestSyncEntitySpellpowerHandler;
+import mt.mcmods.spellcraft.server.net.messages.SyncEntitySpellpower;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -92,8 +88,8 @@ public abstract class CommonProxy implements ILoggable {
     }
 
     protected void registerMessages() {
-        CHANNEL_HOLDER.registerMessage(ParticleActivatedHandler.class, ParticleActivated.class, Side.SERVER);
-        CHANNEL_HOLDER.registerMessage(ShowParticleHandler.class, ShowParticle.class, Side.CLIENT);
+        //CHANNEL_HOLDER.registerMessage(ParticleActivatedHandler.class, ParticleActivated.class, Side.SERVER);
+        //CHANNEL_HOLDER.registerMessage(ShowParticleHandler.class, ShowParticle.class, Side.CLIENT);
         CHANNEL_HOLDER.registerMessage(RequestSyncEntitySpellpowerHandler.class, RequestSyncEntitySpellpower.class, Side.SERVER);
         CHANNEL_HOLDER.registerMessage(SyncEntitySpellpowerHandler.class, SyncEntitySpellpower.class, Side.CLIENT);
         CHANNEL_HOLDER.registerMessage(RequestAddPlayerSpellHandler.class, RequestNewPlayerSpell.class, Side.SERVER);

@@ -1,4 +1,4 @@
-package mt.mcmods.spellcraft.client.Particles;
+package mt.mcmods.spellcraft.client.particles;
 
 import mt.mcmods.spellcraft.common.Particles.ParticleEnergizedOsmiumOre;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Random;
 
-import static mt.mcmods.spellcraft.client.Particles.ParticleHandler.ParticleName.PARTICLE_ENERGIZED_OSMIUM_ORE;
+import static mt.mcmods.spellcraft.client.particles.ParticleHandler.ParticleName.PARTICLE_ENERGIZED_OSMIUM_ORE;
 
 public class ParticleHandler {
     public enum ParticleName {
@@ -39,7 +39,7 @@ public class ParticleHandler {
                     }
                 }
             } else {
-                ILoggable.Log.warn("Unable to show Particles!");
+                ILoggable.Log.warn("Unable to show particles!");
             }
         }
     }

@@ -1,10 +1,10 @@
-package mt.mcmods.spellcraft.client.net.Messages;
+package mt.mcmods.spellcraft.client.net.messages;
 
 import io.netty.buffer.ByteBuf;
-import mt.mcmods.spellcraft.server.net.Messages.ShowParticle;
+import mt.mcmods.spellcraft.server.net.messages.ShowParticle;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
-import static mt.mcmods.spellcraft.client.Particles.ParticleHandler.ParticleName;
+import static mt.mcmods.spellcraft.client.particles.ParticleHandler.ParticleName;
 
 public class ParticleActivated extends ShowParticle {
     private NetworkRegistry.TargetPoint targetPoint;

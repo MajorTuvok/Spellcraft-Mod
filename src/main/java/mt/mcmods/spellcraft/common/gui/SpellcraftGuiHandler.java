@@ -75,14 +75,14 @@ public class SpellcraftGuiHandler implements IGuiHandler {
             switch (id) {
                 case GUI_WAND_CRAFTING_TABLE: {
                     TileEntity entity = world.getTileEntity(new BlockPos(x, y, z));
-                    if (entity != null && entity instanceof TileEntityWandCraftingTable) {
+                    if (entity instanceof TileEntityWandCraftingTable) {
                         return new GuiWandCraftingTable(new GuiContainerWandCraftingTable(player.inventory, (TileEntityWandCraftingTable) entity));
                     }
                     break;
                 }
                 case GUI_SPELL_CREATOR: {
                     TileEntity entity = world.getTileEntity(new BlockPos(x, y, z));
-                    if (entity != null && entity instanceof TileEntitySpellCreator) {
+                    if (entity instanceof TileEntitySpellCreator) {
                         return new GuiSpellCreator(new GuiContainerSpellCreator(player.inventory, (TileEntitySpellCreator) entity));
                     }
                     break;

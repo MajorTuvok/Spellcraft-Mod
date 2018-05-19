@@ -5,7 +5,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class NetworkUtils {
+public final class NetworkUtils {
+
+    private NetworkUtils() {
+    }
+
     public static boolean mightBeClient() {
         return physicalClient() && FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
     }

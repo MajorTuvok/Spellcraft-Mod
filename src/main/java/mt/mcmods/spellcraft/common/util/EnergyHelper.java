@@ -5,7 +5,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 
-public class EnergyHelper {
+public final class EnergyHelper {
+
+    private EnergyHelper() {
+    }
+
     public static void serializeEnergyStorage(NBTTagCompound nbtTagCompound, IEnergyStorage storage) {
         if (storage != null) {
             nbtTagCompound.setInteger("Global Max Energy Stored", storage.getMaxEnergyStored());

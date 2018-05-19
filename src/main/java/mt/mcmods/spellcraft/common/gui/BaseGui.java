@@ -113,16 +113,8 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
         revertTranslateForeground();
     }
 
-    /**
-     * Draws the background layer of this container (behind the items).
-     *
-     * @param partialTicks
-     * @param mouseX
-     * @param mouseY
-     */
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        //this.drawDefaultBackground(); //=>done by drawScreen method
+    protected int getWidth() {
+        return width;
     }
 
     /**
@@ -164,6 +156,22 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
 
     protected void createInvBarView(BaseGuiContainer inventorySlotsIn) {
 
+    }
+
+    protected int getHeight() {
+        return height;
+    }
+
+    /**
+     * Draws the background layer of this container (behind the items).
+     *
+     * @param partialTicks
+     * @param mouseX
+     * @param mouseY
+     */
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+        this.drawDefaultBackground(); //=>not done by drawScreen method
     }
 
     /**

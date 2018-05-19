@@ -4,7 +4,7 @@ package mt.mcmods.spellcraft.common.capabilities.spellpower;
 import mt.mcmods.spellcraft.SpellcraftMod;
 import mt.mcmods.spellcraft.common.util.MessageUtils;
 import mt.mcmods.spellcraft.common.util.NetworkUtils;
-import mt.mcmods.spellcraft.server.net.Messages.SyncEntitySpellpower;
+import mt.mcmods.spellcraft.server.net.messages.SyncEntitySpellpower;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;

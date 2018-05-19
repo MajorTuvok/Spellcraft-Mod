@@ -9,7 +9,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
@@ -22,7 +21,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BaseTileEntityWithInventory extends TileEntity implements IInventory, IMarkDirtyCallback, ILoggable, ITickable {
+public class BaseTileEntityWithInventory extends BaseTileEntity implements IInventory, IMarkDirtyCallback, ILoggable, ITickable {
     private static final String KEY_INVENTORY = "BaseTileEntityWithInventory_inventoryCompound";
     private ICompatStackHandler inventory;
     private ArrayList<TickingRunnable> tickingRunnables;
@@ -198,14 +197,18 @@ public class BaseTileEntityWithInventory extends TileEntity implements IInventor
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
         return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
     }
 
     @Override
-    public @Nullable <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+    public @Nullable
+    <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return (T) inventory;
+            @SuppressWarnings("unchecked")
+            T res = (T) inventory;
+            ;
+            return res;
         }
         return super.getCapability(capability, facing);
     }

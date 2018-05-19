@@ -7,7 +7,7 @@ import mt.mcmods.spellcraft.common.capabilities.spellpower.EntitySpellPowerProvi
 import mt.mcmods.spellcraft.common.capabilities.spellpower.ISpellPowerProvider;
 import mt.mcmods.spellcraft.common.capabilities.spellpower.SpellPowerProviderCapability;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
-import mt.mcmods.spellcraft.server.net.Messages.SyncEntitySpellpower;
+import mt.mcmods.spellcraft.server.net.messages.SyncEntitySpellpower;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
