@@ -1,11 +1,18 @@
 package mt.mcmods.spellcraft.common.gui.components;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Tessellator;
 
 public class HorizontalScrollingList extends AbsScrollingList {
 
     public HorizontalScrollingList(Minecraft client, int width, int height, int top, int left, int entrySize) {
-        super(client, width, height, top, left, entrySize);
+        super(ScrollingOrientation.HORIZONTAL, client, width, height, top, left, entrySize, height - DEFAULT_SCROLLBAR_SIZE - 1);
+    }
+
+
+    @Override
+    protected int getContentHeight() {
+        return 0;
     }
 
     @Override
@@ -14,7 +21,17 @@ public class HorizontalScrollingList extends AbsScrollingList {
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    protected float getMaxScrollDistance() {
+        return 0;
+    }
+
+    @Override
+    protected void onPreDraw(int mouseX, int mouseY) {
+
+    }
+
+    @Override
+    protected void performDrawAdditionalBackground(Tessellator tess) {
 
     }
 
@@ -28,7 +45,18 @@ public class HorizontalScrollingList extends AbsScrollingList {
 
     }
 
-    protected void applyScrollLimits() {
+    @Override
+    protected void performDraw(Tessellator tess) {
+
+    }
+
+    @Override
+    protected void onHandleMouse() {
+
+    }
+
+    @Override
+    protected void updateSliderPos() {
 
     }
 }

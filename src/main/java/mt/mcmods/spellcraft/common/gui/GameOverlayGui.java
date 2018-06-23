@@ -140,6 +140,29 @@ public class GameOverlayGui extends Gui implements
         return Minecraft.getMinecraft();
     }
 
+    @Override
+    public void drawCenteredString(FontRenderer fontRendererIn, @Nonnull String text, int x, int y, int color) {
+        boolean bidi = fontRendererIn.getBidiFlag();
+        boolean uni = fontRendererIn.getUnicodeFlag();
+        fontRendererIn.setBidiFlag(true);
+        fontRendererIn.setUnicodeFlag(true);
+        super.drawCenteredString(fontRendererIn, text, x, y, color);
+        fontRendererIn.setBidiFlag(bidi);
+        fontRendererIn.setUnicodeFlag(uni);
+    }
+
+
+    @Override
+    public void drawString(FontRenderer fontRendererIn, @Nonnull String text, int x, int y, int color) {
+        boolean bidi = fontRendererIn.getBidiFlag();
+        boolean uni = fontRendererIn.getUnicodeFlag();
+        fontRendererIn.setBidiFlag(true);
+        fontRendererIn.setUnicodeFlag(true);
+        super.drawString(fontRendererIn, text, x, y, color);
+        fontRendererIn.setBidiFlag(bidi);
+        fontRendererIn.setUnicodeFlag(uni);
+    }
+
     private float getBarXPos(GuiMeasurements measurements) {
         return MathHelper.clamp(getBarRelXPos() * measurements.getXSize() - OVERLAY_SPELLPOWER_BACKGROUND.getImgXSize() / 2, 0, measurements.getXSize());
     }

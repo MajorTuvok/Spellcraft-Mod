@@ -210,7 +210,7 @@ public class ItemWand extends ItemBase implements IClickListener, IItemColorable
             boolean res = builder.addSpellState("TestState");
             res &= builder.setStartState("TestState");
             res &= builder.addStateList("TestState");
-            res &= builder.addComponent("TestState", 0, VoidSpellExecutable.getInstance());
+            res &= builder.addExecutable("TestState", 0, VoidSpellExecutable.getInstance());
             res &= builder.setEfficiency(properties.getEfficiency());
             res &= builder.setMaxPower(properties.getMaxPower());
             res &= builder.associateWithPlayer(player);

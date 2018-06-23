@@ -19,11 +19,11 @@ import javax.annotation.Nonnull;
 public class CompatStackHandler extends ItemStackHandler implements ICompatStackHandlerModifiable, ILoggable {
     private static final String NBT_NAME_HAS_NAME = "Has Name";
     private static final String NBT_NAME_NAME = "Name";
-    private ItemStackHandlerListener mItemStackHandlerListener;
+    private IItemStackHandlerListener mItemStackHandlerListener;
     private IMarkDirtyCallback mMarkDirtyCallback;
     private String mName;
-    private PlayerInteractionListener mPlayerInteractionListener;
-    private PlayerRestrictionProvider mPlayerRestrictionProvider;
+    private IPlayerInteractionListener mPlayerInteractionListener;
+    private IPlayerRestrictionProvider mPlayerRestrictionProvider;
 
     public CompatStackHandler() {
         super();
@@ -46,17 +46,17 @@ public class CompatStackHandler extends ItemStackHandler implements ICompatStack
     }
 
     @Override
-    public void setPlayerRestrictionProvider(PlayerRestrictionProvider playerRestrictionProvider) {
+    public void setPlayerRestrictionProvider(IPlayerRestrictionProvider playerRestrictionProvider) {
         this.mPlayerRestrictionProvider = playerRestrictionProvider;
     }
 
     @Override
-    public void setPlayerInteractionListener(PlayerInteractionListener playerInteractionListener) {
+    public void setPlayerInteractionListener(IPlayerInteractionListener playerInteractionListener) {
         this.mPlayerInteractionListener = playerInteractionListener;
     }
 
     @Override
-    public void setItemStackHandlerListener(ItemStackHandlerListener itemStackHandlerListener) {
+    public void setItemStackHandlerListener(IItemStackHandlerListener itemStackHandlerListener) {
         this.mItemStackHandlerListener = itemStackHandlerListener;
     }
 

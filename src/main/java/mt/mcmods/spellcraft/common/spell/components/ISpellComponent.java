@@ -2,17 +2,16 @@ package mt.mcmods.spellcraft.common.spell.components;
 
 import mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate;
 import mt.mcmods.spellcraft.common.spell.SpellBuilder;
+import mt.mcmods.spellcraft.common.spell.SpellState;
 import mt.mcmods.spellcraft.common.spell.access.AccessType;
 import mt.mcmods.spellcraft.common.spell.access.IAttributeAccess;
 import mt.mcmods.spellcraft.common.spell.access.IAttributeProvider;
 import mt.mcmods.spellcraft.common.spell.access.IAttributeSet;
 import mt.mcmods.spellcraft.common.spell.types.ISpellType;
 import mt.mcmods.spellcraft.common.spell.types.SpellTypes;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -55,9 +54,9 @@ public interface ISpellComponent<T extends ISpellComponent<T>> extends IForgeReg
      * @param extendedInformation Whether or not only all Information available or only a brief summary (like f.e. press sneak to show everything) should be shown.
      * @return Void Optional if some Error prevented showing all Tooltips. True if extended Information was shown, false if not.
      */
-    public @Nonnull
+    @Nonnull
     @SideOnly(Side.CLIENT)
-    default Optional<Boolean> addTooltipInformation(NonNullList<String> toolTips, IAttributeProvider attributeProvider, boolean extendedInformation) {
+    public default Optional<Boolean> addTooltipInformation(NonNullList<String> toolTips, IAttributeProvider attributeProvider, boolean extendedInformation) {
         return Optional.of(extendedInformation);
     }
 
@@ -70,7 +69,7 @@ public interface ISpellComponent<T extends ISpellComponent<T>> extends IForgeReg
      * @param y               The y-Position to draw at (top-End of the Icon)
      */
     @SideOnly(Side.CLIENT)
-    public void drawIcon(@Nonnull GuiDrawingDelegate drawingDelegate, int x, int y);
+    public void drawIcon(@Nonnull GuiDrawingDelegate drawingDelegate, boolean hovered, boolean selected, int x, int y);
 
     /**
      * @return Whether or not this SpellComponent provides a possibility to configure it's attributes.
@@ -83,28 +82,14 @@ public interface ISpellComponent<T extends ISpellComponent<T>> extends IForgeReg
     /**
      * Do not register this Gui with your own Mod. It will be opened by the Framework for you.
      *
-     * @param pos        Position of the Block initiating the GuiContainer
+     * @param posIndex The Index of the ISpellComponent in the appropriate List of the {@link SpellState.StateList} (You should know whether it is an executable or not yourself...)
      * @param builder    The builder to use as an interface to the Spell in construction
      * @param spellState The SpellState from which configuration was requested
-     * @param index      The index of the StateList form which configuration was requested
-     * @return A GuiContainer to configure the Corresponding attributes. Null is only permitted if hasConfigurableAttributes returns false.
+     * @param listIndex     The index of the StateList form which configuration was requested
+     * @return A GuiContainer to configure the Corresponding attributes. Null is only permitted if {@link #hasConfigurableAttributes} returns false.
      */
-    public
-    default GuiContainer getConfigurationGui(@Nonnull EntityPlayer player, @Nonnull BlockPos pos, @Nonnull SpellBuilder builder, @Nonnull String spellState, int index) {
-        return null;
-    }
-
-    /**
-     * Do not register this Gui with your own Mod. It will be opened by the Framework for you.
-     *
-     * @param pos        Position of the Block initiating the Container
-     * @param builder    The builder to use as an interface to the Spell in construction
-     * @param spellState The SpellState from which configuration was requested
-     * @param index      The index of the StateList form which configuration was requested
-     * @return A Container to configure the Corresponding attributes. Null is only permitted if hasConfigurableAttributes returns false.
-     */
-    public
-    default Container getConfigurationGuiContainer(@Nonnull EntityPlayer player, @Nonnull BlockPos pos, @Nonnull SpellBuilder builder, @Nonnull String spellState, int index) {
+    @SideOnly(Side.CLIENT)
+    public default GuiScreen getConfigurationGui(@Nonnull EntityPlayer player, @Nonnull GuiScreen openScreen, @Nonnull SpellBuilder builder, @Nonnull String spellState, int listIndex, int posIndex) {
         return null;
     }
 

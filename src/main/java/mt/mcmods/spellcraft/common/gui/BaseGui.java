@@ -1,8 +1,10 @@
 package mt.mcmods.spellcraft.common.gui;
 
 
+import mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate;
 import mt.mcmods.spellcraft.common.gui.helper.GuiMeasurements;
 import mt.mcmods.spellcraft.common.gui.helper.SlotDrawingDelegate;
+import mt.mcmods.spellcraft.common.interfaces.IDelegateProvider;
 import mt.mcmods.spellcraft.common.interfaces.IGuiRenderProvider;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 import net.minecraft.client.Minecraft;
@@ -18,7 +20,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 
 
-public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvider {
+public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvider, IDelegateProvider<GuiDrawingDelegate> {
     private SlotDrawingDelegate mDelegate;
     private ScaledResolution mScaledResolution;
 
@@ -53,6 +55,7 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
         return ((BaseGuiContainer) inventorySlots).getTileEntity();
     }
 
+    @Override
     public SlotDrawingDelegate getDelegate() {
         return mDelegate;
     }
@@ -87,6 +90,29 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
     @Override
     public void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor) {
         super.drawGradientRect(left, top, right, bottom, startColor, endColor);
+    }
+
+    @Override
+    public void drawCenteredString(FontRenderer fontRendererIn, @Nonnull String text, int x, int y, int color) {
+        boolean bidi = fontRendererIn.getBidiFlag();
+        boolean uni = fontRendererIn.getUnicodeFlag();
+        fontRendererIn.setBidiFlag(true);
+        fontRendererIn.setUnicodeFlag(true);
+        super.drawCenteredString(fontRendererIn, text, x, y, color);
+        fontRendererIn.setBidiFlag(bidi);
+        fontRendererIn.setUnicodeFlag(uni);
+    }
+
+
+    @Override
+    public void drawString(FontRenderer fontRendererIn, @Nonnull String text, int x, int y, int color) {
+        boolean bidi = fontRendererIn.getBidiFlag();
+        boolean uni = fontRendererIn.getUnicodeFlag();
+        fontRendererIn.setBidiFlag(true);
+        fontRendererIn.setUnicodeFlag(true);
+        super.drawString(fontRendererIn, text, x, y, color);
+        fontRendererIn.setBidiFlag(bidi);
+        fontRendererIn.setUnicodeFlag(uni);
     }
 
     /**

@@ -1,5 +1,6 @@
 package mt.mcmods.spellcraft.common.tiles;
 
+import mt.mcmods.spellcraft.common.interfaces.ICompatStackHandler;
 import mt.mcmods.spellcraft.common.spell.components.conditions.CountingSpellCondition;
 import mt.mcmods.spellcraft.common.spell.components.executables.VoidSpellExecutable;
 import mt.mcmods.spellcraft.common.spell.entity.PlayerSpellBuilder;
@@ -7,6 +8,7 @@ import mt.mcmods.spellcraft.common.util.NBTHelper;
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
 import static mt.mcmods.spellcraft.common.LocaleKey.GUI_SPELL_CREATOR_NO_SPELL_NAME;
 
@@ -24,7 +26,7 @@ public class TileEntitySpellCreator extends BaseTileEntityWithInventory {
             boolean res = builder.addSpellState("TestState");
             res &= builder.setStartState("TestState");
             res &= builder.addStateList("TestState");
-            res &= builder.addComponent("TestState", 0, VoidSpellExecutable.getInstance());
+            res &= builder.addExecutable("TestState", 0, VoidSpellExecutable.getInstance());
             res &= builder.setNextState("TestState", 0, "TestState");
             res &= builder.setCondition("TestState", 0, CountingSpellCondition.getStateInstance(), true);
             DEFAULT_SPELL = builder.constructNBT();
@@ -43,6 +45,10 @@ public class TileEntitySpellCreator extends BaseTileEntityWithInventory {
         mSpellCompound = null;
     }
 
+    public void setSpellCompound(@Nonnull NBTTagCompound spellCompound) {
+        mSpellCompound = Objects.requireNonNull(spellCompound, "Cannot have a null SpellCompound!");
+    }
+
     @Nonnull
     public NBTTagCompound getSpellCompound() {
         if (mSpellCompound == null) {
@@ -52,8 +58,9 @@ public class TileEntitySpellCreator extends BaseTileEntityWithInventory {
         return mSpellCompound;
     }
 
-    public void setSpellCompound(NBTTagCompound spellCompound) {
-        mSpellCompound = spellCompound;
+    @Override
+    protected ICompatStackHandler createInventory(int size) {
+        return super.createInventory(size);
     }
 
     public String getSpellName() {
@@ -79,7 +86,8 @@ public class TileEntitySpellCreator extends BaseTileEntityWithInventory {
     }
 
     private void readInternalNBT(NBTTagCompound compound) {
-        // if (compound.hasKey(KEY_SPELL))
-        mSpellCompound = DEFAULT_SPELL;//compound.getCompoundTag(KEY_SPELL);
+        if (compound.hasKey(KEY_SPELL)) {
+            compound.getCompoundTag(KEY_SPELL);//mSpellCompound = DEFAULT_SPELL;
+        }
     }
 }

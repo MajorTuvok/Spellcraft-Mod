@@ -226,7 +226,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
             NBTTagList[] conditions = set.getConditionValueResources();
             conditionList.appendTag(conditions[0]);
             conditionValueList.appendTag(conditions[1]);
-            componentList.appendTag(set.getComponentResources());
+            componentList.appendTag(set.getExecutableResources());
             stateList.appendTag(set.getNextStateNBT());
             localAccessList.appendTag(set.getLocalAccessNBT());
         }
@@ -271,7 +271,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
     /**
      * This class represents one State set in a SpellState. It may only be modified by SpellBuilder
      */
-    static final class StateList {
+    public static final class StateList {
         private final Map<ISpellCondition, Boolean> mConditions;
         private final List<ISpellExecutable> mExecutables;
         private IAttributeAccess mLocalAccess;
@@ -324,7 +324,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
             return mConditions;
         }
 
-        List<ISpellExecutable> getComponents() {
+        List<ISpellExecutable> getExecutables() {
             return mExecutables;
         }
 
@@ -351,7 +351,7 @@ public final class SpellState implements INBTSerializable<NBTTagCompound>, ILogg
             return locations;
         }
 
-        private NBTTagList getComponentResources() {
+        private NBTTagList getExecutableResources() {
             NBTTagList locations = new NBTTagList();
             for (ISpellExecutable component :
                     mExecutables) {

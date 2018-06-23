@@ -1,7 +1,7 @@
 package mt.mcmods.spellcraft.common.gui.components;
 
 import mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate;
-import mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate.ResourceInfo;
+import mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate.IResourceInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
@@ -11,14 +11,14 @@ import javax.annotation.Nullable;
 
 public class ImageButton extends GuiButton {
     private GuiDrawingDelegate mGuiDrawingDelegate;
-    private ResourceInfo mPrimaryTexture;
-    private ResourceInfo mSecondaryTexture;
+    private IResourceInfo mPrimaryTexture;
+    private IResourceInfo mSecondaryTexture;
 
-    public ImageButton(int buttonId, int x, int y, @Nonnull ResourceInfo infoPrimary, @Nonnull GuiDrawingDelegate delegate) {
+    public ImageButton(int buttonId, int x, int y, @Nonnull IResourceInfo infoPrimary, GuiDrawingDelegate delegate) {
         this(buttonId, x, y, infoPrimary, null, delegate);
     }
 
-    public ImageButton(int buttonId, int x, int y, @Nonnull ResourceInfo infoPrimary, @Nullable ResourceInfo infoSecondary, @Nonnull GuiDrawingDelegate delegate) {
+    public ImageButton(int buttonId, int x, int y, @Nonnull IResourceInfo infoPrimary, @Nullable IResourceInfo infoSecondary, GuiDrawingDelegate delegate) {
         super(buttonId, x, y, infoPrimary.getImgXSize(), infoPrimary.getImgYSize(), "");
         mPrimaryTexture = infoPrimary;
         mSecondaryTexture = infoSecondary;
@@ -28,6 +28,30 @@ public class ImageButton extends GuiButton {
 
     private boolean isHovering() {
         return this.hovered;
+    }
+
+    public GuiDrawingDelegate getGuiDrawingDelegate() {
+        return mGuiDrawingDelegate;
+    }
+
+    public void setGuiDrawingDelegate(GuiDrawingDelegate guiDrawingDelegate) {
+        mGuiDrawingDelegate = guiDrawingDelegate;
+    }
+
+    public IResourceInfo getPrimaryTexture() {
+        return mPrimaryTexture;
+    }
+
+    public void setPrimaryTexture(IResourceInfo primaryTexture) {
+        mPrimaryTexture = primaryTexture;
+    }
+
+    public IResourceInfo getSecondaryTexture() {
+        return mSecondaryTexture;
+    }
+
+    public void setSecondaryTexture(IResourceInfo secondaryTexture) {
+        mSecondaryTexture = secondaryTexture;
     }
 
     /**

@@ -12,23 +12,23 @@ import java.util.List;
 public interface ICompatStackHandler extends IItemHandler, INBTSerializable<NBTTagCompound>, IInventory {
     public void setDirtyMarkListener(IMarkDirtyCallback dirtyMarkListener);
 
-    public void setPlayerRestrictionProvider(PlayerRestrictionProvider playerRestrictionProvider);
+    public void setPlayerRestrictionProvider(IPlayerRestrictionProvider playerRestrictionProvider);
 
-    public void setPlayerInteractionListener(PlayerInteractionListener playerInteractionListener);
+    public void setPlayerInteractionListener(IPlayerInteractionListener playerInteractionListener);
 
-    public void setItemStackHandlerListener(ItemStackHandlerListener itemStackHandlerListener);
+    public void setItemStackHandlerListener(IItemStackHandlerListener itemStackHandlerListener);
 
-    public interface PlayerRestrictionProvider {
+    public interface IPlayerRestrictionProvider {
         public boolean isUsableByPlayer(EntityPlayer player);
     }
 
-    public interface PlayerInteractionListener extends ICompatStackHandler.PlayerRestrictionProvider {
+    public interface IPlayerInteractionListener extends IPlayerRestrictionProvider {
         public void openInventory(EntityPlayer player, List<ItemStack> stacks);
 
         public void closeInventory(EntityPlayer player, List<ItemStack> stacks);
     }
 
-    public interface ItemStackHandlerListener {
+    public interface IItemStackHandlerListener {
         public void onContentChanged(int slot, List<ItemStack> stacks);
 
         public void onLoad();

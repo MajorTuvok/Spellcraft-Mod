@@ -8,11 +8,11 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import javax.annotation.Nonnull;
 
 public interface IGuiRenderProvider {
-    public @Nonnull
-    FontRenderer getFontRenderer();
+    @Nonnull
+    public FontRenderer getFontRenderer();
 
-    public @Nonnull
-    RenderItem getRenderItem();
+    @Nonnull
+    public RenderItem getRenderItem();
 
     public Minecraft getMc();
 

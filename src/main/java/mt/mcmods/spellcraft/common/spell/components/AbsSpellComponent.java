@@ -1,8 +1,11 @@
 package mt.mcmods.spellcraft.common.spell.components;
 
+import jline.internal.Log;
 import mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate;
 import mt.mcmods.spellcraft.common.spell.access.IAttributeProvider;
 import mt.mcmods.spellcraft.common.spell.components.conditions.ISpellCondition;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
@@ -48,8 +51,9 @@ public abstract class AbsSpellComponent<T extends ISpellComponent<T>> extends IF
      * @param y               The y-Position to draw at (top-End of the Icon)
      */
     @Override
-    public void drawIcon(@Nonnull GuiDrawingDelegate drawingDelegate, int x, int y) {
-
+    @SideOnly(Side.CLIENT)
+    public void drawIcon(@Nonnull GuiDrawingDelegate drawingDelegate, boolean hovered, boolean selected, int x, int y) {
+        Log.warn("Failed to override ISpellComponent.drawIcon(GuiDrawingDelegate,int,int) in class {}, though it is apparently used!", this.getClass().getSimpleName());
     }
 
     @Override

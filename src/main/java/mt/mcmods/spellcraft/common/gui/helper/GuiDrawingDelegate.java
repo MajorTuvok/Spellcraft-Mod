@@ -155,7 +155,7 @@ public class GuiDrawingDelegate implements ILoggable, IGuiRenderProvider {
         drawImage(location, xRel, yRel, measurements.getImgXStart(), measurements.getImgYStart(), measurements.getImgXSize(), measurements.getImgYSize());
     }
 
-    public void drawImage(float xRel, float yRel, ResourceInfo info) {
+    public void drawImage(float xRel, float yRel, IResourceInfo info) {
         drawImage(info, xRel, yRel, info);
     }
 
@@ -365,7 +365,6 @@ public class GuiDrawingDelegate implements ILoggable, IGuiRenderProvider {
         float reverse = 1.0f / scale;
         GlStateManager.pushMatrix();
         GlStateManager.scale(scale, scale, 1);
-
         drawCenteredString(text, Math.round(x * reverse), Math.round(y * reverse), color);
         GlStateManager.popMatrix();
     }
@@ -387,7 +386,7 @@ public class GuiDrawingDelegate implements ILoggable, IGuiRenderProvider {
         float reverse = 1.0f / scale;
         GlStateManager.pushMatrix();
         GlStateManager.scale(scale, scale, 1);
-        drawCenteredString(text, Math.round(x * reverse), Math.round((y + Math.round(getFontRenderer().FONT_HEIGHT / 2f)) * reverse), color);
+        drawCenteredString(text, Math.round(x * reverse), Math.round((y - Math.round(getFontRenderer().FONT_HEIGHT / 2f)) * reverse), color);
         GlStateManager.popMatrix();
     }
 
@@ -445,7 +444,7 @@ public class GuiDrawingDelegate implements ILoggable, IGuiRenderProvider {
         int getImgYSize();
     }
 
-    public interface ResourceInfo extends ResourceProvider, ResourceImgMeasurements {
+    public interface IResourceInfo extends ResourceProvider, ResourceImgMeasurements {
 
     }
 }

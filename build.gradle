@@ -31,16 +31,16 @@ if (    !project.hasProperty('ver_major_mod') ||
 }
 
 
-
 minecraft {
+    version = ver_mc+"-"+ver_forge
+    /*
+    version = "1.12.2-14.23.3.2655"
 
-    version = "1.12.2-14.23.2.2611"
     if (project.hasProperty('ver_mc') && project.hasProperty('ver_forge')) {
-        version = "${ver_mc}-${ver_forge}"
+
     } else {
         print "Versions were unavailable - "
-    }
-    println "using Minecraft version "+version
+    }*/
     runDir = "run"
 
     // the mappings can be changed at any time, and must be in the following format.
@@ -152,12 +152,15 @@ def versionFileName = 'mcmod.info'
 def tempFile = tempDir+'/'+versionFileName
 
 compileJava.doFirst {
+    print "Build using Minecraft version "+project.minecraft.version
+    println " - Accepting Forge Version "+project.minecraft.version
+    println "Build using Project version "+project.version
     copy {
-        from(modinfoFile)
+        from(modinfoFile) {
+            expand 'version':project.version, 'mcversion':project.minecraft.version,'forgeversion':ver_forge+'+'
+        }
         into(tempDir)
     }
-    ant.replace(file: tempFile, token: '${version}', value: project.version)
-    ant.replace(file: tempFile, token: '${mcversion}', value: project.minecraft.version)
     copy {
         from(tempFile)
         into(buildDir)
@@ -168,7 +171,6 @@ compileJava.doFirst {
     }
 }
 
-processResources
 processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
@@ -179,7 +181,8 @@ processResources {
         include 'mcmod.info'
                 
         // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        //
+        expand 'version':project.version, 'mcversion':project.minecraft.version,'forgeversion':ver_forge+'+'
     }
         
     // copy everything else except the mcmod.info
@@ -197,6 +200,6 @@ jar {
             "Created-By": "${System.getProperty('java.vm.version')} + (${System.getProperty('java.vm.vendor')})",
             "Implementation-Title": project.name,
             "Implementation-Version": project.version,
-            "Built-On": "${ver_mc}-${ver_forge}"
+            "Built-On": project.minecraft.version
     )
 }

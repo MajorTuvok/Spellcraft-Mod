@@ -2,17 +2,17 @@
 {
   "modid": "spellcraft",
   "name": "Spellcraft",
-  "description": "Adds a computer like Spellsystem to minecraft",
+  "description": "Adds an finite automaton like Spellsystem to minecraft",
   "version": "${version}",
-  "mcversion": "${mcversion}",
+  "mcversion": "${mcversion}-${forgeversion}",
   "logoFile": "",
   "authors": ["Major Tuvok"],
   "authorList" : ["Major Tuvok"],
   "credits": "To everyone who helped me design this!",
   "parent": "",
   "screenshots": [],
-  "requiredMods":["forge@1.12.2"],
-  "dependencies": ["jei"],
+  "requiredMods":["forge@${mcversion}-${forgeversion}"],
+  "dependencies": ["fml","forge","jei"],
   "useDependencyInformation": true
 }
 ]

@@ -88,11 +88,11 @@ public final class StackHandlers {
 
     private static abstract class BaseCompatStackHandler implements ICompatStackHandler {
         private static final String NBT_NAME = "Name";
-        private ItemStackHandlerListener mItemStackHandlerListener;
+        private IItemStackHandlerListener mItemStackHandlerListener;
         private IMarkDirtyCallback mMarkDirtyCallback;
         private String mName;
-        private PlayerInteractionListener mPlayerInteractionListener;
-        private PlayerRestrictionProvider mPlayerRestrictionProvider;
+        private IPlayerInteractionListener mPlayerInteractionListener;
+        private IPlayerRestrictionProvider mPlayerRestrictionProvider;
 
         protected BaseCompatStackHandler() {
             mName = null;
@@ -107,19 +107,18 @@ public final class StackHandlers {
             mMarkDirtyCallback = dirtyMarkListener;
         }
 
+        protected IPlayerRestrictionProvider getPlayerRestrictionProvider() {
+            return mPlayerRestrictionProvider;
+        }
+
         @Override
-        public void setPlayerRestrictionProvider(PlayerRestrictionProvider playerRestrictionProvider) {
+        public void setPlayerRestrictionProvider(IPlayerRestrictionProvider playerRestrictionProvider) {
             mPlayerRestrictionProvider = playerRestrictionProvider;
         }
 
         @Override
-        public void setPlayerInteractionListener(PlayerInteractionListener playerInteractionListener) {
+        public void setPlayerInteractionListener(IPlayerInteractionListener playerInteractionListener) {
             mPlayerInteractionListener = playerInteractionListener;
-        }
-
-        @Override
-        public void setItemStackHandlerListener(ItemStackHandlerListener itemStackHandlerListener) {
-            mItemStackHandlerListener = itemStackHandlerListener;
         }
 
         /**
@@ -389,15 +388,16 @@ public final class StackHandlers {
             return mMarkDirtyCallback;
         }
 
-        protected PlayerRestrictionProvider getPlayerRestrictionProvider() {
-            return mPlayerRestrictionProvider;
+        @Override
+        public void setItemStackHandlerListener(IItemStackHandlerListener itemStackHandlerListener) {
+            mItemStackHandlerListener = itemStackHandlerListener;
         }
 
-        protected PlayerInteractionListener getPlayerInteractionListener() {
+        protected IPlayerInteractionListener getPlayerInteractionListener() {
             return mPlayerInteractionListener;
         }
 
-        protected ItemStackHandlerListener getItemStackHandlerListener() {
+        protected IItemStackHandlerListener getItemStackHandlerListener() {
             return mItemStackHandlerListener;
         }
 

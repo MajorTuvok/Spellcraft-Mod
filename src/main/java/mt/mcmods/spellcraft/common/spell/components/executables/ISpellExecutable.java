@@ -4,7 +4,7 @@ import mt.mcmods.spellcraft.common.spell.access.IAttributeProvider;
 import mt.mcmods.spellcraft.common.spell.components.ISpellComponent;
 
 /**
- * Be aware that all Classes of this need to obey the contract of the equals Method!
+ * Be aware that all Subclasses of this need to obey the contract of the equals Method!
  * This is necessary because instance of this class are heavily used in Collections. Therefore they
  * will be compared quite often with the equals Method...
  */
