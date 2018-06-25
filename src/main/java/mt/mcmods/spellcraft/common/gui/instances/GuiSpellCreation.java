@@ -10,10 +10,10 @@ import mt.mcmods.spellcraft.common.spell.SpellState;
 import mt.mcmods.spellcraft.common.spell.entity.PlayerSpellBuilder;
 import mt.mcmods.spellcraft.common.tiles.TileEntitySpellCreator;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +33,7 @@ public class GuiSpellCreation extends BaseGui {
     private static final float WIDTH_STATES = 12.5f;
     private static final float WIDTH_EXECUTABLES = 100 - WIDTH_CONDITIONS - WIDTH_NEXT_STATE - WIDTH_STATES;
     private static final float WIDTH_STATE_LIST = 100 - WIDTH_STATES;
-    private GuiSpellCreator mCreator;
+    private GuiScreen mCreator;
     private int mHeadBarBorder;
     private SimpleTextAdapter mCurrentStateAdapter;
     private VerticalScrollingList mCurrentStateList;
@@ -51,7 +51,9 @@ public class GuiSpellCreation extends BaseGui {
             onShouldCloseScreen();
         }
         mHeadBarBorder = getGuiTop();
-        mSpellStateAdapter = new SimpleTextAdapter(Collections.emptyList());
+        List<String> spellNames = mSpellBuilder.getStateNames();
+        mSpellStateAdapter = new SimpleTextAdapter(spellNames);
+        mCurrentStateAdapter = new SimpleTextAdapter(Collections.emptyList());
     }
 
     @Override
@@ -63,9 +65,9 @@ public class GuiSpellCreation extends BaseGui {
         return mSpellStateAdapter.getData(mSpellStateList.getSelectedIndex());
     }
 
+
     @Override
-    public void initGui() {
-        super.initGui();
+    protected void onInit() {
         mHeadBarBorder = asAbsoluteYPos(HEIGHT_HEADBAR);
         createSpellStateList();
         createCurrentStateList();
@@ -73,6 +75,7 @@ public class GuiSpellCreation extends BaseGui {
 
     @Override
     protected void onShouldCloseScreen() {
+        assert mCreator != null : "This Gui requires a GuiScreen to be present, to which it can return to";
         Minecraft.getMinecraft().displayGuiScreen(mCreator);
     }
 
@@ -92,41 +95,25 @@ public class GuiSpellCreation extends BaseGui {
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
         getDelegate().drawGuiBackground(USED_BACKGROUND);
-        mSpellStateList.drawScreen(mouseX, mouseY, partialTicks);
-        mCurrentStateList.drawScreen(mouseX, mouseY, partialTicks);
         drawTitleBar();
-    }
-
-    /**
-     * Called when the mouse is clicked. Args : mouseX, mouseY, clickedButton
-     *
-     * @param mouseX
-     * @param mouseY
-     * @param mouseButton
-     */
-    @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
-        mSpellStateList.onMouseClick(mouseX, mouseY, mouseButton);
-        mCurrentStateList.onMouseClick(mouseX, mouseY, mouseButton);
     }
 
     private void createSpellStateList() {
         mSpellStateList = new VerticalScrollingList(getMc(), asAbsoluteXDis(WIDTH_STATES), asAbsoluteYDis(HEIGTH_CONTENT) + 1, mHeadBarBorder, getGuiLeft() + 1, HEIGHT_ROW);
         mSpellStateList.setSelectedIndex(0);
         mSpellStateList.setScrollbarSize(10);
-        List<String> spellNames = mSpellBuilder.getStateNames();
-
-        mSpellStateAdapter = new SimpleTextAdapter(spellNames);
-        int buttonLeft = mSpellStateList.getLeft() + mSpellStateList.getSlotWidth();
-
-        mSpellStateList.init(mSpellStateAdapter, new ListControllerStub());
+        register(mSpellStateList).init(register(mSpellStateAdapter), new ListControllerStub());
     }
 
     private void createCurrentStateList() {
         mCurrentStateList = new VerticalScrollingList(getMc(), asAbsoluteXDis(WIDTH_STATE_LIST), asAbsoluteYDis(HEIGTH_CONTENT) + 1, mHeadBarBorder, getGuiLeft() + asAbsoluteXDis(WIDTH_STATES) + 1, HEIGHT_ROW);
         mCurrentStateList.setSelectedIndex(DEFAULT_SELECTED_INDEX);
         mCurrentStateList.setScrollbarSize(SCROLLBAR_SIZE);
+        updateCurrentStateAdapter();
+        register(mCurrentStateList).init(register(mCurrentStateAdapter), new ListControllerStub());
+    }
+
+    private void updateCurrentStateAdapter() {
         String state = getSelectedState();
         List<String> names = new ArrayList<>();
         if (mSpellBuilder.hasState(state)) {
@@ -141,9 +128,7 @@ public class GuiSpellCreation extends BaseGui {
         for (int i = names.size(); i <= 50; i++) {
             names.add("" + i);
         }
-        mCurrentStateAdapter = new SimpleTextAdapter(names);
-        int buttonLeft = mCurrentStateList.getLeft() + mCurrentStateList.getSlotWidth();
-        mCurrentStateList.init(mCurrentStateAdapter, new ListControllerStub());
+        mCurrentStateAdapter.notifyDataSetChanged(names);
     }
 
     private void drawTitleBar() {

@@ -14,13 +14,33 @@ import javax.annotation.Nonnull;
 public class GuiDrawingDelegate implements ILoggable, IGuiRenderProvider {
     private GuiMeasurements measurements;
     private IGuiRenderProvider renderProvider;
+    private boolean bidiFlag;
+    private boolean uniFlag;
 
     public GuiDrawingDelegate(IGuiRenderProvider renderProvider, GuiMeasurements measurements) {
         this.renderProvider = renderProvider;
         this.measurements = measurements;
+        bidiFlag = false;
+        uniFlag = true;
     }
 
     //----------------------------Getter and Setter-------------------------------------------------
+
+    public void setBidiFlag(boolean bidiFlag) {
+        this.bidiFlag = bidiFlag;
+    }
+
+    public void setUniFlag(boolean uniFlag) {
+        this.uniFlag = uniFlag;
+    }
+
+    public boolean bidiFlag() {
+        return bidiFlag;
+    }
+
+    public boolean uniFlag() {
+        return uniFlag;
+    }
 
     public int getXSize() {
         return getMeasurements().getXSize();
@@ -69,12 +89,24 @@ public class GuiDrawingDelegate implements ILoggable, IGuiRenderProvider {
 
     @Override
     public void drawCenteredString(FontRenderer fontRendererIn, String text, int x, int y, int color) {
+        boolean bidi = fontRendererIn.getBidiFlag();
+        boolean uni = fontRendererIn.getUnicodeFlag();
+        fontRendererIn.setBidiFlag(bidiFlag());
+        fontRendererIn.setUnicodeFlag(uniFlag());
         getRenderProvider().drawCenteredString(fontRendererIn, text, x, y, color);
+        fontRendererIn.setBidiFlag(bidi);
+        fontRendererIn.setUnicodeFlag(uni);
     }
 
     @Override
     public void drawString(FontRenderer fontRendererIn, String text, int x, int y, int color) {
+        boolean bidi = fontRendererIn.getBidiFlag();
+        boolean uni = fontRendererIn.getUnicodeFlag();
+        fontRendererIn.setBidiFlag(bidiFlag());
+        fontRendererIn.setUnicodeFlag(uniFlag());
         getRenderProvider().drawString(fontRendererIn, text, x, y, color);
+        fontRendererIn.setBidiFlag(bidi);
+        fontRendererIn.setUnicodeFlag(uni);
     }
 
     @Override

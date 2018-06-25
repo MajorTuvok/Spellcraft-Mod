@@ -4,12 +4,11 @@ package mt.mcmods.spellcraft.common.gui;
 import mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate;
 import mt.mcmods.spellcraft.common.gui.helper.GuiMeasurements;
 import mt.mcmods.spellcraft.common.gui.helper.SlotDrawingDelegate;
-import mt.mcmods.spellcraft.common.interfaces.IDelegateProvider;
-import mt.mcmods.spellcraft.common.interfaces.IGuiRenderProvider;
-import mt.mcmods.spellcraft.common.interfaces.ILoggable;
+import mt.mcmods.spellcraft.common.interfaces.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -18,11 +17,18 @@ import net.minecraft.tileentity.TileEntity;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvider, IDelegateProvider<GuiDrawingDelegate> {
     private SlotDrawingDelegate mDelegate;
     private ScaledResolution mScaledResolution;
+    private List<IGuiButtonListener> mGuiButtonListeners;
+    private List<IGuiDrawScreenListener> mGuiDrawables;
+    private List<IGuiInitialisationListener> mGuiInitialisationListeners;
+    private List<IGuiKeyboardListener> mGuiKeyboardListeners;
+    private List<IGuiMouseListener> mGuiMouseListeners;
 
     public BaseGui(BaseGuiContainer inventorySlotsIn, int xSize, int ySize) {
         super(inventorySlotsIn);
@@ -30,6 +36,11 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
         this.ySize = ySize;
         mDelegate = new SlotDrawingDelegate(inventorySlotsIn.getPlayerInventory(), this, inventorySlotsIn);
         mScaledResolution = new ScaledResolution(getMc());
+        mGuiDrawables = new ArrayList<>();
+        mGuiMouseListeners = new ArrayList<>();
+        mGuiButtonListeners = new ArrayList<>();
+        mGuiKeyboardListeners = new ArrayList<>();
+        mGuiInitialisationListeners = new ArrayList<>();
         createInventoryViews(inventorySlotsIn);
     }
 
@@ -115,15 +126,44 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
         fontRendererIn.setUnicodeFlag(uni);
     }
 
+    public <T> T register(T thing) {
+        if (thing instanceof IGuiDrawScreenListener) {
+            mGuiDrawables.add((IGuiDrawScreenListener) thing);
+        }
+
+        if (thing instanceof IGuiMouseListener) {
+            mGuiMouseListeners.add((IGuiMouseListener) thing);
+        }
+
+        if (thing instanceof IGuiButtonListener) {
+            mGuiButtonListeners.add((IGuiButtonListener) thing);
+        }
+
+        if (thing instanceof IGuiKeyboardListener) {
+            mGuiKeyboardListeners.add((IGuiKeyboardListener) thing);
+        }
+
+        if (thing instanceof IGuiInitialisationListener) {
+            mGuiInitialisationListeners.add((IGuiInitialisationListener) thing);
+        }
+
+        return thing;
+    }
+
     /**
      * Adds the buttons (and other controls) to the screen in question. Called when the GUI is displayed and when the
      * window resizes, the buttonList is cleared beforehand.
      */
     @Override
-    public void initGui() {
+    public final void initGui() {
         super.initGui();
         mDelegate.setMeasurements(getGuiMeasurements());
         mScaledResolution = new ScaledResolution(mc);
+        clearListeners();
+        onInit();
+        for (IGuiInitialisationListener l : mGuiInitialisationListeners) {
+            l.onGuiInit(this, getGuiMeasurements(), mScaledResolution);
+        }
     }
 
     /**
@@ -136,11 +176,59 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         translateForeground();
         this.renderHoveredToolTip(mouseX, mouseY);
+        executeDrawListeners(mouseX, mouseY);
         revertTranslateForeground();
+    }
+
+    /**
+     * Called when the mouse is clicked. Args : mouseX, mouseY, clickedButton
+     *
+     * @param mouseX
+     * @param mouseY
+     * @param mouseButton
+     */
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+        for (IGuiMouseListener l : mGuiMouseListeners) {
+            l.mouseClicked(mouseX, mouseY, mouseButton);
+        }
     }
 
     protected int getWidth() {
         return width;
+    }
+
+    /**
+     * Called when a mouse button is pressed and the mouse is moved around. Parameters are : mouseX, mouseY,
+     * lastButtonClicked & timeSinceMouseClick.
+     *
+     * @param mouseX
+     * @param mouseY
+     * @param clickedMouseButton
+     * @param timeSinceLastClick
+     */
+    @Override
+    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
+        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+        for (IGuiMouseListener l : mGuiMouseListeners) {
+            l.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+        }
+    }
+
+    /**
+     * Called when a mouse button is released.
+     *
+     * @param mouseX
+     * @param mouseY
+     * @param state
+     */
+    @Override
+    protected void mouseReleased(int mouseX, int mouseY, int state) {
+        super.mouseReleased(mouseX, mouseY, state);
+        for (IGuiMouseListener l : mGuiMouseListeners) {
+            l.mouseReleased(mouseX, mouseY, state);
+        }
     }
 
     /**
@@ -152,10 +240,49 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
      */
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        for (IGuiKeyboardListener l : mGuiKeyboardListeners) {
+            if (!l.keyTyped(typedChar, keyCode)) {
+                return;
+            }
+        }
         if (keyCode == 1 || this.mc.gameSettings.keyBindInventory.isActiveAndMatches(keyCode)) {
             onShouldCloseScreen();
         } else {
             super.keyTyped(typedChar, keyCode);
+        }
+    }
+
+    protected void onInit() {
+
+    }
+
+    /**
+     * Adds a control to this GUI's button list. Any type that subclasses button may be added (particularly, GuiSlider,
+     * but not text fields).
+     *
+     * @param buttonIn The control to add
+     * @return The control passed in.
+     */
+    @Override
+    protected <T extends GuiButton> T addButton(T buttonIn) {
+        for (IGuiButtonListener l : mGuiButtonListeners) {
+            if (!l.onRegisterButton(buttonIn)) {
+                return buttonIn;
+            }
+        }
+        return super.addButton(buttonIn);
+    }
+
+    /**
+     * Called by the controls from the buttonList when activated. (Mouse pressed for buttons)
+     *
+     * @param button
+     */
+    @Override
+    protected void actionPerformed(GuiButton button) throws IOException {
+        super.actionPerformed(button);
+        for (IGuiButtonListener l : mGuiButtonListeners) {
+            l.actionPerformed(button);
         }
     }
 
@@ -238,5 +365,19 @@ public class BaseGui extends GuiContainer implements ILoggable, IGuiRenderProvid
 
     protected int asAbsoluteYDis(double relY) {
         return (int) Math.round((getYSize() * relY / 100));
+    }
+
+    private void clearListeners() {
+        mGuiDrawables.removeIf(iGuiListener -> !iGuiListener.persistInitialisation());
+        mGuiButtonListeners.removeIf(iGuiListener -> !iGuiListener.persistInitialisation());
+        mGuiKeyboardListeners.removeIf(iGuiListener -> !iGuiListener.persistInitialisation());
+        mGuiMouseListeners.removeIf(iGuiListener -> !iGuiListener.persistInitialisation());
+        mGuiInitialisationListeners.removeIf(iGuiListener -> !iGuiListener.persistInitialisation());
+    }
+
+    private void executeDrawListeners(int mouseX, int mouseY) {
+        for (IGuiDrawScreenListener l : mGuiDrawables) {
+            l.drawScreen(mouseX, mouseY);
+        }
     }
 }

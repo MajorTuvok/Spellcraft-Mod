@@ -43,13 +43,8 @@ public class GuiSpellCreator extends BaseGui {
         return getTileEntity().getSpellName();
     }
 
-    /**
-     * Adds the buttons (and other controls) to the screen in question. Called when the GUI is displayed and when the
-     * window resize's, the buttonList is cleared beforehand.
-     */
     @Override
-    public void initGui() {
-        super.initGui();
+    protected void onInit() {
         String spellName = getSpellName();
         mButtonEditSpell = addButton(new GuiButton(ID_EDIT, getGuiLeft() + X_EDIT_SPELL, getGuiTop() + Y_EDIT_SPELL, GUI_SPELL_CREATOR_EDIT.get(spellName)));
         mButtonEditSpell.width = getFontRenderer().getStringWidth(mButtonEditSpell.displayString) + Y_EDIT_SPELL_ADD;

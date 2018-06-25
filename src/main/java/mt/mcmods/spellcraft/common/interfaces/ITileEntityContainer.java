@@ -13,8 +13,8 @@ public interface ITileEntityContainer<T extends TileEntity> {
 
     public T getTileEntity(IBlockAccess world, BlockPos pos);
 
-    public @Nullable
-    T createTileEntity(World world, IBlockState state);
+    @Nullable
+    public T createTileEntity(World world, IBlockState state);
 
     public boolean doesSelfRegistration();
 }

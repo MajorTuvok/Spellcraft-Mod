@@ -1,9 +1,14 @@
 package mt.mcmods.spellcraft.common.gui.components;
 
+import mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate;
 import mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate.IResourceInfo;
+import mt.mcmods.spellcraft.common.gui.helper.GuiMeasurements;
 import mt.mcmods.spellcraft.common.gui.helper.GuiResource;
+import mt.mcmods.spellcraft.common.interfaces.IDelegateProvider;
+import mt.mcmods.spellcraft.common.interfaces.IGuiDrawScreenListener;
+import mt.mcmods.spellcraft.common.interfaces.IGuiInitialisationListener;
+import mt.mcmods.spellcraft.common.interfaces.IGuiMouseListener;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -15,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbsScrollingList extends Gui {
+public abstract class AbsScrollingList implements IGuiInitialisationListener, IGuiDrawScreenListener, IGuiMouseListener, IDelegateProvider<GuiDrawingDelegate> {
     public enum ScrollingOrientation {
         HORIZONTAL {
             @Nonnull
@@ -140,7 +145,9 @@ public abstract class AbsScrollingList extends Gui {
     private IResourceInfo buttonNegativeHovered;
     private IResourceInfo buttonPositive;
     private IResourceInfo buttonPositiveHovered;
-    private int lastMouseWheel;
+    private IDelegateProvider<? extends GuiDrawingDelegate> delegateProvider;
+    private GuiMeasurements measurements;
+    private ScaledResolution resolution;
     private boolean captureMouse;
     private float initialMouseClickY;
     private long lastClickTime;
@@ -203,6 +210,9 @@ public abstract class AbsScrollingList extends Gui {
         this.buttonPositiveHovered = mOrientation.getDefaultPositiveButtonHovered();
         this.buttonNegativeHovered = mOrientation.getDefaultNegativeButtonHovered();
         this.scrollbarSize = Math.max(width - slotWidth, getScrollbarBackground().getImgXSize());
+        this.delegateProvider = null;
+        this.resolution = null;
+        this.measurements = null;
         this.slotWidth = Math.min(slotWidth, width - scrollbarSize);
     }
 
@@ -451,6 +461,22 @@ public abstract class AbsScrollingList extends Gui {
         return mOrientation;
     }
 
+    @Override
+    public GuiDrawingDelegate getDelegate() {
+        assert delegateProvider != null : "Attempted to query delegate before this class was initialised! Delegate doesn't exist yet!";
+        return delegateProvider.getDelegate();
+    }
+
+    public GuiMeasurements getMeasurements() {
+        assert delegateProvider != null : "Attempted to query GuiMeasurements before this class was initialised! GuiMeasurements don't exist yet!";
+        return measurements;
+    }
+
+    public ScaledResolution getResolution() {
+        assert delegateProvider != null : "Attempted to query Resolution before this class was initialised! Resolution doesn't exist yet!";
+        return resolution;
+    }
+
     protected int getScreenWidth() {
         return getClient().displayWidth;
     }
@@ -502,7 +528,15 @@ public abstract class AbsScrollingList extends Gui {
         return captureMouse;
     }
 
-    public final void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    @Override
+    public void onGuiInit(IDelegateProvider<? extends GuiDrawingDelegate> delegateProvider, GuiMeasurements measurements, ScaledResolution screenMeasurements) {
+        this.delegateProvider = delegateProvider;
+        this.measurements = measurements;
+        this.resolution = screenMeasurements;
+    }
+
+    @Override
+    public final void drawScreen(int mouseX, int mouseY) {
         onPreDraw(mouseX, mouseY);
 
         setMouseX(mouseX);
@@ -542,7 +576,40 @@ public abstract class AbsScrollingList extends Gui {
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
     }
 
-    public void onMouseClick(int mouseX, int mouseY, int mouseButton) {
+    /**
+     * Called when the mouse is clicked.
+     *
+     * @param mouseX      Mouse X - Coordinate
+     * @param mouseY      Mouse Y - Coordinate
+     * @param mouseButton The pressed mouse Button. F.i. 0 is an left click.
+     */
+    @Override
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+
+    }
+
+    /**
+     * Called when a mouse button is pressed and the mouse is moved around.
+     *
+     * @param mouseX             Mouse X - Coordinate
+     * @param mouseY             Mouse Y - Coordinate
+     * @param clickedMouseButton The pressed mouse Button. F.i. 0 is an left click.
+     * @param timeSinceLastClick tim in ms since the Mouse button was pressed
+     */
+    @Override
+    public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
+
+    }
+
+    /**
+     * Called when a mouse button is released.
+     *
+     * @param mouseX Mouse X - Coordinate
+     * @param mouseY Mouse Y - Coordinate
+     * @param state  Mouse state ?
+     */
+    @Override
+    public void mouseReleased(int mouseX, int mouseY, int state) {
 
     }
 

@@ -1,9 +1,14 @@
 package mt.mcmods.spellcraft.common.gui.components;
 
 import mt.mcmods.spellcraft.common.gui.components.AbsScrollingList.ISlotAdapter;
+import mt.mcmods.spellcraft.common.gui.helper.GuiDrawingDelegate;
+import mt.mcmods.spellcraft.common.gui.helper.GuiMeasurements;
+import mt.mcmods.spellcraft.common.interfaces.IDelegateProvider;
+import mt.mcmods.spellcraft.common.interfaces.IGuiInitialisationListener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
@@ -15,9 +20,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SimpleTextAdapter extends Gui implements ISlotAdapter {
+public class SimpleTextAdapter implements IGuiInitialisationListener, IDelegateProvider<GuiDrawingDelegate>, ISlotAdapter {
     private static final ResourceLocation BUTTON_IMAGE = new ResourceLocation("textures/gui/widgets.png");
     private static final int DEFAULT_HOVER_SELECTED_COLOR = 0xA1BEC7FF;
+
+    private IDelegateProvider<? extends GuiDrawingDelegate> mDelegateProvider;
     @Nonnull
     private List<String> mData;
     private int mDataColor;
@@ -34,6 +41,7 @@ public class SimpleTextAdapter extends Gui implements ISlotAdapter {
         mOnClickListener = null;
         mHeaderColor = mDataColor = Color.BLACK.getRGB();
         mHoverSelectedColor = DEFAULT_HOVER_SELECTED_COLOR;
+        mDelegateProvider = null;
     }
 
     public static SimpleTextAdapter of(String s, String... args) {
@@ -67,6 +75,17 @@ public class SimpleTextAdapter extends Gui implements ISlotAdapter {
         mHoverSelectedColor = hoverSelectedColor;
     }
 
+    @Override
+    public GuiDrawingDelegate getDelegate() {
+        assert mDelegateProvider != null : "Attempted to query delegate before this class was initialised! Delegate doesn't exist yet!";
+        return mDelegateProvider.getDelegate();
+    }
+
+    @Override
+    public void onGuiInit(IDelegateProvider<? extends GuiDrawingDelegate> delegateProvider, GuiMeasurements measurements, ScaledResolution screenMeasurements) {
+        mDelegateProvider = delegateProvider;
+    }
+
     @Nonnull
     public String getHeader() {
         return mHeader;
@@ -92,16 +111,16 @@ public class SimpleTextAdapter extends Gui implements ISlotAdapter {
             i += 20;
         }
 
-
-        Minecraft.getMinecraft().getTextureManager().bindTexture(BUTTON_IMAGE);
-        drawTexturedModalRect(left, top, 0, 66 + i, halfWidth, height);//first Half
-        drawTexturedModalRect(left + halfWidth, top, 200 - halfWidth, 66 + i, halfWidth, height); //secondHalf
+        getDelegate().bindResource(BUTTON_IMAGE);
+        getDelegate().drawTexturedModalRect(left, top, 0, 66 + i, halfWidth, height);//first Half
+        getDelegate().drawTexturedModalRect(left + halfWidth, top, 200 - halfWidth, 66 + i, halfWidth, height); //secondHalf
         if (selected && hoveredOver && mHoverSelectedColor != 0) {
-            drawRect(left, top, right, bottom, mHoverSelectedColor);
+            Gui.drawRect(left, top, right, bottom, mHoverSelectedColor);
         }
+
         String data = mData.get(index);
-        FontRenderer renderer = Minecraft.getMinecraft().fontRenderer;
-        drawCenteredString(renderer, data, right - halfWidth, top + Math.round(height / 2) - Math.round(renderer.FONT_HEIGHT / 2f), mDataColor);
+        FontRenderer renderer = getDelegate().getFontRenderer();
+        getDelegate().drawCenteredString(renderer, data, right - halfWidth, top + Math.round(height / 2) - Math.round(renderer.FONT_HEIGHT / 2f), mDataColor);
         GlStateManager.color(1, 1, 1, 1);
     }
 
@@ -111,7 +130,7 @@ public class SimpleTextAdapter extends Gui implements ISlotAdapter {
             int halfWidth = (right - left) / 2;
             int height = bottom - top;
             FontRenderer renderer = Minecraft.getMinecraft().fontRenderer;
-            drawCenteredString(renderer, mHeader, right - halfWidth, top + Math.round(height / 2) - Math.round(renderer.FONT_HEIGHT / 2f), mHeaderColor);
+            getDelegate().drawCenteredString(renderer, mHeader, right - halfWidth, top + Math.round(height / 2) - Math.round(renderer.FONT_HEIGHT / 2f), mHeaderColor);
         }
     }
 
@@ -156,45 +175,6 @@ public class SimpleTextAdapter extends Gui implements ISlotAdapter {
         return index >= 0 && index < mData.size() ? mData.get(index) : "";
     }
 
-    /**
-     * Renders the specified text to the screen, center-aligned. Args : renderer, string, x, y, color
-     *
-     * @param fontRendererIn
-     * @param text
-     * @param x
-     * @param y
-     * @param color
-     */
-    @Override
-    public void drawCenteredString(FontRenderer fontRendererIn, @Nonnull String text, int x, int y, int color) {
-        boolean bidi = fontRendererIn.getBidiFlag();
-        boolean uni = fontRendererIn.getUnicodeFlag();
-        fontRendererIn.setBidiFlag(true);
-        fontRendererIn.setUnicodeFlag(true);
-        super.drawCenteredString(fontRendererIn, text, x, y, color);
-        fontRendererIn.setBidiFlag(bidi);
-        fontRendererIn.setUnicodeFlag(uni);
-    }
-
-    /**
-     * Renders the specified text to the screen. Args : renderer, string, x, y, color
-     *
-     * @param fontRendererIn
-     * @param text
-     * @param x
-     * @param y
-     * @param color
-     */
-    @Override
-    public void drawString(FontRenderer fontRendererIn, @Nonnull String text, int x, int y, int color) {
-        boolean bidi = fontRendererIn.getBidiFlag();
-        boolean uni = fontRendererIn.getUnicodeFlag();
-        fontRendererIn.setBidiFlag(true);
-        fontRendererIn.setUnicodeFlag(true);
-        super.drawString(fontRendererIn, text, x, y, color);
-        fontRendererIn.setBidiFlag(bidi);
-        fontRendererIn.setUnicodeFlag(uni);
-    }
 
     public interface IOnClickListener {
         public default void onHeaderClicked() {

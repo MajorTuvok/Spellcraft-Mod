@@ -17,6 +17,7 @@ public class VerticalScrollingList extends AbsScrollingList {
     private boolean negativeButtonHovered;
     private boolean positiveButtonHovered;
     private boolean sliderHovered;
+    private boolean sliderClicked;
     /**
      * The top of the slider relative to the top of the scrollbar
      */
@@ -31,6 +32,7 @@ public class VerticalScrollingList extends AbsScrollingList {
         positiveButtonHovered = false;
         negativeButtonHovered = false;
         sliderHovered = false;
+        sliderClicked = false;
         sliderPos = getButtonHeight();
         sliderSize = getSliderHeight();
     }
@@ -53,9 +55,16 @@ public class VerticalScrollingList extends AbsScrollingList {
         return GuiUtil.isWithinBounds(getMouseX(), getMouseY(), getLeft(), entryRight, slotTop, slotTop + getSlotHeight());
     }
 
+    /**
+     * Called when the mouse is clicked.
+     *
+     * @param mouseX      Mouse X - Coordinate
+     * @param mouseY      Mouse Y - Coordinate
+     * @param mouseButton The pressed mouse Button. F.i. 0 is an left click.
+     */
     @Override
-    public void onMouseClick(int mouseX, int mouseY, int mouseButton) {
-        if (isHovering()) {
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+        if (mouseButton == 0 && isHovering()) {
             int listLength = this.getSize();
             int scrollBarRight = getRight();
             int scrollBarLeft = scrollBarRight - getScrollbarSize();
@@ -79,7 +88,7 @@ public class VerticalScrollingList extends AbsScrollingList {
                 } else if (negativeButtonHovered) { //onNegativeButton
                     scrollDown();
                 } else if (sliderHovered) {
-                    onSliderClicked(mouseY);
+                    onSliderClicked();
                 } else {
                     this.setScrollFactor(-1);
 
@@ -93,6 +102,37 @@ public class VerticalScrollingList extends AbsScrollingList {
             this.setInitialMouseClickY(mouseY);
         } else {
             this.setInitialMouseClickY(-2);
+        }
+    }
+
+    /**
+     * Called when a mouse button is pressed and the mouse is moved around.
+     *
+     * @param mouseX             Mouse X - Coordinate
+     * @param mouseY             Mouse Y - Coordinate
+     * @param clickedMouseButton The pressed mouse Button. F.i. 0 is an left click.
+     * @param timeSinceLastClick tim in ms since the Mouse button was pressed
+     */
+    @Override
+    public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
+        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+        if (clickedMouseButton == 0 && sliderClicked) {
+            onSliderMovedTo(mouseY);
+        }
+    }
+
+    /**
+     * Called when a mouse button is released.
+     *
+     * @param mouseX Mouse X - Coordinate
+     * @param mouseY Mouse Y - Coordinate
+     * @param state  Mouse state ?
+     */
+    @Override
+    public void mouseReleased(int mouseX, int mouseY, int state) {
+        super.mouseReleased(mouseX, mouseY, state);
+        if (sliderClicked) {
+            onSliderReleased();
         }
     }
 
@@ -177,7 +217,7 @@ public class VerticalScrollingList extends AbsScrollingList {
     @Override
     protected void updateSliderPos() {
         int buttonHeight = getButtonHeight();
-        int sliderEnd = getListHeight() - buttonHeight - getBorder() - sliderSize;
+        int sliderEnd = getListHeight() - buttonHeight - sliderSize;
         sliderPos = buttonHeight + Math.round(getScrollDistance() / getMaxScrollDistance() * getSliderScrollHeight());
         sliderPos = MathHelper.clamp(sliderPos, buttonHeight, sliderEnd);
     }
@@ -226,23 +266,31 @@ public class VerticalScrollingList extends AbsScrollingList {
         IResourceInfo negativeRes = negativeButtonHovered ? getButtonNegativeHovered() : getButtonNegative();
         IResourceInfo sliderRes = sliderHovered ? getScrollbarSliderHovered() : getScrollbarSlider();
         //draw positive Button
-        Minecraft.getMinecraft().getTextureManager().bindTexture(positiveRes.getResource());
-        drawTexturedModalRect(scrollbarLeft, getTop(), positiveRes.getImgXStart(), positiveRes.getImgYStart(), positiveRes.getImgXSize(), positiveRes.getImgYSize());
+        getDelegate().bindResource(positiveRes);
+        getDelegate().drawTexturedModalRect(scrollbarLeft, getTop(), positiveRes.getImgXStart(), positiveRes.getImgYStart(), positiveRes.getImgXSize(), positiveRes.getImgYSize());
         //draw ScrollbarBackground
-        Minecraft.getMinecraft().getTextureManager().bindTexture(getScrollbarBackground().getResource());
-        drawTexturedModalRect(scrollbarLeft, scrollbarTop, getScrollbarBackground().getImgXStart(), getScrollbarBackground().getImgYStart(), getScrollbarBackground().getImgXSize(), halfHeight);
-        drawTexturedModalRect(scrollbarLeft, scrollbarTop + halfHeight, getScrollbarBackground().getImgXStart(), getScrollbarBackground().getImgYStart() + getScrollbarBackground().getImgYSize() - halfHeight, getScrollbarBackground().getImgXSize(), halfHeight);
+        getDelegate().bindResource(getScrollbarBackground().getResource());
+        getDelegate().drawTexturedModalRect(scrollbarLeft, scrollbarTop, getScrollbarBackground().getImgXStart(), getScrollbarBackground().getImgYStart(), getScrollbarBackground().getImgXSize(), halfHeight);
+        getDelegate().drawTexturedModalRect(scrollbarLeft, scrollbarTop + halfHeight, getScrollbarBackground().getImgXStart(), getScrollbarBackground().getImgYStart() + getScrollbarBackground().getImgYSize() - halfHeight, getScrollbarBackground().getImgXSize(), halfHeight);
         //drawSlider
-        Minecraft.getMinecraft().getTextureManager().bindTexture(sliderRes.getResource());
-        drawTexturedModalRect(scrollbarLeft, getTop() + sliderPos, sliderRes.getImgXStart(), sliderRes.getImgYStart(), sliderRes.getImgXSize(), sliderRes.getImgYSize());
+        getDelegate().bindResource(sliderRes.getResource());
+        getDelegate().drawTexturedModalRect(scrollbarLeft, getTop() + sliderPos, sliderRes.getImgXStart(), sliderRes.getImgYStart(), sliderRes.getImgXSize(), sliderRes.getImgYSize());
         //draw negative Button
-        Minecraft.getMinecraft().getTextureManager().bindTexture(negativeRes.getResource());
-        drawTexturedModalRect(scrollbarLeft, getBottom() - buttonHeight - 1, negativeRes.getImgXStart(), negativeRes.getImgYStart(), negativeRes.getImgXSize(), negativeRes.getImgYSize());
+        getDelegate().bindResource(negativeRes.getResource());
+        getDelegate().drawTexturedModalRect(scrollbarLeft, getBottom() - buttonHeight - 1, negativeRes.getImgXStart(), negativeRes.getImgYStart(), negativeRes.getImgXSize(), negativeRes.getImgYSize());
     }
 
-    protected void onSliderClicked(int mouseY) {
-        setScrollDistance(getScrollDistance() + (mouseY - sliderPos - getTop() - getBorder()));
+    protected void onSliderClicked() {
+        sliderClicked = true;
+    }
+
+    protected void onSliderMovedTo(int mouseY) {
+        setScrollDistance(getScrollDistance() + (mouseY - sliderPos - getTop()));
         updateSliderPos();
+    }
+
+    protected void onSliderReleased() {
+        sliderClicked = false;
     }
 
     protected void handleMouseWheelScroll() {
