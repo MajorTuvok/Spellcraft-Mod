@@ -13,6 +13,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 public class VerticalScrollingList extends AbsScrollingList {
+    private static final int MOUSE_SCROLL_REDUCTION = 240;
     private boolean negativeButtonHovered;
     private boolean positiveButtonHovered;
     private boolean sliderHovered;
@@ -72,7 +73,7 @@ public class VerticalScrollingList extends AbsScrollingList {
                 this.clickHeader(mouseX - entryLeft, mouseY - getTop() + (int) getScrollDistance() - getBorder());
             }
 
-            if (mouseX >= scrollBarLeft && mouseX <= scrollBarRight) { //scrollbarParameters
+            if (mouseX >= scrollBarLeft && mouseX <= scrollBarRight) {//scrollbarParameters
                 if (positiveButtonHovered) { //onPositiveButton
                     scrollUp();
                 } else if (negativeButtonHovered) { //onNegativeButton
@@ -80,22 +81,18 @@ public class VerticalScrollingList extends AbsScrollingList {
                 } else if (sliderHovered) {
                     onSliderClicked(mouseY);
                 } else {
-                    this.setScrollFactor(-1.0F);
-                    int scrollHeight = Math.max(this.getContentHeight() - getListHeight() - getBorder(), 1);
+                    this.setScrollFactor(-1);
 
-                    int var13 = (int) ((float) (getListHeight() * getListHeight()) / (float) this.getContentHeight());
-
-                    var13 = MathHelper.clamp(var13, 32, getListHeight() - getBorder() * 2);
-
-                    this.setScrollFactor(getScrollFactor() / ((float) (getListHeight() - var13) / (float) scrollHeight));
+                    setScrollDistance(getScrollDistance() + (mouseY - sliderPos - getTop() - getBorder()));
+                    updateSliderPos();
                 }
             } else {
-                this.setScrollFactor(1.0F);
+                this.setScrollFactor(1);
             }
 
             this.setInitialMouseClickY(mouseY);
         } else {
-            this.setInitialMouseClickY(-2.0F);
+            this.setInitialMouseClickY(-2);
         }
     }
 
@@ -173,18 +170,14 @@ public class VerticalScrollingList extends AbsScrollingList {
                 }
             }
 
-            //checkScrolling
-            int scroll = Mouse.getEventDWheel();
-            if (allowMouseScroll() && scroll != 0) {
-                setScrollDistance(getScrollDistance() + ((-1 * scroll / 120.0F) * getSlotHeight() / 2));
-            }
+            handleMouseWheelScroll();
         }
     }
 
     @Override
     protected void updateSliderPos() {
         int buttonHeight = getButtonHeight();
-        int sliderEnd = getListHeight() - buttonHeight - sliderSize;
+        int sliderEnd = getListHeight() - buttonHeight - getBorder() - sliderSize;
         sliderPos = buttonHeight + Math.round(getScrollDistance() / getMaxScrollDistance() * getSliderScrollHeight());
         sliderPos = MathHelper.clamp(sliderPos, buttonHeight, sliderEnd);
     }
@@ -248,11 +241,15 @@ public class VerticalScrollingList extends AbsScrollingList {
     }
 
     protected void onSliderClicked(int mouseY) {
-        sliderPos = Math.min(mouseY, getListHeight() - getButtonHeight() - sliderSize);
-        setScrollDistanceBySliderPos();
+        setScrollDistance(getScrollDistance() + (mouseY - sliderPos - getTop() - getBorder()));
+        updateSliderPos();
     }
 
-    private void setScrollDistanceBySliderPos() {
-        setScrollDistance(sliderPos / getSliderScrollHeight() * getMaxScrollDistance());
+    protected void handleMouseWheelScroll() {
+        //checkScrolling
+        int scroll = Mouse.getDWheel();
+        if (allowMouseScroll() && scroll != 0) {
+            setScrollDistance(getScrollDistance() + (-1 * scroll * getSlotHeight() / MOUSE_SCROLL_REDUCTION));
+        }
     }
 }

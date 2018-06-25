@@ -139,7 +139,7 @@ public class GuiSpellCreation extends BaseGui {
             Log.warn("Failed to retrieve State!");
         }
         for (int i = names.size(); i <= 50; i++) {
-            names.add(new StringBuilder(i).toString());
+            names.add("" + i);
         }
         mCurrentStateAdapter = new SimpleTextAdapter(names);
         int buttonLeft = mCurrentStateList.getLeft() + mCurrentStateList.getSlotWidth();

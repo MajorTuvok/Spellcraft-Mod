@@ -140,6 +140,7 @@ public abstract class AbsScrollingList extends Gui {
     private IResourceInfo buttonNegativeHovered;
     private IResourceInfo buttonPositive;
     private IResourceInfo buttonPositiveHovered;
+    private int lastMouseWheel;
     private boolean captureMouse;
     private float initialMouseClickY;
     private long lastClickTime;
@@ -510,8 +511,6 @@ public abstract class AbsScrollingList extends Gui {
 
         onHandleMouse();
 
-        this.drawBackground();
-
         this.applyScrollLimits();
         updateSliderPos();
 
@@ -524,9 +523,11 @@ public abstract class AbsScrollingList extends Gui {
                 (int) (getListWidth() * scaleW), (int) (getListHeight() * scaleH));
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-        /*if (drawAdditionalBackground()) {
+        this.drawBackground();
+
+        if (drawAdditionalBackground()) {
             performDrawAdditionalBackground(tess);
-        }*/
+        }
 
         performDraw(tess);
 
@@ -642,7 +643,6 @@ public abstract class AbsScrollingList extends Gui {
             listener.onNewScrollValue(oldValue, getScrollDistance());
         }
     }
-
 
     public interface ISlotAdapter {
         public int getSize();
