@@ -4,13 +4,14 @@ import mt.mcmods.spellcraft.common.interfaces.ILoggable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.function.Predicate;
 
 public final class ReflectionHelper {
+    public static final Predicate<Field> PREDICATE_STATIC = field -> Modifier.isStatic(field.getModifiers());
     private static final HashMap<String, Class> nameClassMap = new HashMap<>();
 
     private ReflectionHelper() {
@@ -83,5 +84,22 @@ public final class ReflectionHelper {
 
     public static boolean isClassLoaded(@Nonnull String name) {
         return findClassForName(name) != null;
+    }
+
+    /**
+     * @param clazz  The class to test
+     * @param filter filter to use
+     * @return A List containing the Fields declared by this class (superclasses don't count!) who match the given Predicate
+     */
+    public static List<Field> getFilteredFields(Class<?> clazz, Predicate<Field> filter) {
+        Field[] fields = clazz.getDeclaredFields();
+        List<Field> res = new ArrayList<>(fields.length);
+        for (Field field :
+                fields) {
+            if (filter.test(field)) {
+                res.add(field);
+            }
+        }
+        return res;
     }
 }

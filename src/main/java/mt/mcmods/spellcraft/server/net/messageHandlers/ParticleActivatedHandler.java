@@ -3,7 +3,7 @@ package mt.mcmods.spellcraft.server.net.messageHandlers;
 
 import mt.mcmods.spellcraft.SpellcraftMod;
 import mt.mcmods.spellcraft.client.net.messages.ParticleActivated;
-import mt.mcmods.spellcraft.server.net.messages.ShowParticle;
+import mt.mcmods.spellcraft.server.net.messages.PacketShowParticle;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -35,8 +35,9 @@ public class ParticleActivatedHandler implements IMessageHandler<ParticleActivat
             boundingBox.maxX = (int) Math.round(targetPoint.x + targetPoint.range);
             boundingBox.maxY = (int) Math.round(targetPoint.y + targetPoint.range);
             boundingBox.maxZ = (int) Math.round(targetPoint.z + targetPoint.range);
-            if (serverPlayer.getServerWorld().isAreaLoaded(boundingBox))
-                SpellcraftMod.CHANNEL_HOLDER.sendToAllAround(new ShowParticle(message), message.getTargetPoint());
+            if (serverPlayer.getServerWorld().isAreaLoaded(boundingBox)) {
+                SpellcraftMod.CHANNEL_HOLDER.sendToAllAround(new PacketShowParticle(message), message.getTargetPoint());
+            }
         });
         return null;
     }

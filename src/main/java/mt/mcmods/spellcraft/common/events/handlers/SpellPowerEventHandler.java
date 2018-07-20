@@ -7,7 +7,7 @@ import mt.mcmods.spellcraft.common.capabilities.spellpower.EntitySpellPowerProvi
 import mt.mcmods.spellcraft.common.capabilities.spellpower.ISpellPowerProvider;
 import mt.mcmods.spellcraft.common.capabilities.spellpower.SpellPowerProviderCapability;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
-import mt.mcmods.spellcraft.server.net.messages.SyncEntitySpellpower;
+import mt.mcmods.spellcraft.server.net.messages.PacketSyncEntitySpellpower;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -62,7 +62,7 @@ public class SpellPowerEventHandler {
     public void onPlayerConnected(PlayerEvent.PlayerLoggedInEvent event) {
         if (!event.player.world.isRemote && event.player instanceof EntityPlayerMP) {
             ILoggable.Log.trace("Sending Spellpower Sync to freshly logged in player");
-            SpellcraftMod.CHANNEL_HOLDER.sendTo(new SyncEntitySpellpower(event.player), (EntityPlayerMP) event.player);
+            SpellcraftMod.CHANNEL_HOLDER.sendTo(new PacketSyncEntitySpellpower(event.player), (EntityPlayerMP) event.player);
         }
     }
 

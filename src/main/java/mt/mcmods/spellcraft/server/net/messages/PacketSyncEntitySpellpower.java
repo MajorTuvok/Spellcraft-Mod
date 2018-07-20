@@ -10,21 +10,21 @@ import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
 
-public class SyncEntitySpellpower extends RequestSyncEntitySpellpower {
+public class PacketSyncEntitySpellpower extends RequestSyncEntitySpellpower {
     private float maxPower;
     private float power;
 
-    public SyncEntitySpellpower() {
+    public PacketSyncEntitySpellpower() {
         this(-1, -1, -1);
     }
 
-    public SyncEntitySpellpower(int power, int maxPower, int id) {
+    public PacketSyncEntitySpellpower(int power, int maxPower, int id) {
         super(id);
         this.power = power;
         this.maxPower = maxPower;
     }
 
-    public SyncEntitySpellpower(Entity entity) {
+    public PacketSyncEntitySpellpower(Entity entity) {
         super(entity);
         ISpellPowerProvider provider = entity.getCapability(SpellcraftCapabilities.SPELL_POWER_PROVIDER_CAPABILITY, null);
         if (provider != null) {

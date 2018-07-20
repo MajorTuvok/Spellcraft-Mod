@@ -3,7 +3,7 @@ package mt.mcmods.spellcraft.server.net.messageHandlers;
 import mt.mcmods.spellcraft.SpellcraftMod;
 import mt.mcmods.spellcraft.client.net.messages.RequestSyncEntitySpellpower;
 import mt.mcmods.spellcraft.common.interfaces.ILoggable;
-import mt.mcmods.spellcraft.server.net.messages.SyncEntitySpellpower;
+import mt.mcmods.spellcraft.server.net.messages.PacketSyncEntitySpellpower;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -27,7 +27,7 @@ public class RequestSyncEntitySpellpowerHandler implements IMessageHandler<Reque
             player.getServerWorld().addScheduledTask(() -> {
                 Entity entity = message.getEntity(player.world);
                 if (entity != null) {
-                    SpellcraftMod.CHANNEL_HOLDER.sendTo(new SyncEntitySpellpower(entity), player);
+                    SpellcraftMod.CHANNEL_HOLDER.sendTo(new PacketSyncEntitySpellpower(entity), player);
                 }
             });
         } else {

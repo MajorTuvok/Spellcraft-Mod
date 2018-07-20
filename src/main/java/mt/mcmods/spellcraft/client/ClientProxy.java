@@ -3,7 +3,6 @@ package mt.mcmods.spellcraft.client;
 
 import mt.mcmods.spellcraft.CommonProxy;
 import mt.mcmods.spellcraft.common.events.handlers.EventHandler;
-import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
@@ -24,7 +23,7 @@ public class ClientProxy extends CommonProxy {
         this.items.clientInit();
         this.blocks.clientInit();
         this.conditions.clientInit();
-        OBJLoader.INSTANCE.addDomain(MODID);
+        //OBJLoader.INSTANCE.addDomain(MODID);
     }
 
     @Override

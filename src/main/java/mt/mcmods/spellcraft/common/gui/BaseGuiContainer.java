@@ -101,7 +101,7 @@ public abstract class BaseGuiContainer extends Container implements ILoggable {
     }
 
     protected void createInventoryFromCapability(IItemHandler handler) {
-        Log.warn("Creating Inventory from Item Handler is not supported in this GUI!");
+        Log.warn("Creating Inventory from Item PacketSyncConfigHandler is not supported in this GUI!");
     }
 
     protected void createInventoryFromIInventory(IInventory inventory) {

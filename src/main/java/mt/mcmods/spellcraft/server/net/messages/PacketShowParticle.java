@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import static mt.mcmods.spellcraft.client.particles.ParticleHandler.ID_PARTICLE_MAP;
 import static mt.mcmods.spellcraft.client.particles.ParticleHandler.PARTICLE_ID_MAP;
 
-public class ShowParticle implements IMessage {
+public class PacketShowParticle implements IMessage {
     private ParticleName name;
     private int parX;
     private int parY;
@@ -17,11 +17,11 @@ public class ShowParticle implements IMessage {
     private float particleMaxDistance;
     private float velocityFactor;
 
-    public ShowParticle() {
+    public PacketShowParticle() {
     }
 
 
-    public ShowParticle(ParticleName name, int particleAmount, float particleMaxDistance, float velocityFactor, int parX, int parY, int parZ) {
+    public PacketShowParticle(ParticleName name, int particleAmount, float particleMaxDistance, float velocityFactor, int parX, int parY, int parZ) {
         this.name = name;
         this.parX = parX;
         this.parY = parY;
@@ -31,7 +31,7 @@ public class ShowParticle implements IMessage {
         this.velocityFactor = velocityFactor;
     }
 
-    public ShowParticle(ShowParticle activated) {
+    public PacketShowParticle(PacketShowParticle activated) {
         this(activated.getParticleName(),
                 activated.getParticleAmount(),
                 activated.getParticleMaxDistance(),

@@ -1,12 +1,12 @@
 package mt.mcmods.spellcraft.client.net.messages;
 
 import io.netty.buffer.ByteBuf;
-import mt.mcmods.spellcraft.server.net.messages.ShowParticle;
+import mt.mcmods.spellcraft.server.net.messages.PacketShowParticle;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import static mt.mcmods.spellcraft.client.particles.ParticleHandler.ParticleName;
 
-public class ParticleActivated extends ShowParticle {
+public class ParticleActivated extends PacketShowParticle {
     private NetworkRegistry.TargetPoint targetPoint;
 
     public ParticleActivated() {

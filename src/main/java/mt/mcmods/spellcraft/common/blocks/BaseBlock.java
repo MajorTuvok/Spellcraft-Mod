@@ -10,7 +10,7 @@ import mt.mcmods.spellcraft.common.interfaces.INamed;
 import mt.mcmods.spellcraft.common.interfaces.IOreDictNamed;
 import mt.mcmods.spellcraft.common.interfaces.IRenderable;
 import mt.mcmods.spellcraft.common.util.StringHelper;
-import mt.mcmods.spellcraft.server.net.messages.ShowParticle;
+import mt.mcmods.spellcraft.server.net.messages.PacketShowParticle;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.EnumParticleTypes;
@@ -98,7 +98,7 @@ public class BaseBlock extends Block implements INamed, IOreDictNamed, ILoggable
             SpellcraftMod.CHANNEL_HOLDER.sendToServer(new ParticleActivated(name, particleAmount, particleMaxDistance, velocityFactor, parX, parY, parZ, targetPoint));
         } else {
             Log.info("Sending to Clients Spawn contract");
-            SpellcraftMod.CHANNEL_HOLDER.sendToAllAround(new ShowParticle(name, particleAmount, particleMaxDistance, velocityFactor, parX, parY, parZ), targetPoint);
+            SpellcraftMod.CHANNEL_HOLDER.sendToAllAround(new PacketShowParticle(name, particleAmount, particleMaxDistance, velocityFactor, parX, parY, parZ), targetPoint);
         }
     }
 

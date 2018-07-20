@@ -20,7 +20,7 @@ import mt.mcmods.spellcraft.common.spell.entity.EntitySpellRegistry;
 import mt.mcmods.spellcraft.common.util.ChannelHolder;
 import mt.mcmods.spellcraft.server.net.messageHandlers.RequestAddPlayerSpellHandler;
 import mt.mcmods.spellcraft.server.net.messageHandlers.RequestSyncEntitySpellpowerHandler;
-import mt.mcmods.spellcraft.server.net.messages.SyncEntitySpellpower;
+import mt.mcmods.spellcraft.server.net.messages.PacketSyncEntitySpellpower;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -89,9 +89,9 @@ public abstract class CommonProxy implements ILoggable {
 
     protected void registerMessages() {
         //CHANNEL_HOLDER.registerMessage(ParticleActivatedHandler.class, ParticleActivated.class, Side.SERVER);
-        //CHANNEL_HOLDER.registerMessage(ShowParticleHandler.class, ShowParticle.class, Side.CLIENT);
+        //CHANNEL_HOLDER.registerMessage(ShowParticleHandler.class, PacketShowParticle.class, Side.CLIENT);
         CHANNEL_HOLDER.registerMessage(RequestSyncEntitySpellpowerHandler.class, RequestSyncEntitySpellpower.class, Side.SERVER);
-        CHANNEL_HOLDER.registerMessage(SyncEntitySpellpowerHandler.class, SyncEntitySpellpower.class, Side.CLIENT);
+        CHANNEL_HOLDER.registerMessage(SyncEntitySpellpowerHandler.class, PacketSyncEntitySpellpower.class, Side.CLIENT);
         CHANNEL_HOLDER.registerMessage(RequestAddPlayerSpellHandler.class, RequestNewPlayerSpell.class, Side.SERVER);
     }
 }

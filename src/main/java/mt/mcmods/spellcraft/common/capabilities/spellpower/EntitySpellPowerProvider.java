@@ -4,7 +4,7 @@ package mt.mcmods.spellcraft.common.capabilities.spellpower;
 import mt.mcmods.spellcraft.SpellcraftMod;
 import mt.mcmods.spellcraft.common.util.MessageUtils;
 import mt.mcmods.spellcraft.common.util.NetworkUtils;
-import mt.mcmods.spellcraft.server.net.messages.SyncEntitySpellpower;
+import mt.mcmods.spellcraft.server.net.messages.PacketSyncEntitySpellpower;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -170,9 +170,9 @@ public class EntitySpellPowerProvider implements ISpellPowerProvider {
     private void sendSync() {
         if (getEntity() != null && NetworkUtils.mightBeServer()) {
             if ((entity instanceof EntityPlayerMP) && ((EntityPlayerMP) entity).connection != null) {
-                SpellcraftMod.CHANNEL_HOLDER.sendTo(new SyncEntitySpellpower(getEntity()), (EntityPlayerMP) entity);
+                SpellcraftMod.CHANNEL_HOLDER.sendTo(new PacketSyncEntitySpellpower(getEntity()), (EntityPlayerMP) entity);
             } else {
-                SpellcraftMod.CHANNEL_HOLDER.sendToAllAround(new SyncEntitySpellpower(getEntity()), MessageUtils.getTargetPoint(getEntity(), 16));
+                SpellcraftMod.CHANNEL_HOLDER.sendToAllAround(new PacketSyncEntitySpellpower(getEntity()), MessageUtils.getTargetPoint(getEntity(), 16));
             }
         }
     }
